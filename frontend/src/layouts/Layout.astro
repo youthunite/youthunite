@@ -1,3 +1,7 @@
+---
+import Navbar from '../components/Navbar.svelte';
+---
+
 <!doctype html>
 <html lang="en">
 	<head>
@@ -5,18 +9,45 @@
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<title>YouthUNITE - Empowering Youth to Lead Change</title>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 	</head>
 	<body>
+		<Navbar client:only="svelte" />
 		<slot />
 	</body>
 </html>
 
-<style>
-	html,
-	body {
+<style is:global>
+	* {
 		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+
+	body.dark-mode {
+		background-color: #121212;
+		color: #e0e0e0;
+	}
+
+	body {
+		font-family: 'Inter', sans-serif;
+		line-height: 1.6;
+		color: var(--text-dark);
+		overflow-x: hidden;
 		width: 100%;
 		height: 100%;
+	}
+
+	:root {
+		--orange-primary: #FF6B35;
+		--orange-light: #FF8A5B;
+		--blue-dark: #1B365D;
+		--blue-light: #4A90E2;
+		--blue-sky: #87CEEB;
+		--white: #FFFFFF;
+		--light-grey: #F8F9FA;
+		--dark-grey: #2C3E50;
+		--text-dark: #1A1A1A;
 	}
 </style>
