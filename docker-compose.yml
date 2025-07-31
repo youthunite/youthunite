@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:17
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+    container_name: youthunite-pg-db
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: superdupersecretdatabasetestpasswordthatwewillabsolutelyhidefromotherslateron
+      POSTGRES_DB: local
+
+volumes:
+  pgdata:
