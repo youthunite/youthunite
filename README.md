@@ -24,7 +24,7 @@ To setup the database, you'll need to run the following command in the root of t
 docker-compose up -d
 ```
 
-After that, you'll need to create the database schema. You can do this by running the following command:
+After that, you'll need to create the database schema. You can do this by running the following command in `/backend` where `package.json` is located:
 
 ```bash
 bun drizzle-kit push
