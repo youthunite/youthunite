@@ -1,0 +1,10 @@
+{
+  "name": "youthunite",
+  "workspaces": [
+    "apps/*"
+  ],
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}
