@@ -15,6 +15,46 @@ import teens from '../assets/teens.jpg';
             box-sizing: border-box;
         }
 
+        body.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+body.dark-mode .navbar {
+  background-color: rgba(30, 30, 30, 0.95);
+}
+
+body.dark-mode .nav-links a {
+  color: #e0e0e0;
+}
+
+body.dark-mode .mission,
+body.dark-mode .cta-section,
+body.dark-mode .footer {
+  background-color: #1c1c1c;
+  color: #ddd;
+}
+
+body.dark-mode .mission-card {
+  background-color: #262626;
+  color: #ccc;
+}
+
+body.dark-mode .btn-primary,
+body.dark-mode .btn-secondary {
+  background-color: #333;
+  border-color: #444;
+  color: #fff;
+}
+body.dark-mode .mission-card h3,
+body.dark-mode .mission-card p {
+  color: #ffffff;
+}
+body.dark-mode .mission h2,
+body.dark-mode .mission p {
+  color: #ffffff;
+}
+
         :root {
             --orange-primary: #FF6B35;
             --orange-light: #FF8A5B;
@@ -453,8 +493,28 @@ import teens from '../assets/teens.jpg';
                 <li><a href="#submit">Submit an Event</a></li>
                 <li><a href="#learn">Learn</a></li>
                 <li><a href="#contact">Contact</a></li>
-                <li><a href="#login" class="cta-button">Login#</a></li>
+                <li><a href="#login" class="cta-button">Login</a></li>
             </ul>
+            <button id="mode-toggle" style="
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 25px;
+  background: var(--blue-light);
+  color: white;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+">
+  <span id="mode-icon">🌙</span>
+</button>
+
+
         </div>
     </nav>
 
@@ -538,5 +598,17 @@ import teens from '../assets/teens.jpg';
             </div>
         </div>
     </footer>
+    <script>
+  const modeToggle = document.getElementById('mode-toggle');
+  const icon = document.getElementById('mode-icon');
+
+  modeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    icon.textContent = isDark ? '☀️' : '🌙';
+  });
+</script>
+
+
 </body>
 </html>
