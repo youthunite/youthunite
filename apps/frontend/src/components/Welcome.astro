@@ -9,6 +9,8 @@ import teens from "../assets/teens.jpg";
 		box-sizing: border-box;
 	}
 
+	@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap');
+
 	body.dark-mode {
 		background-color: #121212;
 		color: #e0e0e0;
@@ -39,6 +41,49 @@ import teens from "../assets/teens.jpg";
 	body.dark-mode .mission h2,
 	body.dark-mode .mission p {
 		color: #ffffff;
+	}
+
+	.intro-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		background: #fff;
+		z-index: 9999;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: opacity 0.5s ease-out;
+	}
+
+	.intro-overlay.hidden {
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.intro-canvas {
+		display: block;
+		background: transparent;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+	}
+
+	.intro-logo {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform-origin: 50% 50%;
+		opacity: 1;
+		user-select: none;
+		pointer-events: none;
+		width: 280px;
+		height: auto;
+		transform: translate(-50%, -50%) scale(0);
+		transition: none;
 	}
 
 	:root {
@@ -411,6 +456,11 @@ import teens from "../assets/teens.jpg";
 	}
 </style>
 
+<div id="introOverlay" class="intro-overlay">
+	<canvas id="introCanvas" class="intro-canvas"></canvas>
+	<img id="introLogo" class="intro-logo" src="/logo.png" alt="YouthUnite" />
+</div>
+
 <section class="hero" id="home">
 	<div class="hero-container">
 		<div class="hero-content">
@@ -530,3 +580,123 @@ import teens from "../assets/teens.jpg";
 		</div>
 	</div>
 </footer>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		const introOverlay = document.getElementById('introOverlay');
+		const hasSeenIntro = sessionStorage.getItem('youthunite_intro_shown');
+		
+		if (hasSeenIntro) {
+			introOverlay.style.display = 'none';
+		} else {
+			initIntroAnimation();
+		}
+	});
+
+	function initIntroAnimation() {
+		const canvas = document.getElementById('introCanvas');
+		const ctx = canvas.getContext('2d');
+		const logo = document.getElementById('introLogo');
+		const introOverlay = document.getElementById('introOverlay');
+
+		const KEYWORDS = [
+			'CONNECT', 'EMPOWER', 'MOBILIZE', 'YOUTH', 'ORGANIZE',
+			'EVENTS', 'VOLUNTEERING', 'CREATION', 'COURSES',
+			'STORYTELLING', 'STUDENT', 'ORGANIZERS', 'PLATFORM',
+			'NONPROFIT', 'PROJECTS', 'LEADERS', 'LEARNING',
+			'SIGN UP', 'COMMUNITY', 'TOOLS', 'ENGAGE',
+			'SUPPORT', 'COLLABORATE', 'IMPACT', 'ACTION',
+			'EDUCATION', 'NETWORK', 'GROW', 'SKILLS', 'TEAMWORK'
+		];
+
+		let words = [];
+		let startTime = null;
+		const spreadDuration = 3500;  
+		const holdDuration = 1000;    
+		const totalDuration = spreadDuration + holdDuration;
+
+		const colors = ['#ff6600', '#002147', '#3399ff'];
+
+		function resize() {
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+		}
+		window.addEventListener('resize', resize);
+		resize();
+
+		function initWords() {
+			words = KEYWORDS.map(word => {
+				return {
+					text: word,
+					x: canvas.width / 2,
+					y: canvas.height / 2,
+					dx: (Math.random() - 0.5) * 5,
+					dy: (Math.random() - 0.5) * 5,
+					opacity: 1,
+					size: 42 + Math.random() * 14,
+					color: colors[Math.floor(Math.random() * colors.length)],
+				};
+			});
+		}
+
+		function easeOut(t) {
+			return 1 - Math.pow(1 - t, 3);
+		}
+
+		function animate(timestamp) {
+			if (!startTime) startTime = timestamp;
+			const elapsed = timestamp - startTime;
+
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+			ctx.fillStyle = '#fff';
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+			if (elapsed < spreadDuration) {
+				const t = elapsed / spreadDuration;
+				const easeT = easeOut(t);
+
+				words.forEach(word => {
+					const moveX = word.dx * easeT * 350; 
+					const moveY = word.dy * easeT * 350;
+					const x = word.x + moveX;
+					const y = word.y + moveY;
+
+					ctx.font = `700 ${word.size}px Oswald, sans-serif`;
+					ctx.textAlign = 'center';
+					ctx.textBaseline = 'middle';
+
+					ctx.fillStyle = word.color;
+					ctx.shadowColor = 'rgba(0,0,0,0.3)'; 
+					ctx.shadowBlur = 4;
+					ctx.globalAlpha = 1 - easeT;
+
+					ctx.fillText(word.text, x, y);
+
+					ctx.shadowBlur = 0;
+					ctx.globalAlpha = 1;
+				});
+
+				const scale = easeT;
+				logo.style.transform = `translate(-50%, -50%) scale(${scale})`;
+
+			} else if (elapsed < totalDuration) {
+				logo.style.transform = 'translate(-50%, -50%) scale(1)';
+
+			} else {
+				introOverlay.classList.add('hidden');
+				sessionStorage.setItem('youthunite_intro_shown', 'true');
+				
+				setTimeout(() => {
+					introOverlay.style.display = 'none';
+				}, 500);
+				return;
+			}
+
+			requestAnimationFrame(animate);
+		}
+
+		initWords();
+		requestAnimationFrame(animate);
+	}
+</script>
