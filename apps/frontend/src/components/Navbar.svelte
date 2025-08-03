@@ -1,152 +1,97 @@
-<script>
-	import { onMount } from 'svelte';
+<script lang="ts">
+  import { Button } from '$lib/components/ui/button';
+  import * as Sheet from '$lib/components/ui/sheet';
+  import { Mountain, Menu, icons } from '@lucide/svelte';
+  import Icon from '../assets/icon.svg';
 
-	let isDarkMode = false;
+  export let currentPath: string = '/';
+  export let links: { href: string; label: string }[] = [
+    { href: '/', label: 'Home' },
+    { href: '/hub', label: 'Event Hub' },
+    { href: '/submit', label: 'Submit an Event' },
+    { href: '/learn', label: 'Learn' },
+    { href: '/contact', label: 'Contact us' },
+  ];
 
-	onMount(() => {
-		const savedMode = localStorage.getItem('darkMode');
-		if (savedMode) {
-			isDarkMode = JSON.parse(savedMode);
-			document.body.classList.toggle('dark-mode', isDarkMode);
-		}
-	});
-
-	function toggleDarkMode() {
-		isDarkMode = !isDarkMode;
-		document.body.classList.toggle('dark-mode', isDarkMode);
-		localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
-	}
+  const isActive = (href: string) =>
+    href === '/' ? currentPath === '/' : currentPath.startsWith(href);
 </script>
 
-<nav class="navbar">
-	<div class="nav-container">
-		<a href="#" class="logo">
-			<img src="textlogo.png" alt="">
-		</a>
-		<ul class="nav-links">
-			<li><a href="#home">Home</a></li>
-			<li><a href="#events">Event Hub</a></li>
-			<li><a href="#submit">Submit an Event</a></li>
-			<li><a href="#learn">Learn</a></li>
-			<li><a href="#contact">Contact</a></li>
-			<li><a href="#login" class="cta-button">Login</a></li>
-		</ul>
-		<button 
-			id="mode-toggle" 
-			on:click={toggleDarkMode}
-			style="
-				position: fixed;
-				top: 1rem;
-				right: 1rem;
-				padding: 0.5rem 1.2rem;
-				border-radius: 25px;
-				background: var(--blue-light);
-				color: white;
-				font-size: 1rem;
-				border: none;
-				cursor: pointer;
-				z-index: 1001;
-				display: flex;
-				align-items: center;
-				gap: 0.5rem;
-			"
-		>
-			<span id="mode-icon">{isDarkMode ? '☀️' : '🌙'}</span>
-		</button>
-	</div>
-</nav>
+<header
+  class="sticky top-0 z-40 w-full border-b bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+>
+  <div
+    class="mx-auto flex h-16 items-center justify-between px-3 sm:px-4 lg:px-6 xl:px-8 2xl:px-10 max-w-screen-2xl"
+  >
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2.5">
+        <Sheet.Root>
+          <Sheet.Trigger>
+            <Button
+              variant="outline"
+              size="icon"
+              class="lg:hidden bg-transparent h-10 w-10"
+              aria-label="Open navigation menu"
+            >
+              <Menu class="h-5 w-5" />
+            </Button>
+          </Sheet.Trigger>
+          <Sheet.Content side="left" class="w-80">
+            <div class="p-4">
+              <div class="flex items-center gap-2 mb-6">
+                <img src={Icon.src} alt="YouthUnite Logo" class="size-8" />
+                <span class="font-semibold">YouthUnite</span>
+              </div>
+              <nav class="grid gap-2">
+                {#each links as link}
+                  <a
+                    href={link.href}
+                    class="rounded px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                    aria-current={isActive(link.href) ? 'page' : undefined}
+                  >
+                    {link.label}
+                  </a>
+                {/each}
+              </nav>
+              <div class="mt-6">
+                <Button class="w-full" variant="default">Join Now</Button>
+              </div>
+            </div>
+          </Sheet.Content>
+        </Sheet.Root>
 
-<style>
-	:global(:root) {
-		--orange-primary: #FF6B35;
-		--orange-light: #FF8A5B;
-		--blue-dark: #1B365D;
-		--blue-light: #4A90E2;
-		--blue-sky: #87CEEB;
-		--white: #FFFFFF;
-		--light-grey: #F8F9FA;
-		--dark-grey: #2C3E50;
-		--text-dark: #1A1A1A;
-	}
+        <a href="/" class="flex items-center gap-2" aria-label="Go to homepage">
+          <img src={Icon.src} alt="YouthUnite Logo" class="size-8" />
+          <span class="font-semibold tracking-tight hidden sm:inline">YouthUnite</span>
+          <span class="sr-only">YouthUnite</span>
+        </a>
+      </div>
+      <nav class="hidden lg:flex ml-4 gap-1" aria-label="Primary">
+        {#each links as link}
+          <a
+            href={link.href}
+            class="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 {isActive(
+              link.href
+            )
+              ? 'text-primary'
+              : 'text-muted-foreground'}"
+            aria-current={isActive(link.href) ? 'page' : undefined}
+          >
+            {link.label}
+          </a>
+        {/each}
+      </nav>
+    </div>
 
-	.navbar {
-		position: fixed;
-		top: 0;
-		width: 100%;
-		background: rgba(255, 255, 255, 0.95);
-		backdrop-filter: blur(10px);
-		z-index: 1000;
-		padding: 1rem 0;
-		transition: all 0.3s ease;
-	}
-
-	:global(body.dark-mode) .navbar {
-		background-color: rgba(30, 30, 30, 0.95);
-	}
-
-	.nav-container {
-		max-width: 1200px;
-		margin: 0 auto;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 0 2rem;
-	}
-
-	.logo {
-		display: flex;
-		align-items: center;
-		font-size: 1.8rem;
-		font-weight: 800;
-		text-decoration: none;
-	}
-
-	.nav-links {
-		display: flex;
-		list-style: none;
-		gap: 2rem;
-		align-items: center;
-	}
-
-	.nav-links a {
-		text-decoration: none;
-		color: var(--text-dark);
-		font-weight: 500;
-		transition: color 0.3s ease;
-	}
-
-	:global(body.dark-mode) .nav-links a {
-		color: #e0e0e0;
-	}
-
-	.nav-links a:hover {
-		color: var(--orange-primary);
-	}
-
-	.cta-button {
-		background: linear-gradient(135deg, var(--orange-primary), var(--orange-light));
-		color: white;
-		padding: 0.75rem 1.5rem;
-		border-radius: 50px;
-		text-decoration: none;
-		font-weight: 600;
-		transition: all 0.3s ease;
-		box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
-	}
-
-	.cta-button:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
-	}
-
-	.navbar img {
-		height: 1.5em;
-		vertical-align: middle;
-	}
-
-	@media (max-width: 768px) {
-		.nav-links {
-			display: none;
-		}
-	}
-</style>
+    <div class="flex items-center gap-2 sm:gap-3">
+      <a href="/login">
+      <Button variant="ghost" class="hidden sm:inline-flex h-9 px-3">Log in</Button>
+      </a>
+      <a href="/register">
+        <Button variant="outline" class="hidden sm:inline-flex h-9 px-4 sm:h-10 sm:px-5">
+          Sign up
+        </Button>
+      </a>
+    </div>
+  </div>
+</header>
