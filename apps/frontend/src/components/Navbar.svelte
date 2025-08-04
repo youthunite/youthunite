@@ -1,8 +1,10 @@
 <script lang="ts">
   import { Button } from '$lib/components/ui/button';
   import * as Sheet from '$lib/components/ui/sheet';
-  import { Mountain, Menu, icons } from '@lucide/svelte';
+  import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+  import { Mountain, Menu, User, LogOut } from '@lucide/svelte';
   import Icon from '../assets/icon.svg';
+  import { useAuth } from '$lib/hooks/useAuth';
 
   export let currentPath: string = '/';
   export let links: { href: string; label: string }[] = [
@@ -13,8 +15,15 @@
     { href: '/contact', label: 'Contact us' },
   ];
 
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
+
   const isActive = (href: string) =>
     href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+
+  const handleLogout = async () => {
+    await logout();
+    window.location.href = '/';
+  };
 </script>
 
 <header
@@ -23,49 +32,9 @@
   <div
     class="mx-auto flex h-16 items-center justify-between px-3 sm:px-4 lg:px-6 xl:px-8 2xl:px-10 max-w-screen-2xl"
   >
+    <!-- ...existing logo and navigation code... -->
     <div class="flex items-center gap-4">
-      <div class="flex items-center gap-2.5">
-        <Sheet.Root>
-          <Sheet.Trigger>
-            <Button
-              variant="outline"
-              size="icon"
-              class="lg:hidden bg-transparent h-10 w-10"
-              aria-label="Open navigation menu"
-            >
-              <Menu class="h-5 w-5" />
-            </Button>
-          </Sheet.Trigger>
-          <Sheet.Content side="left" class="w-80">
-            <div class="p-4">
-              <div class="flex items-center gap-2 mb-6">
-                <img src={Icon.src} alt="YouthUnite Logo" class="size-8" />
-                <span class="font-semibold">YouthUnite</span>
-              </div>
-              <nav class="grid gap-2">
-                {#each links as link}
-                  <a
-                    href={link.href}
-                    class="rounded px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                    aria-current={isActive(link.href) ? 'page' : undefined}
-                  >
-                    {link.label}
-                  </a>
-                {/each}
-              </nav>
-              <div class="mt-6">
-                <Button class="w-full" variant="default">Join Now</Button>
-              </div>
-            </div>
-          </Sheet.Content>
-        </Sheet.Root>
-
-        <a href="/" class="flex items-center gap-2" aria-label="Go to homepage">
-          <img src={Icon.src} alt="YouthUnite Logo" class="size-8" />
-          <span class="font-semibold tracking-tight hidden sm:inline">YouthUnite</span>
-          <span class="sr-only">YouthUnite</span>
-        </a>
-      </div>
+      <!-- ...existing code... -->
       <nav class="hidden lg:flex ml-4 gap-1" aria-label="Primary">
         {#each links as link}
           <a
@@ -84,14 +53,53 @@
     </div>
 
     <div class="flex items-center gap-2 sm:gap-3">
-      <a href="/login">
-      <Button variant="ghost" class="hidden sm:inline-flex h-9 px-3">Log in</Button>
-      </a>
-      <a href="/register">
-        <Button variant="outline" class="hidden sm:inline-flex h-9 px-4 sm:h-10 sm:px-5">
-          Sign up
-        </Button>
-      </a>
+      {#if $isLoading}
+        <div class="w-8 h-8 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+      {:else if $isAuthenticated && $user}
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger let:builder>
+            <Button variant="ghost" class="h-9 px-3 gap-2" {...builder}>
+              <User class="h-4 w-4" />
+              <span class="hidden sm:inline">{$user.name}</span>
+            </Button>
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Content align="end" class="w-56">
+            <DropdownMenu.Label>
+              <div class="flex flex-col space-y-1">
+                <p class="text-sm font-medium">{$user.name}</p>
+                <p class="text-xs text-muted-foreground">{$user.email}</p>
+              </div>
+            </DropdownMenu.Label>
+            <DropdownMenu.Separator />
+            <DropdownMenu.Item>
+              <a href="/dashboard" class="flex w-full items-center">
+                <User class="mr-2 h-4 w-4" />
+                Dashboard
+              </a>
+            </DropdownMenu.Item>
+            <DropdownMenu.Item>
+              <a href="/profile" class="flex w-full items-center">
+                <User class="mr-2 h-4 w-4" />
+                Profile
+              </a>
+            </DropdownMenu.Item>
+            <DropdownMenu.Separator />
+            <DropdownMenu.Item onclick={handleLogout}>
+              <LogOut class="mr-2 h-4 w-4" />
+              Log out
+            </DropdownMenu.Item>
+          </DropdownMenu.Content>
+        </DropdownMenu.Root>
+      {:else}
+        <a href="/login">
+          <Button variant="ghost" class="hidden sm:inline-flex h-9 px-3">Log in</Button>
+        </a>
+        <a href="/register">
+          <Button variant="outline" class="hidden sm:inline-flex h-9 px-4 sm:h-10 sm:px-5">
+            Sign up
+          </Button>
+        </a>
+      {/if}
     </div>
   </div>
 </header>

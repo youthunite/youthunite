@@ -1,11 +1,11 @@
 import "dotenv/config";
-import { drizzle } from "drizzle-orm/node-postgres";
+import { drizzle } from "drizzle-orm/pglite";
 import { eq } from "drizzle-orm";
 import * as schema from "./schema";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
-const db = drizzle(process.env.DB_URL!, { schema });
+const db = drizzle('pgdata', { schema });
 
 const oneMonth = 30 * 86400000; // Self explanatory
 

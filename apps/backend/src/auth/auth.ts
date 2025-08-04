@@ -1,6 +1,6 @@
 import { Elysia, t } from "elysia";
 
-import {
+import db, {
 	validateSession,
 	registerUser,
 	verifyUser,
@@ -8,6 +8,8 @@ import {
 	deleteSession,
 } from "../db/db";
 import jwt from "jsonwebtoken";
+import schema from "../db/schema";
+import { eq } from "drizzle-orm";
 
 interface User {
 	email: string;
@@ -149,5 +151,42 @@ const router = new Elysia()
         jwt_token: t.String(),
       }),
     }
-	);
+	)
+  .get(
+    "/me",
+    async ({ headers }: { headers: { [key: string]: string } }) => {
+      try {
+        const authHeader = headers.authorization;
+        if (!authHeader?.startsWith('Bearer ')) {
+          return { success: false, error: 'No token provided' };
+        }
+        
+        const jwt_token = authHeader.substring(7);
+        const decoded = (await jwt.verify(
+          jwt_token,
+          process.env.JWT_SECRET!
+        )) as { sid: string };
+        
+        if (decoded) {
+          const session = await validateSession(decoded.sid);
+          if (session) {
+            const user = await db.query.usersTable.findFirst({
+              where: eq(schema.usersTable.id, session.user_id),
+              columns: {
+                id: true,
+                name: true,
+                email: true,
+                tier: true
+              }
+            });
+            return { success: true, user };
+          }
+        }
+        return { success: false, error: 'Invalid token' };
+      } catch (e) {
+        console.error(e);
+        return { success: false, error: 'Token verification failed' };
+      }
+    }
+  );
 export default router;

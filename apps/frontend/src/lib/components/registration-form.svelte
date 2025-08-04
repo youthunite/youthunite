@@ -22,7 +22,8 @@
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          localStorage.setItem('jwt_token', data.jwt_token);
+          // cookie string from https://lucia-auth.com/sessions/basic
+          document.cookie = `jwt_token=${data.jwt_token}; Age=86400; HttpOnly; Secure; Path=/; SameSite=Lax`;
           window.location.href = '/dashboard';
         } else {
           toast.error('Registration failed. Please check your credentials.');
