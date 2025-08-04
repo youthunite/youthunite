@@ -1,27 +1,39 @@
 <script lang="ts">
   import { Button } from '$lib/components/ui/button';
-  import * as Sheet from '$lib/components/ui/sheet';
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-  import { Mountain, Menu, User, LogOut } from '@lucide/svelte';
-  import Icon from '../assets/icon.svg';
+  import User from '@lucide/svelte/icons/user';
+  import LogOut from '@lucide/svelte/icons/log-out';
   import { useAuth } from '$lib/hooks/useAuth';
 
-  export let currentPath: string = '/';
-  export let links: { href: string; label: string }[] = [
-    { href: '/', label: 'Home' },
-    { href: '/hub', label: 'Event Hub' },
-    { href: '/submit', label: 'Submit an Event' },
-    { href: '/learn', label: 'Learn' },
-    { href: '/contact', label: 'Contact us' },
-  ];
+  interface Props {
+    currentPath?: string;
+    links?: { href: string; label: string }[];
+    serverUser?: { id: string; name: string; email: string; tier: string } | null;
+  }
 
-  const { user, isAuthenticated, isLoading, logout } = useAuth();
+  let {
+    currentPath = '/',
+    links = [
+      { href: '/', label: 'Home' },
+      { href: '/hub', label: 'Event Hub' },
+      { href: '/submit', label: 'Submit an Event' },
+      { href: '/learn', label: 'Learn' },
+      { href: '/contact', label: 'Contact us' },
+    ],
+    serverUser = null
+  }: Props = $props();
+
+  const auth = useAuth();
+
+  const currentUser = $derived(serverUser || auth.user);
+  const isAuthenticated = $derived(!!serverUser || auth.isAuthenticated);
+  const isLoading = $derived(!serverUser && auth.isLoading);
 
   const isActive = (href: string) =>
     href === '/' ? currentPath === '/' : currentPath.startsWith(href);
 
   const handleLogout = async () => {
-    await logout();
+    await auth.logout();
     window.location.href = '/';
   };
 </script>
@@ -32,9 +44,7 @@
   <div
     class="mx-auto flex h-16 items-center justify-between px-3 sm:px-4 lg:px-6 xl:px-8 2xl:px-10 max-w-screen-2xl"
   >
-    <!-- ...existing logo and navigation code... -->
     <div class="flex items-center gap-4">
-      <!-- ...existing code... -->
       <nav class="hidden lg:flex ml-4 gap-1" aria-label="Primary">
         {#each links as link}
           <a
@@ -53,21 +63,21 @@
     </div>
 
     <div class="flex items-center gap-2 sm:gap-3">
-      {#if $isLoading}
+      {#if isLoading}
         <div class="w-8 h-8 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
-      {:else if $isAuthenticated && $user}
+      {:else if isAuthenticated && currentUser}
         <DropdownMenu.Root>
-          <DropdownMenu.Trigger let:builder>
-            <Button variant="ghost" class="h-9 px-3 gap-2" {...builder}>
+          <DropdownMenu.Trigger>
+            <Button variant="ghost" class="h-9 px-3 gap-2">
               <User class="h-4 w-4" />
-              <span class="hidden sm:inline">{$user.name}</span>
+              <span class="hidden sm:inline">{currentUser.name}</span>
             </Button>
           </DropdownMenu.Trigger>
           <DropdownMenu.Content align="end" class="w-56">
             <DropdownMenu.Label>
               <div class="flex flex-col space-y-1">
-                <p class="text-sm font-medium">{$user.name}</p>
-                <p class="text-xs text-muted-foreground">{$user.email}</p>
+                <p class="text-sm font-medium">{currentUser.name}</p>
+                <p class="text-xs text-muted-foreground">{currentUser.email}</p>
               </div>
             </DropdownMenu.Label>
             <DropdownMenu.Separator />

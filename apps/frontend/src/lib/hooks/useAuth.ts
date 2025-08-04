@@ -1,4 +1,4 @@
-import { authStore, user, isAuthenticated, isLoading } from '$lib/stores/auth';
+import { authStore } from '$lib/stores/auth.svelte.js';
 import { onMount } from 'svelte';
 
 export function useAuth() {
@@ -6,12 +6,5 @@ export function useAuth() {
     authStore.init();
   });
 
-  return {
-    user,
-    isAuthenticated,
-    isLoading,
-    login: authStore.login,
-    logout: authStore.logout,
-    fetchUser: authStore.fetchUser
-  };
+  return authStore;
 }

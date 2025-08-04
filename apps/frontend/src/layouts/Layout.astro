@@ -1,7 +1,10 @@
 ---
+import { getServerUser, getTokenFromCookie } from '$lib/server/auth';
 import Navbar from '../components/Navbar.svelte';
 import '../styles/global.css'
 import { Toaster } from 'svelte-sonner';
+const token = getTokenFromCookie(Astro.request.headers.get('cookie'));
+const serverUser = await getServerUser(token);
 ---
 
 <!doctype html>
@@ -15,7 +18,7 @@ import { Toaster } from 'svelte-sonner';
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 	</head>
 	<body>
-		<Navbar client:only="svelte" />
+		<Navbar serverUser={serverUser} currentPath={Astro.url.pathname} client:load />
     <Toaster client:only="svelte" />
 		<slot />
 	</body>

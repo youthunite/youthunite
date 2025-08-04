@@ -125,14 +125,17 @@ const router = new Elysia()
 			headers: { [key: string]: string };
 		}) => {
 			try {
+        console.log("Logging out user with JWT:", body.jwt_token);
 				const jwt_token = body.jwt_token;
 				const decoded = (await jwt.verify(
 					jwt_token,
 					process.env.JWT_SECRET!
 				)) as { sid: string };
 				if (decoded) {
+          console.log("Decoded JWT:", decoded);
 					const session = await validateSession(decoded.sid);
 					if (session) {
+            console.log("Deleting session for user:", session.user_id);
 						const result = await deleteSession(decoded.sid);
 						return { success: true, result };
 					} else {
