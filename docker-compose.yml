@@ -2,7 +2,7 @@ services:
   db:
     image: postgres:17
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - ./pgdata:/var/lib/postgresql/data
     restart: always
     container_name: youthunite-pg-db
     ports:

@@ -1,6 +1,7 @@
 ---
 import Navbar from '../components/Navbar.svelte';
 import '../styles/global.css'
+import { Toaster } from 'svelte-sonner';
 ---
 
 <!doctype html>
@@ -15,6 +16,7 @@ import '../styles/global.css'
 	</head>
 	<body>
 		<Navbar client:only="svelte" />
+    <Toaster client:only="svelte" />
 		<slot />
 	</body>
 </html>

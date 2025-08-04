@@ -5,7 +5,6 @@ import {
 	registerUser,
 	verifyUser,
 	createSession,
-	getUserDataBySession,
 	deleteSession,
 } from "../db/db";
 import jwt from "jsonwebtoken";
@@ -70,10 +69,10 @@ const router = new Elysia()
 			try {
 				const { email, password, name } = body;
 				const result = await registerUser(email, password, name, ip);
-				return { result };
+				return { success: true, jwt_token: result };
 			} catch (e) {
 				console.error(e);
-				return { result: false };
+				return { success: false, result: false };
 			}
 		},
 		{
@@ -115,7 +114,7 @@ const router = new Elysia()
 			}),
 		}
 	)
-	.get(
+	.post(
 		"/logout",
 		async ({
 			body,
@@ -144,6 +143,11 @@ const router = new Elysia()
 				console.error(e);
 				return { success: false };
 			}
-		}
+		},
+    {
+      body: t.Object({
+        jwt_token: t.String(),
+      }),
+    }
 	);
 export default router;
