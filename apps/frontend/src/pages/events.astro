@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+import EventCard from '$lib/components/event-card.svelte';
+import { faker } from '@faker-js/faker';
+const fakeEvents = Array.from({ length: 6 }, () => ({
+  id: faker.string.uuid(),
+  title: faker.lorem.sentence(2),
+  description: faker.lorem.paragraph(),
+  date: faker.date.future().toISOString(),
+  location: faker.location.city(),
+  organizer: faker.person.firstName(),
+  icon: faker.image.avatar(),
+  category: faker.hacker.noun(),
+  needs: Array.from({ length: 3 }, () => faker.lorem.sentence(3)),
+  // development only
+  email: faker.internet.email(),
+}));
+---
+
+<Layout>
+	<div class="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-auto mt-4">
+    {fakeEvents.map(event => (
+      <EventCard
+        key={event.id}
+        {...event}
+      />
+    ))}
+  </div>
+</Layout> 
