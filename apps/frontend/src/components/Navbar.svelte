@@ -15,7 +15,7 @@
     currentPath = '/',
     links = [
       { href: '/', label: 'Home' },
-      { href: '/hub', label: 'Event Hub' },
+      { href: '/events', label: 'Event Hub' },
       { href: '/submit', label: 'Submit an Event' },
       { href: '/learn', label: 'Learn' },
       { href: '/contact', label: 'Contact us' },

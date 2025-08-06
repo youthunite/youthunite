@@ -18,7 +18,7 @@ const fakeEvents = Array.from({ length: 6 }, () => ({
 ---
 
 <Layout>
-	<div class="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-auto mt-4">
+  <div class="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-auto mt-4 px-25 py-5">
     {fakeEvents.map(event => (
       <EventCard
         key={event.id}
