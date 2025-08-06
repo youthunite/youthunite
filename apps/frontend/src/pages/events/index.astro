@@ -33,7 +33,7 @@ const transformedEvents = events.map(event => ({
       transformedEvents.length > 0 ? (
         <div class="events-grid">
           {transformedEvents.map(event => (
-            <EventCard {...event} />
+            <EventCard {...event} client:load />
           ))}
         </div>
       ) : (
