@@ -9,6 +9,18 @@ export const usersTable = pgTable("users", {
   tier: text().default("normal").notNull(),
 });
 
+export const eventsTable = pgTable("events", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  title: varchar({ length: 100 }).notNull(),
+  description: text().notNull(),
+  location: varchar({ length: 255 }).notNull(),
+  start_time: timestamp('start_time').notNull(),
+  end_time: timestamp('end_time').notNull(),
+  created_at: timestamp('created_at').notNull().defaultNow(),
+  updated_at: timestamp('updated_at').notNull().defaultNow(),
+  organizer_id: integer().references(() => usersTable.id).notNull(),
+});
+
 export const authTokensTable = pgTable("auth_tokens", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   user_id: integer().notNull().references(() => usersTable.id),

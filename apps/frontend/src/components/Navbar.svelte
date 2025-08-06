@@ -4,11 +4,12 @@
   import User from '@lucide/svelte/icons/user';
   import LogOut from '@lucide/svelte/icons/log-out';
   import { useAuth } from '$lib/hooks/useAuth';
+  import type UserInterface from '$lib/types/user';
 
   interface Props {
     currentPath?: string;
     links?: { href: string; label: string }[];
-    serverUser?: { id: string; name: string; email: string; tier: string } | null;
+    serverUser?: UserInterface | null;
   }
 
   let {
