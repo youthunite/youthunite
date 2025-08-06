@@ -1,5 +1,4 @@
-import { text, integer, pgTable, varchar, timestamp, time } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm/sql";
+import { text, integer, pgTable, varchar, timestamp } from "drizzle-orm/pg-core";
 
 export const usersTable = pgTable("users", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -32,6 +31,7 @@ export const authTokensTable = pgTable("auth_tokens", {
 
 const schema = {
   usersTable,
+  eventsTable,
   authTokensTable,
 };
 

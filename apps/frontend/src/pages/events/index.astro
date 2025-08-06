@@ -1,29 +1,183 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import EventCard from '$lib/components/event-card.svelte';
-import { faker } from '@faker-js/faker';
-const fakeEvents = Array.from({ length: 6 }, () => ({
-  id: faker.string.uuid(),
-  title: faker.lorem.sentence(2),
-  description: faker.lorem.paragraph(),
-  date: faker.date.future().toISOString(),
-  location: faker.location.city(),
-  organizer: faker.person.firstName(),
-  icon: faker.image.avatar(),
-  category: faker.hacker.noun(),
-  needs: Array.from({ length: 3 }, () => faker.lorem.sentence(3)),
-  // development only
-  email: faker.internet.email(),
+import { fetchEvents } from '../../lib/server/fetchEvents';
+
+const eventsResult = await fetchEvents();
+const events = eventsResult.success ? eventsResult.events || [] : [];
+
+const transformedEvents = events.map(event => ({
+  id: event.id,
+  title: event.title,
+  description: event.description,
+  date: event.start_time,
+  location: event.location,
+  organizer: event.organizer?.name || 'Unknown',
+  icon: 'https://placehold.co/48', // a default icon, idk bro what do you want me to use
+  category: 'Community Event',
+  needs: ['Volunteers'],
+  email: 'contact@youthunite.com'
 }));
 ---
 
 <Layout>
-  <div class="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-auto mt-4 px-25 py-5">
-    {fakeEvents.map(event => (
-      <EventCard
-        key={event.id}
-        {...event}
-      />
-    ))}
+  <div class="container mx-auto px-4 py-8">
+    <div class="header-section">
+      <h1>Upcoming Events</h1>
+      <p class="subtitle">Discover and join exciting youth events in your community</p>
+      <a href="/events/register" class="create-event-btn">Create Event</a>
+      <hr style="margin-top: 2rem;">
+    </div>
+
+    {eventsResult.success ? (
+      transformedEvents.length > 0 ? (
+        <div class="events-grid">
+          {transformedEvents.map(event => (
+            <EventCard {...event} />
+          ))}
+        </div>
+      ) : (
+        <div class="no-events">
+          <h2>No Events Yet</h2>
+          <p>Be the first to create an event in your community!</p>
+          <a href="/events/register" class="btn btn-primary">Create First Event</a>
+        </div>
+      )
+    ) : (
+      <div class="error-message">
+        <h2>Unable to Load Events</h2>
+        <p>{eventsResult.error}</p>
+        <button onclick="window.location.reload()" class="btn btn-secondary">Retry</button>
+      </div>
+    )}
   </div>
-</Layout> 
+</Layout>
+
+<style>
+  .container {
+    max-width: 1200px;
+  }
+
+  .header-section {
+    text-align: center;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .header-section h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+  }
+
+  .subtitle {
+    font-size: 1.125rem;
+    color: #6b7280;
+    margin-bottom: 2rem;
+  }
+
+  .create-event-btn {
+    display: inline-block;
+    background: #3b82f6;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s;
+  }
+
+  .create-event-btn:hover {
+    background: #2563eb;
+  }
+
+  .events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+  }
+
+  .no-events {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: #f9fafb;
+    border-radius: 12px;
+    border: 2px dashed #d1d5db;
+  }
+
+  .no-events h2 {
+    font-size: 1.5rem;
+    color: #374151;
+    margin-bottom: 1rem;
+  }
+
+  .no-events p {
+    color: #6b7280;
+    margin-bottom: 2rem;
+  }
+
+  .error-message {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: #fef2f2;
+    border-radius: 12px;
+    border: 1px solid #fecaca;
+  }
+
+  .error-message h2 {
+    font-size: 1.5rem;
+    color: #dc2626;
+    margin-bottom: 1rem;
+  }
+
+  .error-message p {
+    color: #991b1b;
+    margin-bottom: 2rem;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: #3b82f6;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #2563eb;
+  }
+
+  .btn-secondary {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+  }
+
+  .btn-secondary:hover {
+    background: #e5e7eb;
+  }
+
+  @media (max-width: 768px) {
+    .header-section h1 {
+      font-size: 2rem;
+    }
+
+    .events-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .container {
+      padding: 1rem;
+    }
+  }
+</style> 

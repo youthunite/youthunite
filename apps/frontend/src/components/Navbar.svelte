@@ -17,7 +17,7 @@
     links = [
       { href: '/', label: 'Home' },
       { href: '/events', label: 'Event Hub' },
-      { href: '/submit', label: 'Submit an Event' },
+      { href: '/events/register', label: 'Submit an Event' },
       { href: '/learn', label: 'Learn' },
       { href: '/contact', label: 'Contact us' },
     ],

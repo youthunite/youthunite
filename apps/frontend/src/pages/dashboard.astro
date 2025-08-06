@@ -1,0 +1,324 @@
+---
+import Layout from '../layouts/Layout.astro';
+import EventCard from '$lib/components/event-card.svelte';
+import { getServerUser, getTokenFromCookie } from '../lib/server/auth';
+import { fetchMyEvents } from '../lib/server/fetchEvents';
+
+const cookieHeader = Astro.request.headers.get('cookie');
+const token = getTokenFromCookie(cookieHeader);
+
+if (!token) {
+  return Astro.redirect('/login');
+}
+
+const user = await getServerUser(token);
+if (!user) {
+  return Astro.redirect('/login');
+}
+
+const eventsResult = await fetchMyEvents(cookieHeader);
+const myEvents = eventsResult.success ? eventsResult.events || [] : [];
+
+const transformedEvents = myEvents.map(event => ({
+  id: event.id,
+  title: event.title,
+  description: event.description,
+  date: event.start_time,
+  location: event.location,
+  organizer: event.organizer?.name || 'Unknown',
+  icon: 'https://placehold.co/48', // a default icon, idk bro what do you want me to use (copypasta from events/index.astro)
+  category: 'Community Event',
+  needs: ['Volunteers'],
+  email: 'contact@youthunite.com'
+}));
+---
+
+<Layout title="Dashboard">
+  <div class="container mx-auto px-4 py-8">
+    <div class="dashboard-header">
+      <div class="welcome-section">
+        <h1>Welcome back, {user.name}!</h1>
+        <p class="user-info">
+          <span class="email">{user.email}</span>
+          <span class="tier-badge tier-{user.tier.toLowerCase()}">{user.tier}</span>
+        </p>
+      </div>
+      
+      <div class="quick-actions">
+        <a href="/events/register" class="btn btn-primary">Create Event</a>
+        <a href="/events" class="btn btn-secondary">Browse Events</a>
+      </div>
+    </div>
+
+    <div class="dashboard-content">
+      <section class="my-events-section">
+        <div class="section-header">
+          <h2>My Events</h2>
+          <span class="event-count">{myEvents.length} event{myEvents.length !== 1 ? 's' : ''}</span>
+        </div>
+
+        {eventsResult.success ? (
+          transformedEvents.length > 0 ? (
+            <div class="events-grid">
+              {transformedEvents.map(event => (
+                <EventCard {...event} />
+              ))}
+            </div>
+          ) : (
+            <div class="no-events">
+              <div class="no-events-content">
+                <h3>No Events Yet</h3>
+                <p>You haven't created any events yet. Start engaging with your community by creating your first event!</p>
+                <a href="/events/register" class="btn btn-primary">Create Your First Event</a>
+              </div>
+            </div>
+          )
+        ) : (
+          <div class="error-message">
+            <p>Unable to load your events: {eventsResult.error}</p>
+            <button onclick="window.location.reload()" class="btn btn-secondary">Retry</button>
+          </div>
+        )}
+      </section>
+
+      <section class="stats-section">
+        <h2>Quick Stats</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number">{transformedEvents.length}</div>
+            <div class="stat-label">Events Created</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-number">{myEvents.filter(e => new Date(e.start_time) > new Date()).length}</div>
+            <div class="stat-label">Upcoming Events</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-number">{myEvents.filter(e => new Date(e.start_time) <= new Date()).length}</div>
+            <div class="stat-label">Past Events</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .container {
+    max-width: 1200px;
+  }
+
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    border-radius: 12px;
+    color: white;
+  }
+
+  .welcome-section h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .email {
+    opacity: 0.9;
+  }
+
+  .tier-badge {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+
+  .tier-premium {
+    background: rgba(255, 215, 0, 0.3);
+  }
+
+  .tier-admin {
+    background: rgba(220, 38, 127, 0.3);
+  }
+
+  .quick-actions {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-block;
+    text-align: center;
+  }
+
+  .btn-primary {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .btn-primary:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .btn-secondary {
+    background: white;
+    color: #3b82f6;
+  }
+
+  .btn-secondary:hover {
+    background: #f9fafb;
+  }
+
+  .dashboard-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+  }
+
+  .event-count {
+    background: #f3f4f6;
+    color: #6b7280;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+  }
+
+  .events-grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .no-events {
+    background: #f9fafb;
+    border: 2px dashed #d1d5db;
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  .no-events-content h3 {
+    color: #374151;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .no-events-content p {
+    color: #6b7280;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+  }
+
+  .error-message {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .error-message p {
+    color: #dc2626;
+    margin-bottom: 1rem;
+  }
+
+  .stats-section h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 1rem;
+  }
+
+  .stats-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #3b82f6;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-label {
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 1rem;
+    }
+
+    .dashboard-header {
+      flex-direction: column;
+      gap: 1.5rem;
+      padding: 1.5rem;
+    }
+
+    .dashboard-header h1 {
+      font-size: 1.5rem;
+    }
+
+    .quick-actions {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .btn {
+      width: 100%;
+    }
+
+    .dashboard-content {
+      grid-template-columns: 1fr;
+    }
+
+    .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+  }
+</style>

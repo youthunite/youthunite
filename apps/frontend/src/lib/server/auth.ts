@@ -1,11 +1,6 @@
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  tier: string;
-}
+import type UserInterface from '$lib/types/user';
 
-export async function getServerUser(token: string | undefined): Promise<User | null> {
+export async function getServerUser(token: string | undefined): Promise<UserInterface | null> {
   if (!token) return null;
 
   try {

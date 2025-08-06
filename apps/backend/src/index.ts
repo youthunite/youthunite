@@ -3,6 +3,7 @@ import { cors } from '@elysiajs/cors';
 import { ip } from "elysia-ip";
 
 import AuthRouter from "./auth/auth";
+import EventsRouter from "./events/events";
 
 const app = new Elysia()
   .use(cors({
@@ -13,6 +14,9 @@ const app = new Elysia()
   .get("/", () => "Hey gangstas! This is the youthunite API. :3")
   .group('/auth', (app) =>
     app.use(AuthRouter)
+  )
+  .group('/events', (app) =>
+    app.use(EventsRouter)
   )
   .listen(3000);
 

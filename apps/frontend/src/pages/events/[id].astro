@@ -1,0 +1,346 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { fetchEventById } from '../../lib/server/fetchEvents';
+
+const { id } = Astro.params;
+
+if (!id) {
+  return Astro.redirect('/events');
+}
+
+const eventResult = await fetchEventById(id);
+
+if (!eventResult.success || !eventResult.event) {
+  return new Response('Event not found', { status: 404 });
+}
+
+const event = eventResult.event;
+
+function formatDate(dateString: string): string {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
+function formatTime(dateString: string): string {
+  return new Date(dateString).toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
+function formatDuration(startTime: string, endTime: string): string {
+  const start = new Date(startTime);
+  const end = new Date(endTime);
+  const diffMs = end.getTime() - start.getTime();
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+  
+  if (diffHours > 0) {
+    return diffMinutes > 0 ? `${diffHours}h ${diffMinutes}m` : `${diffHours}h`;
+  }
+  return `${diffMinutes}m`;
+}
+---
+
+<Layout title={event.title}>
+  <div class="container mx-auto px-4 py-8">
+    <div class="event-detail">
+      <div class="breadcrumb">
+        <a href="/events">← Back to Events</a>
+      </div>
+
+      <div class="event-header">
+        <h1>{event.title}</h1>
+        {event.organizer && (
+          <div class="organizer-info">
+            <span class="organizer-label">Organized by</span>
+            <span class="organizer-name">{event.organizer.name}</span>
+          </div>
+        )}
+      </div>
+
+      <div class="event-content">
+        <div class="event-info">
+          <div class="info-section">
+            <h2>Event Details</h2>
+            <div class="details-grid">
+              <div class="detail-item">
+                <span class="detail-icon">📅</span>
+                <div class="detail-content">
+                  <span class="detail-label">Date</span>
+                  <span class="detail-value">{formatDate(event.start_time)}</span>
+                </div>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-icon">🕐</span>
+                <div class="detail-content">
+                  <span class="detail-label">Time</span>
+                  <span class="detail-value">
+                    {formatTime(event.start_time)} - {formatTime(event.end_time)}
+                    <span class="duration">({formatDuration(event.start_time, event.end_time)})</span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-icon">📍</span>
+                <div class="detail-content">
+                  <span class="detail-label">Location</span>
+                  <span class="detail-value">{event.location}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-section">
+            <h2>Description</h2>
+            <p class="description">{event.description}</p>
+          </div>
+        </div>
+
+        <div class="event-actions">
+          <div class="action-card">
+            <h3>Join This Event</h3>
+            <p>Register to participate in this exciting event</p>
+            <button class="register-btn">Register Now</button>
+            <p class="register-note">Registration is free and takes less than a minute</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .container {
+    max-width: 1000px;
+  }
+
+  .breadcrumb {
+    margin-bottom: 2rem;
+  }
+
+  .breadcrumb a {
+    color: #6b7280;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .breadcrumb a:hover {
+    color: #3b82f6;
+  }
+
+  .event-detail {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  .event-header {
+    padding: 2rem;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+  }
+
+  .event-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .organizer-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .organizer-label {
+    opacity: 0.9;
+  }
+
+  .organizer-name {
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+  }
+
+  .event-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    padding: 2rem;
+  }
+
+  .info-section {
+    margin-bottom: 2rem;
+  }
+
+  .info-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 1rem;
+  }
+
+  .details-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+  }
+
+  .detail-icon {
+    font-size: 1.25rem;
+    margin-top: 0.125rem;
+  }
+
+  .detail-content {
+    flex: 1;
+  }
+
+  .detail-label {
+    display: block;
+    font-weight: 500;
+    color: #374151;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .detail-value {
+    color: #1f2937;
+    font-weight: 500;
+  }
+
+  .duration {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: normal;
+  }
+
+  .description {
+    color: #4b5563;
+    line-height: 1.6;
+    font-size: 1.125rem;
+  }
+
+  .event-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .action-card {
+    background: #f9fafb;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 2px solid #e5e7eb;
+    text-align: center;
+  }
+
+  .action-card h3 {
+    color: #1f2937;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .action-card p {
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+  }
+
+  .register-btn {
+    background: #10b981;
+    color: white;
+    border: none;
+    padding: 0.875rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 100%;
+  }
+
+  .register-btn:hover {
+    background: #059669;
+  }
+
+  .register-note {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  .share-section h3 {
+    color: #1f2937;
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .share-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .share-btn {
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-align: left;
+  }
+
+  .share-btn:hover {
+    background: #e5e7eb;
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 1rem;
+    }
+
+    .event-header {
+      padding: 1.5rem;
+    }
+
+    .event-header h1 {
+      font-size: 2rem;
+    }
+
+    .event-content {
+      grid-template-columns: 1fr;
+      padding: 1.5rem;
+    }
+
+    .detail-item {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .detail-icon {
+      align-self: flex-start;
+    }
+  }
+</style>

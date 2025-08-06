@@ -1,11 +1,277 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import RegisterEventForm from "$lib/components/register-event-form.svelte";
+import { registerEvent } from "../../lib/server/registerEvent";
+import type { CreateEventData } from "../../lib/types/event";
+
+let result: { success: boolean; error?: string; event?: any } | null = null;
+
+if (Astro.request.method === 'POST') {
+  try {
+    const formData = await Astro.request.formData();
+    const eventData: CreateEventData = {
+      title: formData.get('title') as string,
+      description: formData.get('description') as string,
+      location: formData.get('location') as string,
+      start_time: formData.get('start_time') as string,
+      end_time: formData.get('end_time') as string,
+    };
+
+    const cookieHeader = Astro.request.headers.get('cookie');
+    result = await registerEvent(eventData, cookieHeader);
+
+    if (result.success) {
+      return Astro.redirect('/events?created=true');
+    }
+  } catch (error) {
+    console.error('Form processing error:', error);
+    result = {
+      success: false,
+      error: 'An unexpected error occurred. Please try again.'
+    };
+  }
+}
 ---
 
 <Layout>
-  <div class="container mx-auto mt-4 px-25 py-5">
-    <h1 class="text-2xl font-bold mb-4">Register an Event</h1>
-    <RegisterEventForm />
+  <div class="container mx-auto px-4 py-8">
+    <div class="form-container">
+      <form method="POST" class="event-form">
+        <h1>Create New Event</h1>
+        <p class="subtitle">Share your event with the youth community</p>
+        
+        {result && !result.success && (
+          <div class="error-message">
+            <p>{result.error}</p>
+          </div>
+        )}
+
+        <div class="form-group">
+          <label for="title">Event Title *</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            placeholder="Enter event title"
+            maxlength="100"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description *</label>
+          <textarea
+            id="description"
+            name="description"
+            placeholder="Describe your event..."
+            rows="4"
+            required
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="location">Location *</label>
+          <input
+            type="text"
+            id="location"
+            name="location"
+            placeholder="Event location"
+            maxlength="255"
+            required
+          />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="start_time">Start Time *</label>
+            <input
+              type="datetime-local"
+              id="start_time"
+              name="start_time"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="end_time">End Time *</label>
+            <input
+              type="datetime-local"
+              id="end_time"
+              name="end_time"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <a href="/events" class="btn btn-secondary">Cancel</a>
+          <button type="submit" class="btn btn-primary">Create Event</button>
+        </div>
+      </form>
+    </div>
   </div>
 </Layout>
+
+<style>
+  .container {
+    max-width: 800px;
+  }
+
+  .form-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  .event-form {
+    padding: 2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+  }
+
+  .subtitle {
+    color: #6b7280;
+    margin-bottom: 2rem;
+    font-size: 1.125rem;
+  }
+
+  .error-message {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .error-message p {
+    color: #dc2626;
+    margin: 0;
+    font-size: 0.875rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  label {
+    display: block;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  input:focus,
+  textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+  }
+
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-block;
+    text-align: center;
+  }
+
+  .btn-primary {
+    background: #3b82f6;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #2563eb;
+  }
+
+  .btn-secondary {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+  }
+
+  .btn-secondary:hover {
+    background: #e5e7eb;
+  }
+
+  @media (max-width: 640px) {
+    .container {
+      margin: 1rem;
+      max-width: none;
+    }
+
+    .event-form {
+      padding: 1rem;
+    }
+
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+      flex-direction: column;
+    }
+
+    .btn {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  const now = new Date();
+  const nextHour = new Date(now.getTime() + 60 * 60 * 1000);
+  nextHour.setMinutes(0, 0, 0);
+  const twoHoursLater = new Date(nextHour.getTime() + 2 * 60 * 60 * 1000);
+
+  const startTimeInput = document.getElementById('start_time') as HTMLInputElement;
+  const endTimeInput = document.getElementById('end_time') as HTMLInputElement;
+
+  if (startTimeInput && endTimeInput) {
+    startTimeInput.value = nextHour.toISOString().slice(0, 16);
+    endTimeInput.value = twoHoursLater.toISOString().slice(0, 16);
+
+    startTimeInput.addEventListener('change', () => {
+      const startTime = new Date(startTimeInput.value);
+      const endTime = new Date(startTime.getTime() + 2 * 60 * 60 * 1000);
+      endTimeInput.value = endTime.toISOString().slice(0, 16);
+    });
+  }
+</script>
