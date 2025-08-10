@@ -13,15 +13,12 @@
 
     fetch(`${import.meta.env.PUBLIC_API_URL}/auth/login`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     })
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          // cookie string from https://lucia-auth.com/sessions/basic
           document.cookie = `jwt_token=${data.jwt_token}; Max-Age=86400; Secure; Path=/; SameSite=Lax`;
           window.location.href = '/dashboard';
         } else {
@@ -38,28 +35,61 @@
   const id = $props.id();
 </script>
 
-<div class="flex h-screen w-full items-center justify-center px-4">
-  <Card.Root class="mx-auto w-1/2 max-w-sm">
-    <Card.Header>
-      <Card.Title class="text-2xl">Login</Card.Title>
-      <Card.Description>Enter your email below to login to your account</Card.Description>
-    </Card.Header>
-    <Card.Content>
-      <form class="grid gap-4" onsubmit={submit}>
-        <div class="grid gap-2">
-          <Label for="email-{id}">Email</Label>
-          <Input id="email-{id}" type="email" placeholder="m@example.com" required />
-        </div>
-        <div class="grid gap-2">
-          <Label for="password-{id}">Password</Label>
-          <Input id="password-{id}" type="password" placeholder="Enter your password" required />
-        </div>
-        <Button type="submit" class="w-full">Login</Button>
-      </form>
-      <div class="mt-4 text-center text-sm">
-        No account?
-        <a href="/register" class="underline"> Sign up! </a>
+<div class="flex h-screen w-full">
+  <div class="w-1/2 bg-[#e8f4f5] flex flex-col justify-center px-16">
+    <h1 class="text-3xl font-bold">
+      Welcome to <span class="text-[#e46a2d]">Youth</span><span class="text-[#1b355e]">UNITE</span>
+    </h1>
+    <p class="mt-4 text-gray-600">Log in to your account to continue your journey of change.</p>
+
+    <div class="mt-10 space-y-6">
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 rounded-full bg-purple-200 flex items-center justify-center">📚</div>
+        <span class="text-gray-800">Mini-Courses</span>
       </div>
-    </Card.Content>
-  </Card.Root>
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 rounded-full bg-orange-200 flex items-center justify-center">🚀</div>
+        <span class="text-gray-800">Launch Campaigns</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 rounded-full bg-green-200 flex items-center justify-center">🎯</div>
+        <span class="text-gray-800">Get Experience</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center">🤝</div>
+        <span class="text-gray-800">Meet Changemakers</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="w-1/2 flex items-center justify-center bg-white px-4">
+    <Card.Root class="w-full max-w-md shadow-lg rounded-lg">
+      <Card.Header>
+        <Card.Title class="text-2xl font-semibold">Welcome Back</Card.Title>
+        <Card.Description>Continue your impact journey</Card.Description>
+      </Card.Header>
+      <Card.Content>
+        <form class="grid gap-4" onsubmit={submit}>
+          <div class="grid gap-2">
+            <Label for="email-{id}">Email address</Label>
+            <Input id="email-{id}" type="email" placeholder="m@example.com" required />
+          </div>
+          <div class="grid gap-2">
+            <Label for="password-{id}">Password</Label>
+            <Input id="password-{id}" type="password" placeholder="Enter your password" required />
+          </div>
+          <Button type="submit" class="w-full bg-gradient-to-r from-[#e46a2d] to-[#1b355e] text-white">
+            Sign In
+          </Button>
+        </form>
+        <div class="mt-4 text-center text-sm">
+          Don’t have an account?
+          <a href="/register" class="underline text-[#e46a2d]">Sign up here</a>
+        </div>
+        <p class="mt-6 text-center text-xs text-gray-500">
+          Need help? Contact us at <a href="mailto:team.youthunite@gmail.com" class="underline">team.youthunite@gmail.com</a>
+        </p>
+      </Card.Content>
+    </Card.Root>
+  </div>
 </div>
