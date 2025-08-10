@@ -15,6 +15,13 @@
       "when": 1754839090050,
       "tag": "0001_skinny_professor_monster",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1754849300012,
+      "tag": "0002_regular_purifiers",
+      "breakpoints": true
     }
   ]
 }

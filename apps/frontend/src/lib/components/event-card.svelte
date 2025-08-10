@@ -88,6 +88,6 @@
       </div>
     {/if}
 
-    <EventContact email={props.email} />
+    <EventContact email={props.email} id={props.id} />
   </CardContent>
 </Card>

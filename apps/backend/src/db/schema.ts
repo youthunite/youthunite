@@ -29,10 +29,24 @@ export const authTokensTable = pgTable("auth_tokens", {
   created_at: timestamp('created_at').notNull().defaultNow(),
 });
 
+export const eventRegistrationsTable = pgTable("event_registrations", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  event_id: integer().notNull().references(() => eventsTable.id),
+  user_id: integer().notNull().references(() => usersTable.id),
+  first_name: varchar({ length: 50 }).notNull(),
+  last_name: varchar({ length: 50 }).notNull(),
+  email: varchar({ length: 100 }).notNull(),
+  phone: varchar({ length: 20 }).notNull(),
+  age: integer().notNull(),
+  additional_info: text(),
+  created_at: timestamp('created_at').notNull().defaultNow(),
+});
+
 const schema = {
   usersTable,
   eventsTable,
   authTokensTable,
+  eventRegistrationsTable,
 };
 
 export default schema;

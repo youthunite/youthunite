@@ -4,7 +4,9 @@ import { ip } from "elysia-ip";
 
 import AuthRouter from "./auth/auth";
 import EventsRouter from "./events/events";
+import { Resend } from "resend";
 
+export const resend = new Resend(process.env.RESEND!);
 const app = new Elysia()
   .use(cors({
     origin: ['http://localhost:5173', 'http://localhost:4321', 'http://localhost', 'http://localhost:3000', 'http://localhost:8080'], 

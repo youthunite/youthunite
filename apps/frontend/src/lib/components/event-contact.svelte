@@ -6,9 +6,10 @@
   import { Button } from '$lib/components/ui/button/index.js';
   import { cn } from '$lib/utils';
   import { buttonVariants } from './ui/button/button.svelte';
+  import { useAuth } from '$lib/hooks/useAuth';
   
   let props = $props();
-  let open = $state(false);
+  const auth = useAuth();
   
   // Form state
   let firstName = $state('');
@@ -18,23 +19,25 @@
   let age = $state('');
   let additionalInfo = $state('');
   
-  function handleSubmit(event: Event) {
+  async function handleSubmit(event: Event) {
     event.preventDefault();
-    const subject = encodeURIComponent('Event Interest - ' + firstName + ' ' + lastName);
-    const body = encodeURIComponent(
-      `Hi,\n\nevent interest blah blah blah\n\n` +
-      `contact Information:\n` +
-      `Name: ${firstName} ${lastName}\n` +
-      `Email: ${email}\n` +
-      `Phone: ${phone}\n` +
-      `Age: ${age}\n\n` +
-      `Additional Information:\n${additionalInfo}\n\n` +
-      `please get back to me with more details.\n\n` +
-      `best regards,\n${firstName}`
-    );
-    
-    window.location.href = `mailto:${props.email}?subject=${subject}&body=${body}`;
+    await fetch(`${import.meta.env.PUBLIC_API_URL}/events/${props.id}/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${auth.token}`
+      },
+      body: JSON.stringify({
+        firstName,
+        lastName,
+        email,
+        phone,
+        age,
+        additionalInfo
+      })
+    });
   }
+  
 </script>
 
 <Dialog.Root>
@@ -53,7 +56,7 @@
       </Dialog.Description>
     </Dialog.Header>
     
-    <form class="space-y-4" on:submit={handleSubmit}>
+    <form class="space-y-4" onsubmit={handleSubmit}>
       <div class="grid grid-cols-2 gap-4">
         <div class="space-y-2">
           <Label for="firstName">First name</Label>
