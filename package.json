@@ -8,7 +8,10 @@
     "@types/bun": "latest"
   },
   "scripts": {
-    "dev": "bun run --filter \"*\" dev",
+    "dev": "bun run --elide-lines 0 --filter \"*\" dev",
+    "db:generate": "cd apps/backend && bun drizzle-kit generate && cd ../..",
+    "db:migrate": "cd apps/backend && bun drizzle-kit migrate && cd ../..",
+    "db:push": "bun db:generate && bun db:migrate",
     "ui:add": "cd apps/frontend && bun x shadcn-svelte@latest add && cd ../.. # idk why bun run filter no worky"
   }
 }
