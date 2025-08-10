@@ -6,12 +6,11 @@
   import { Button } from '$lib/components/ui/button/index.js';
   import { cn } from '$lib/utils';
   import { buttonVariants } from './ui/button/button.svelte';
-  import { useAuth } from '$lib/hooks/useAuth';
+  import { Turnstile } from 'svelte-turnstile';
   import { toast } from 'svelte-sonner';
   
   let props = $props();
   let isOpen = $state(false);
-  const auth = useAuth();
   
   let firstName = $state('');
   let lastName = $state('');
@@ -19,28 +18,42 @@
   let phone = $state('');
   let age = $state('');
   let additionalInfo = $state('');
+  let turnstileToken = $state('');
   
   async function handleSubmit(event: Event) {
     event.preventDefault();
+    
+    if (!turnstileToken) {
+      toast.error('Please complete the verification');
+      return;
+    }
+    
     await fetch(`${import.meta.env.PUBLIC_API_URL}/events/${props.id}/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${auth.token}`
       },
       body: JSON.stringify({
         firstName,
         lastName,
         email,
         phone,
-        age,
-        additionalInfo
+        age: parseInt(age),
+        additionalInfo,
+        turnstileToken
       })
     }).then(async (res) => {
       const response = await res.json()
       if (response.success) {
         toast.success('Successfully signed up for the event!');
         isOpen = false;
+        firstName = '';
+        lastName = '';
+        email = '';
+        phone = '';
+        age = '';
+        additionalInfo = '';
+        turnstileToken = '';
       } else {
         toast.error(response.error);
       }
@@ -135,9 +148,28 @@
         />
       </div>
       
+      <div class="space-y-2">
+        <Label>Verification</Label>
+        <Turnstile 
+          siteKey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
+          on:callback={(e) => {
+            turnstileToken = e.detail.token;
+          }}
+          on:error={() => {
+            turnstileToken = '';
+            toast.error('Verification failed. Please try again.');
+          }}
+          on:expired={() => {
+            turnstileToken = '';
+            toast.error('Verification expired. Please try again.');
+          }}
+        />
+      </div>
+      
       <Button 
         type="submit" 
         class="w-full bg-[var(--orange-primary)] hover:bg-[var(--orange-light)] text-white"
+        disabled={!turnstileToken}
       >
         Submit
       </Button>

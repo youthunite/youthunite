@@ -32,7 +32,7 @@ export const authTokensTable = pgTable("auth_tokens", {
 export const eventRegistrationsTable = pgTable("event_registrations", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   event_id: integer().notNull().references(() => eventsTable.id),
-  user_id: integer().notNull().references(() => usersTable.id),
+  user_id: integer().references(() => usersTable.id),
   first_name: varchar({ length: 50 }).notNull(),
   last_name: varchar({ length: 50 }).notNull(),
   email: varchar({ length: 100 }).notNull(),

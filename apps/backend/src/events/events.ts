@@ -256,9 +256,8 @@ const router = new Elysia()
       }
     }
   )
-  .post('/:id/signup', async ({ params, headers, body }: {
+  .post('/:id/signup', async ({ params, body }: {
     params: { id: string },
-    headers: { [key: string]: string },
     body: {
       firstName: string;
       lastName: string;
@@ -266,14 +265,28 @@ const router = new Elysia()
       phone: string;
       age: number;
       additionalInfo?: string;
+      turnstileToken: string;
     }
   }) => {
     try {
-      const user = await authenticateUser(headers);
-      if (!user) {
+      // Verify Cloudflare Turnstile token
+      const turnstileResponse = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          secret: process.env.TURNSTILE_SECRET_KEY!,
+          response: body.turnstileToken,
+        }),
+      });
+
+      const turnstileResult = await turnstileResponse.json();
+      
+      if (!turnstileResult.success) {
         return {
           success: false,
-          error: 'Authentication required. Please provide a valid Bearer token.'
+          error: 'Please complete the security verification.'
         };
       }
 
@@ -317,7 +330,7 @@ const router = new Elysia()
         .where(
           and(
             eq(schema.eventRegistrationsTable.event_id, eventId),
-            eq(schema.eventRegistrationsTable.user_id, user.user_id)
+            eq(schema.eventRegistrationsTable.email, body.email)
           )
         )
         .limit(1);
@@ -325,7 +338,7 @@ const router = new Elysia()
       if (existingRegistration.length > 0) {
         return {
           success: false,
-          error: 'You are already registered for this event'
+          error: 'This email is already registered for this event'
         };
       }
 
@@ -333,7 +346,7 @@ const router = new Elysia()
         .insert(schema.eventRegistrationsTable)
         .values({
           event_id: eventId,
-          user_id: user.user_id,
+          user_id: null, // No user association needed
           first_name: body.firstName,
           last_name: body.lastName,
           email: body.email,
@@ -400,7 +413,8 @@ const router = new Elysia()
       email: t.String({ format: 'email' }),
       phone: t.String({ minLength: 1, maxLength: 20 }),
       age: t.Number({ minimum: 1, maximum: 150 }),
-      additionalInfo: t.Optional(t.String())
+      additionalInfo: t.Optional(t.String()),
+      turnstileToken: t.String()
     })
   }
 )
