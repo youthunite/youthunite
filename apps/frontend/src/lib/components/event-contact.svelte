@@ -7,11 +7,12 @@
   import { cn } from '$lib/utils';
   import { buttonVariants } from './ui/button/button.svelte';
   import { useAuth } from '$lib/hooks/useAuth';
+  import { toast } from 'svelte-sonner';
   
   let props = $props();
+  let isOpen = $state(false);
   const auth = useAuth();
   
-  // Form state
   let firstName = $state('');
   let lastName = $state('');
   let email = $state('');
@@ -35,15 +36,24 @@
         age,
         additionalInfo
       })
+    }).then(async (res) => {
+      const response = await res.json()
+      if (response.success) {
+        toast.success('Successfully signed up for the event!');
+        isOpen = false;
+      } else {
+        toast.error(response.error);
+      }
     });
   }
   
 </script>
 
-<Dialog.Root>
+<Dialog.Root bind:open={isOpen}>
   <Dialog.Trigger 
     class={cn(buttonVariants({ variant: 'default' }), 'w-full')}
     onclick={() => console.log('Dialog trigger clicked')}
+    disabled={props.signedUp}
   >
     I'm Interested ✏️
   </Dialog.Trigger>

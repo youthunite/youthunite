@@ -87,7 +87,7 @@
             <Label for="password-{id}">Password</Label>
             <Input id="password-{id}" type="password" placeholder="Enter your password" required />
           </div>
-          <Button type="submit" class="w-full bg-gradient-to-r from-[#e46a2d] to-[#1b355e] text-white">Sign Up</Button>
+          <Button type="submit" class="w-full">Sign Up</Button>
         </form>
         <div class="mt-4 text-center text-sm">
           Already have an account?
