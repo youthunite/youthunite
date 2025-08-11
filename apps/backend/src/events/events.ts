@@ -358,28 +358,125 @@ const router = new Elysia()
 
       try {
         if (event[0].organizer?.email) {
-          const { data: rData, error: rError } = await resend.emails.send({
+            const eventStart = new Date(event[0].start_time);
+            const eventStartDate = isNaN(eventStart.getTime())
+            ? 'Unknown'
+            : eventStart.toLocaleDateString('en-GB', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric'
+              });
+
+            const dashboardUrl =
+            process.env.DASHBOARD_URL ||
+            'https://youthunite.example.com/dashboard';
+
+            const { data: rData, error: rError } = await resend.emails.send({
             from: `YouthUnite <notifications@${process.env.RESEND_DOMAIN}>`,
             to: event[0].organizer.email,
             subject: `New Registration for ${event[0].title}`,
-            html: `
-              <h2>New Event Registration</h2>
-              <p>Someone has just registered for your event: <strong>${event[0].title}</strong></p>
-              
-              <h3>Registration Details:</h3>
-              <ul>
+            html: `<!DOCTYPE html>
+      <html lang="en">
+        <head>
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>New Registration</title>
+        <meta name="color-scheme" content="light dark">
+        <meta name="supported-color-schemes" content="light dark">
+        <style>
+          :root { color-scheme: light dark; supported-color-schemes: light dark; }
+          body { margin:0; padding:0; background:#f5f7fa; -webkit-font-smoothing:antialiased; }
+          [data-dark] body { background:#0f1115 !important; }
+          table { border-collapse:collapse; }
+          .preheader { display:none !important; visibility:hidden; opacity:0; line-height:0; height:0; max-height:0; overflow:hidden; mso-hide:all; }
+          .wrapper { width:100%; background:#f5f7fa; }
+          .outer { max-width:600px; margin:0 auto; width:100%; }
+          .card { background:#ffffff; border-radius:14px; overflow:hidden; border:1px solid #e6eaf0; }
+          .header { padding:28px 32px 20px; background:linear-gradient(135deg,#2563eb,#3b82f6); color:#fff; }
+          .badge { display:inline-block; font-size:11px; letter-spacing:.5px; font-weight:600; padding:4px 10px; border:1px solid rgba(255,255,255,.5); border-radius:20px; text-transform:uppercase; margin-bottom:14px; }
+          h1 { font-size:22px; line-height:1.25; margin:0 0 6px; font-weight:600; }
+          .meta { font-size:13px; opacity:.85; margin:0; }
+          .body { padding:28px 32px 8px; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; color:#1f2933; }
+          h2 { font-size:18px; margin:0 0 16px; font-weight:600; }
+          ul { list-style:none; padding:0; margin:0 0 20px; }
+          li { margin:0 0 10px; font-size:14px; line-height:1.4; }
+          li strong { display:inline-block; min-width:110px; font-weight:600; color:#111827; }
+          .event-block { background:#f0f5ff; border:1px solid #dbe7ff; padding:14px 16px; border-radius:10px; font-size:14px; margin:0 0 24px; }
+          .cta-wrap { text-align:center; padding:8px 0 28px; }
+          .btn { background:#2563eb; color:#fff !important; text-decoration:none; display:inline-block; padding:14px 26px; border-radius:10px; font-weight:600; font-size:14px; box-shadow:0 4px 12px rgba(37,99,235,.35); }
+          .btn:hover { background:#1d4ed8; }
+          .footer { font-size:12px; line-height:1.5; color:#5f6b7a; padding:24px 8px 40px; text-align:center; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; }
+          .sep { height:1px; background:linear-gradient(90deg,rgba(0,0,0,0),rgba(0,0,0,.15),rgba(0,0,0,0)); margin:32px 0 24px; }
+          @media (prefers-color-scheme: dark) {
+          body, .wrapper { background:#0f1115 !important; }
+          .card { background:#161b22; border-color:#2a313b; }
+          .body { color:#d8dee5; }
+          li strong { color:#fff; }
+          .event-block { background:#1d2632; border-color:#2c3947; color:#d2dbe5; }
+          .footer { color:#8b95a1; }
+          .badge { border-color:rgba(255,255,255,.35); }
+          .sep { background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.25),rgba(255,255,255,0)); }
+          }
+          @media (max-width:620px) {
+          .header, .body { padding:24px 22px 16px !important; }
+          .btn { width:100%; }
+          li strong { min-width:90px; }
+          }
+        </style>
+        </head>
+        <body>
+        <div class="preheader">New event registration just arrived.</div>
+        <table role="presentation" class="wrapper" width="100%" cellspacing="0" cellpadding="0">
+          <tr>
+          <td align="center" style="padding:34px 14px;">
+            <table role="presentation" class="outer" width="100%" cellspacing="0" cellpadding="0">
+            <tr>
+              <td class="card">
+              <div class="header">
+                <div class="badge">Registration</div>
+                <h1>New Event Registration</h1>
+                <p class="meta">Someone registered for: <strong style="color:#fff;">${event[0].title}</strong></p>
+              </div>
+              <div class="body">
+                <h2>Attendee Details</h2>
+                <ul>
                 <li><strong>Name:</strong> ${body.firstName} ${body.lastName}</li>
                 <li><strong>Email:</strong> ${body.email}</li>
                 <li><strong>Phone:</strong> ${body.phone}</li>
                 <li><strong>Age:</strong> ${body.age}</li>
-                ${body.additionalInfo ? `<li><strong>Additional Info:</strong> ${body.additionalInfo}</li>` : ''}
-              </ul>
-              
-              <p>Event starts: ${new Date(event[0].start_time).toLocaleString()}</p>
-              
-              <p>Best regards,<br>YouthUnite Team</p>
-            `,
-          });
+                <li><strong>Additional Info:</strong> ${body.additionalInfo ? body.additionalInfo : 'N/A'}</li>
+                </ul>
+
+                <div class="event-block">
+                <strong style="display:block; font-size:13px; letter-spacing:.5px; text-transform:uppercase; opacity:.75; margin-bottom:6px;">Event Starts</strong>
+                ${eventStartDate}
+                </div>
+
+                <p style="margin:0 0 28px; font-size:14px;">You can manage registrations in your dashboard.</p>
+
+                <div class="cta-wrap">
+                <a class="btn" href="${dashboardUrl}" target="_blank" rel="noopener">Open Dashboard</a>
+                </div>
+
+                <div class="sep"></div>
+
+                <p style="margin:0 0 4px; font-size:14px;">Best regards,<br>YouthUnite Team</p>
+              </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="footer">
+              You receive this notification because you are the organizer of this event.<br>
+              If this was unexpected, secure your account.
+              </td>
+            </tr>
+            </table>
+          </td>
+          </tr>
+        </table>
+        </body>
+      </html>`
+            });
           if (rError) {
             console.error('Error sending email:', rError);
             return {
