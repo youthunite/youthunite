@@ -1,0 +1,402 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+
+  :root {
+    --orange-primary: #ff6b35;
+    --orange-light: #ff8a5b;
+    --blue-dark: #1b365d;
+    --blue-light: #4a90e2;
+    --blue-sky: #87ceeb;
+    --white: #ffffff;
+    --light-grey: #f8f9fa;
+    --dark-grey: #2c3e50;
+    --text-dark: #1a1a1a;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--light-grey);
+    color: var(--text-dark);
+  }
+
+  .learn-page {
+    padding: 6rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  section {
+    margin-bottom: 6rem;
+  }
+
+  h1, h2, h3 {
+    font-weight: 800;
+    color: var(--blue-dark);
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    font-size: 3rem;
+    text-align: center;
+    border-bottom: 6px solid var(--orange-primary);
+    display: inline-block;
+    margin-bottom: 2rem;
+  }
+
+  h2 {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    font-size: 1.75rem;
+    color: var(--orange-primary);
+    margin-top: 2rem;
+  }
+
+  p {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    max-width: 800px;
+    margin: 0 auto 2rem auto;
+    text-align: center;
+  }
+
+  .feature-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .feature-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-top: 6px solid var(--blue-light);
+    transition: transform 0.3s ease;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-10px);
+  }
+
+  .courses {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .course {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-top: 6px solid var(--orange-primary);
+    transition: transform 0.3s ease;
+  }
+
+  .course:hover {
+    transform: translateY(-10px);
+  }
+
+  .course a {
+    display: inline-block;
+    margin-top: 1rem;
+    background: linear-gradient(135deg, var(--orange-primary), var(--orange-light));
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .course a:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+  }
+
+  .testimonial {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    border-left: 6px solid var(--orange-light);
+    text-align: center;
+  }
+
+  .testimonial img {
+    width: 100%;
+    max-width: 300px;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+  }
+
+  blockquote {
+    font-size: 1.2rem;
+    font-style: italic;
+    margin: 1rem 0;
+  }
+
+  cite {
+    font-weight: 600;
+    color: var(--blue-dark);
+    margin-top: 0.5rem;
+    display: block;
+  }
+
+  form {
+    background: white;
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  form label {
+    display: block;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    color: var(--blue-dark);
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid var(--dark-grey);
+    border-radius: 10px;
+    font-size: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  button {
+    background: linear-gradient(135deg, var(--orange-primary), var(--orange-light));
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    margin-top: 2rem;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+  }
+
+  .scroll-wrapper {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  margin-top: 2rem;
+}
+
+.scroll-track {
+  display: flex;
+  gap: 2rem;
+  animation: scroll-left 40s linear infinite;
+}
+
+.scroll-wrapper:hover .scroll-track {
+  animation-play-state: paused;
+}
+
+.course-card {
+  flex: 0 0 300px;
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-top: 6px solid var(--orange-primary);
+  transition: transform 0.3s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-10px);
+}
+
+.course-card a {
+  display: inline-block;
+  margin-top: 1rem;
+  background: linear-gradient(135deg, var(--orange-primary), var(--orange-light));
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+  transition: all 0.3s ease;
+}
+
+.course-card a:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+</style>
+
+<Layout>
+  <main class="learn-page">
+    <section>
+      <h1>Learn</h1>
+      <p>Interactive learning resources and courses for empowering student activists. Whether you're organizing at your school, presenting to Congress, or running a food drive, your events can change the world.</p>
+    </section>
+
+    <section>
+      <h2>Why Student Activism Matters</h2>
+      <div class="feature-list">
+        <div class="feature-card">
+          <h3>Leadership Skills</h3>
+          <p>Learn how to lead with confidence, communicate effectively, and think critically — skills that stay with you for life.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Real Influence</h3>
+          <p>From organizing your first meeting to running a full event, you’ll gain hands-on experience that prepares you for the future.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Impact</h3>
+          <p>When students take initiative, things change — it drives real reform, communities grow stronger, and more people get involved in making things better.</p>
+        </div>
+      </div>
+    </section>
+
+<section>
+  <h2>Quick Action Lab</h2>
+  <p>Take action with these mini-courses. Scroll through and explore — hover to pause.</p>
+  <div class="scroll-wrapper">
+    <div class="scroll-track">
+      <div class="course-card">
+        <h3>Intro to Activism & Advocacy</h3>
+        <p>Discover your activist identity through interactive lessons.</p>
+        <a href="#">Start Course</a>
+      </div>
+      <div class="course-card">
+        <h3>Building a Campaign 101</h3>
+        <p>Turn your passion into action with step-by-step strategies.</p>
+        <a href="#">Start Course</a>
+      </div>
+      <div class="course-card">
+        <h3>Social Justice + Intersectionality</h3>
+        <p>Understand interconnected issues and solidarity in action.</p>
+        <a href="#">Start Course</a>
+      </div>
+      <div class="course-card">
+        <h3>Start a Nonprofit or Campus Group</h3>
+        <p>Build your own organization from scratch.</p>
+        <a href="#">Start Course</a>
+      </div>
+      <!-- Repeat cards for infinite loop effect -->
+    </div>
+  </div>
+</section>
+
+     <section>
+      <h2>Learning Resources</h2>
+      <div class="feature-list">
+      <div class="feature-card">
+        <h3>Free Online Courses</h3>
+        <p>Explore mini interactive courses on student activism. You can also access platforms like Coursera and edX for free leadership and advocacy content.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Real-Life Case Studies</h3>
+        <p>Read stories of student-led events and their impact. Dive into articles, podcasts, and shared experiences from youth organizers around the world.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Videos & Documentaries</h3>
+        <p>Watch inspiring films and educational videos that highlight youth activism, social justice movements, and community change.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Youth Voices: Stories from the Frontlines</h2>
+    <div class="testimonial">
+      <img src="/images/ben.jpg" alt="Benjamin Jeanty" />
+      <blockquote>
+        "As a student and the Director of Living Outside, I've been able to merge my passion for organizing events with meaningful action..."
+      </blockquote>
+      <cite>— Benjamin Jeanty, Living Outside</cite>
+    </div>
+    <div class="testimonial">
+      <img src="/images/ankita.jpg" alt="Ankita J." />
+      <blockquote>
+        “I’m the current HSDA AAPI Caucus Chair... hosted and planned events with local AANHPI leaders...”
+      </blockquote>
+      <cite>— Ankita J., HSDA</cite>
+    </div>
+    <div class="testimonial">
+      <img src="/images/seat.jpg" alt="SEAT Students" />
+      <blockquote>
+        "Earlier this month, SEAT hosted a briefing for Congressional staff to educate them about the importance of mental health..."
+      </blockquote>
+      <cite>— SEAT Students, SEAT</cite>
+    </div>
+    <div class="testimonial">
+      <img src="/images/ruzanna.jpg" alt="Ruzanna Gaboyan" />
+      <blockquote>
+        "Organizing an event at Open Door Academy with my team of students was one of the most rewarding experiences I've had..."
+      </blockquote>
+      <cite>— Ruzanna Gaboyan, Equalistic Dream for Hope</cite>
+    </div>
+  </section>
+
+  <section>
+    <h2>Submit Your Story</h2>
+    <p>We want to hear from you. Share your journey, your impact, and your voice. Your story could inspire the next wave of changemakers.</p>
+    <form action="mailto:youthunite89@gmail.com" method="POST" enctype="text/plain">
+      <label>
+        First Name
+        <input type="text" name="First Name" required />
+      </label>
+      <label>
+        Last Name
+        <input type="text" name="Last Name" required />
+      </label>
+      <label>
+        Organization (Optional)
+        <input type="text" name="Organization" />
+      </label>
+      <label>
+        Email
+        <input type="email" name="Email" required />
+      </label>
+      <label>
+        Your Story
+        <textarea name="Your Story" rows="6" required></textarea>
+      </label>
+      <label>
+        Country/State (Optional)
+        <input type="text" name="Location" />
+      </label>
+      <label>
+        Pictures (Optional)
+        <input type="file" name="Pictures" accept="image/*" />
+      </label>
+      <button type="submit">Send</button>
+    </form>
+  </section>
+</main>
+</Layout>
