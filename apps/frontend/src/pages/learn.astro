@@ -286,14 +286,106 @@ import Layout from '../layouts/Layout.astro';
   }
 }
 
+.learn-intro {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 3rem;
+  margin-bottom: 6rem;
+}
+
+.learn-left {
+  flex: 1 1 600px;
+}
+
+.learn-left h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--blue-dark);
+  margin-bottom: 1rem;
+  border-bottom: 6px solid var(--orange-primary);
+  display: inline-block;
+}
+
+.learn-left p {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: var(--text-dark);
+  max-width: 600px;
+}
+
+.learn-right {
+  flex: 1 1 300px;
+  text-align: center;
+}
+
+.learn-right h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--blue-light);
+}
+
+.learn-right .highlight {
+  color: var(--orange-primary);
+  font-size: 2rem;
+}
+
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+  gap: 1rem;
+  justify-content: center;
+}
+
+.avatar-grid img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--orange-light);
+  transition: transform 0.3s ease;
+}
+
+.avatar-grid img:hover {
+  transform: scale(1.1);
+}
+
+
 </style>
 
 <Layout>
   <main class="learn-page">
-    <section>
-      <h1>Learn</h1>
-      <p>Interactive learning resources and courses for empowering student activists. Whether you're organizing at your school, presenting to Congress, or running a food drive, your events can change the world.</p>
-    </section>
+    <section class="learn-intro flex flex-col md:flex-row items-center justify-between gap-8">
+
+  <div class="max-w-xl">
+    <h1 class="text-3xl font-bold mb-4">Learn</h1>
+    <p class="text-gray-700 leading-relaxed">
+      Interactive learning resources and courses for empowering student activists. 
+      Whether you're organizing at your school, presenting to Congress, or running a food drive, 
+      your events can change the world.
+    </p>
+  </div>
+
+  <div class="impact-badge flex flex-col items-center md:items-end text-center md:text-right">
+    <span class="text-sm text-gray-500 mb-2">Knowledge shared with</span>
+    <span class="text-xl font-bold bg-gradient-to-r from-orange-400 to-pink-500 bg-clip-text text-transparent mb-3">
+      160+ Teenagers
+    </span>
+    <div class="flex -space-x-4 justify-center md:justify-end">
+      <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/women/68.jpg" alt="Teen 1">
+      <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/men/45.jpg" alt="Teen 2">
+      <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/women/12.jpg" alt="Teen 3">
+      <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/men/33.jpg" alt="Teen 4">
+      <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/women/25.jpg" alt="Teen 5">
+      <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/men/60.jpg" alt="Teen 6">
+      <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/men/78.jpg" alt="Teen 7">
+      <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Teen 8">
+    </div>
+  </div>
+</section>
+
 
     <section>
       <h2>Why Student Activism Matters</h2>
