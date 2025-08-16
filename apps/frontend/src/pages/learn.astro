@@ -2,6 +2,17 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
+<script>
+  const track = document.getElementById('loopTrack');
+  const cards = Array.from(track.children);
+
+  cards.forEach(card => {
+    const clone = card.cloneNode(true);
+    track.appendChild(clone);
+  });
+</script>
+
+
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
 
@@ -198,26 +209,31 @@ import Layout from '../layouts/Layout.astro';
     box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
   }
 
-  .scroll-wrapper {
+.loop-container {
   overflow: hidden;
-  position: relative;
   width: 100%;
   margin-top: 2rem;
+  position: relative;
 }
 
-.scroll-track {
+.loop-track {
   display: flex;
   gap: 2rem;
-  animation: scroll-left 40s linear infinite;
+  animation: scrollLoop linear infinite;
+  animation-duration: 40s;
 }
 
-.scroll-wrapper:hover .scroll-track {
+.loop-container:hover .loop-track {
   animation-play-state: paused;
 }
 
 .course-card {
   flex: 0 0 300px;
   background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
   padding: 2rem;
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -229,9 +245,11 @@ import Layout from '../layouts/Layout.astro';
   transform: translateY(-10px);
 }
 
-.course-card a {
-  display: inline-block;
-  margin-top: 1rem;
+.course-content {
+  flex-grow: 1;
+}
+
+.course-button {
   background: linear-gradient(135deg, var(--orange-primary), var(--orange-light));
   color: white;
   padding: 0.75rem 1.5rem;
@@ -240,12 +258,24 @@ import Layout from '../layouts/Layout.astro';
   font-weight: 600;
   box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
   transition: all 0.3s ease;
+  margin-top: 2rem;
+  align-self: flex-start;
 }
 
-.course-card a:hover {
+.course-button:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
 }
+
+@keyframes scrollLoop {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
 
 @keyframes scroll-left {
   0% {
@@ -286,32 +316,41 @@ import Layout from '../layouts/Layout.astro';
 <section>
   <h2>Quick Action Lab</h2>
   <p>Take action with these mini-courses. Scroll through and explore — hover to pause.</p>
-  <div class="scroll-wrapper">
-    <div class="scroll-track">
+  <div class="loop-container">
+    <div class="loop-track" id="loopTrack">
       <div class="course-card">
-        <h3>Intro to Activism & Advocacy</h3>
-        <p>Discover your activist identity through interactive lessons.</p>
-        <a href="#">Start Course</a>
+        <div class="course-content">
+          <h3>Intro to Activism & Advocacy</h3>
+          <p>Discover your activist identity through interactive lessons.</p>
+        </div>
+        <a href="#" class="course-button">Start Course</a>
       </div>
       <div class="course-card">
-        <h3>Building a Campaign 101</h3>
-        <p>Turn your passion into action with step-by-step strategies.</p>
-        <a href="#">Start Course</a>
+        <div class="course-content">
+          <h3>Building a Campaign 101</h3>
+          <p>Turn your passion into action with step-by-step strategies.</p>
+        </div>
+        <a href="#" class="course-button">Start Course</a>
       </div>
       <div class="course-card">
-        <h3>Social Justice + Intersectionality</h3>
-        <p>Understand interconnected issues and solidarity in action.</p>
-        <a href="#">Start Course</a>
+        <div class="course-content">
+          <h3>Social Justice + Intersectionality</h3>
+          <p>Understand interconnected issues and solidarity in action.</p>
+        </div>
+        <a href="#" class="course-button">Start Course</a>
       </div>
       <div class="course-card">
-        <h3>Start a Nonprofit or Campus Group</h3>
-        <p>Build your own organization from scratch.</p>
-        <a href="#">Start Course</a>
+        <div class="course-content">
+          <h3>Start a Nonprofit or Campus Group</h3>
+          <p>Build your own organization from scratch.</p>
+        </div>
+        <a href="#" class="course-button">Start Course</a>
       </div>
-      <!-- Repeat cards for infinite loop effect -->
     </div>
   </div>
 </section>
+
+
 
      <section>
       <h2>Learning Resources</h2>
