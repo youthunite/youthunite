@@ -2,366 +2,33 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<script>
-  const track = document.getElementById('loopTrack');
-  const cards = Array.from(track.children);
-
-  cards.forEach(card => {
-    const clone = card.cloneNode(true);
-    track.appendChild(clone);
-  });
-</script>
-
-
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-
-  :root {
-    --orange-primary: #ff6b35;
-    --orange-light: #ff8a5b;
-    --blue-dark: #1b365d;
-    --blue-light: #4a90e2;
-    --blue-sky: #87ceeb;
-    --white: #ffffff;
-    --light-grey: #f8f9fa;
-    --dark-grey: #2c3e50;
-    --text-dark: #1a1a1a;
+  @keyframes scrollLoop {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
   }
 
-  body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--light-grey);
-    color: var(--text-dark);
+  .loop-track {
+    animation: scrollLoop linear infinite;
+    animation-duration: 40s;
   }
 
-  .learn-page {
-    padding: 6rem 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
+  .loop-container:hover .loop-track {
+    animation-play-state: paused;
   }
-
-  section {
-    margin-bottom: 6rem;
-  }
-
-  h1, h2, h3 {
-    font-weight: 800;
-    color: var(--blue-dark);
-    margin-bottom: 1rem;
-  }
-
-  h1 {
-    font-size: 3rem;
-    text-align: center;
-    border-bottom: 6px solid var(--orange-primary);
-    display: inline-block;
-    margin-bottom: 2rem;
-  }
-
-  h2 {
-    font-size: 2.5rem;
-    text-align: center;
-    margin-bottom: 1rem;
-  }
-
-  h3 {
-    font-size: 1.75rem;
-    color: var(--orange-primary);
-    margin-top: 2rem;
-  }
-
-  p {
-    font-size: 1.2rem;
-    line-height: 1.8;
-    max-width: 800px;
-    margin: 0 auto 2rem auto;
-    text-align: center;
-  }
-
-  .feature-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-top: 2rem;
-  }
-
-  .feature-card {
-    background: white;
-    padding: 2rem;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    border-top: 6px solid var(--blue-light);
-    transition: transform 0.3s ease;
-  }
-
-  .feature-card:hover {
-    transform: translateY(-10px);
-  }
-
-  .courses {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-    margin-top: 3rem;
-  }
-
-  .course {
-    background: white;
-    padding: 2rem;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    border-top: 6px solid var(--orange-primary);
-    transition: transform 0.3s ease;
-  }
-
-  .course:hover {
-    transform: translateY(-10px);
-  }
-
-  .course a {
-    display: inline-block;
-    margin-top: 1rem;
-    background: linear-gradient(135deg, var(--orange-primary), var(--orange-light));
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 50px;
-    text-decoration: none;
-    font-weight: 600;
-    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
-    transition: all 0.3s ease;
-  }
-
-  .course a:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
-  }
-
-  .testimonial {
-    background: white;
-    padding: 2rem;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-    border-left: 6px solid var(--orange-light);
-    text-align: center;
-  }
-
-  .testimonial img {
-    width: 100%;
-    max-width: 300px;
-    border-radius: 12px;
-    margin-bottom: 1rem;
-  }
-
-  blockquote {
-    font-size: 1.2rem;
-    font-style: italic;
-    margin: 1rem 0;
-  }
-
-  cite {
-    font-weight: 600;
-    color: var(--blue-dark);
-    margin-top: 0.5rem;
-    display: block;
-  }
-
-  form {
-    background: white;
-    padding: 3rem;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
-  form label {
-    display: block;
-    margin-bottom: 1rem;
-    font-weight: 600;
-    color: var(--blue-dark);
-  }
-
-  input, textarea {
-    width: 100%;
-    padding: 1rem;
-    border: 1px solid var(--dark-grey);
-    border-radius: 10px;
-    font-size: 1rem;
-    margin-top: 0.5rem;
-  }
-
-  button {
-    background: linear-gradient(135deg, var(--orange-primary), var(--orange-light));
-    color: white;
-    padding: 1rem 2rem;
-    border-radius: 50px;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    margin-top: 2rem;
-    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
-    transition: all 0.3s ease;
-  }
-
-  button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
-  }
-
-.loop-container {
-  overflow: hidden;
-  width: 100%;
-  margin-top: 2rem;
-  position: relative;
-}
-
-.loop-track {
-  display: flex;
-  gap: 2rem;
-  animation: scrollLoop linear infinite;
-  animation-duration: 40s;
-}
-
-.loop-container:hover .loop-track {
-  animation-play-state: paused;
-}
-
-.course-card {
-  flex: 0 0 300px;
-  background: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-  padding: 2rem;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  border-top: 6px solid var(--orange-primary);
-  transition: transform 0.3s ease;
-}
-
-.course-card:hover {
-  transform: translateY(-10px);
-}
-
-.course-content {
-  flex-grow: 1;
-}
-
-.course-button {
-  background: linear-gradient(135deg, var(--orange-primary), var(--orange-light));
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 50px;
-  text-decoration: none;
-  font-weight: 600;
-  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
-  transition: all 0.3s ease;
-  margin-top: 2rem;
-  align-self: flex-start;
-}
-
-.course-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
-}
-
-@keyframes scrollLoop {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-
-@keyframes scroll-left {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.learn-intro {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 3rem;
-  margin-bottom: 6rem;
-}
-
-.learn-left {
-  flex: 1 1 600px;
-}
-
-.learn-left h1 {
-  font-size: 3rem;
-  font-weight: 800;
-  color: var(--blue-dark);
-  margin-bottom: 1rem;
-  border-bottom: 6px solid var(--orange-primary);
-  display: inline-block;
-}
-
-.learn-left p {
-  font-size: 1.2rem;
-  line-height: 1.8;
-  color: var(--text-dark);
-  max-width: 600px;
-}
-
-.learn-right {
-  flex: 1 1 300px;
-  text-align: center;
-}
-
-.learn-right h3 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  color: var(--blue-light);
-}
-
-.learn-right .highlight {
-  color: var(--orange-primary);
-  font-size: 2rem;
-}
-
-.avatar-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-  gap: 1rem;
-  justify-content: center;
-}
-
-.avatar-grid img {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--orange-light);
-  transition: transform 0.3s ease;
-}
-
-.avatar-grid img:hover {
-  transform: scale(1.1);
-}
-
-
 </style>
 
 <Layout>
-  <main class="learn-page">
-    <section class="learn-intro flex flex-col md:flex-row items-center justify-between gap-8">
+  <main class="py-24 px-8 max-w-6xl mx-auto bg-muted text-foreground">
+    <section class="flex flex-col md:flex-row items-center justify-between gap-8 mb-24">
 
   <div class="max-w-xl">
-    <h1 class="text-3xl font-bold mb-4">Learn</h1>
-    <p class="text-gray-700 leading-relaxed">
+    <h1 class="text-5xl font-extrabold text-secondary-foreground mb-4 pb-2 border-b-6 border-primary inline-block">Learn</h1>
+    <p class="text-foreground leading-relaxed text-lg opacity-80">
       Interactive learning resources and courses for empowering student activists. 
       Whether you're organizing at your school, presenting to Congress, or running a food drive, 
       your events can change the world.
@@ -369,74 +36,74 @@ import Layout from '../layouts/Layout.astro';
   </div>
 
   <div class="impact-badge flex flex-col items-center md:items-end text-center md:text-right">
-    <span class="text-sm text-gray-500 mb-2">Knowledge shared with</span>
-    <span class="text-xl font-bold bg-gradient-to-r from-orange-400 to-pink-500 bg-clip-text text-transparent mb-3">
+    <span class="text-sm text-foreground opacity-70 mb-2">Knowledge shared with</span>
+    <span class="text-2xl font-bold bg-gradient-to-r from-primary to-chart-4 bg-clip-text text-transparent mb-3">
       160+ Teenagers
     </span>
     <div class="flex -space-x-4 justify-center md:justify-end">
-      <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/women/68.jpg" alt="Teen 1">
-      <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/men/45.jpg" alt="Teen 2">
-      <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/women/12.jpg" alt="Teen 3">
-      <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/men/33.jpg" alt="Teen 4">
-      <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/women/25.jpg" alt="Teen 5">
-      <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/men/60.jpg" alt="Teen 6">
-      <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/men/78.jpg" alt="Teen 7">
-      <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Teen 8">
+      <img class="w-12 h-12 rounded-full border-2 border-chart-4 object-cover hover:scale-110 transition-transform duration-300" src="https://randomuser.me/api/portraits/women/68.jpg" alt="Teen 1">
+      <img class="w-12 h-12 rounded-full border-2 border-chart-4 object-cover hover:scale-110 transition-transform duration-300" src="https://randomuser.me/api/portraits/men/45.jpg" alt="Teen 2">
+      <img class="w-12 h-12 rounded-full border-2 border-chart-4 object-cover hover:scale-110 transition-transform duration-300" src="https://randomuser.me/api/portraits/women/12.jpg" alt="Teen 3">
+      <img class="w-12 h-12 rounded-full border-2 border-chart-4 object-cover hover:scale-110 transition-transform duration-300" src="https://randomuser.me/api/portraits/men/33.jpg" alt="Teen 4">
+      <img class="w-12 h-12 rounded-full border-2 border-chart-4 object-cover hover:scale-110 transition-transform duration-300" src="https://randomuser.me/api/portraits/women/25.jpg" alt="Teen 5">
+      <img class="w-12 h-12 rounded-full border-2 border-chart-4 object-cover hover:scale-110 transition-transform duration-300" src="https://randomuser.me/api/portraits/men/60.jpg" alt="Teen 6">
+      <img class="w-12 h-12 rounded-full border-2 border-chart-4 object-cover hover:scale-110 transition-transform duration-300" src="https://randomuser.me/api/portraits/men/78.jpg" alt="Teen 7">
+      <img class="w-12 h-12 rounded-full border-2 border-chart-4 object-cover hover:scale-110 transition-transform duration-300" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Teen 8">
     </div>
   </div>
 </section>
 
 
-    <section>
-      <h2>Why Student Activism Matters</h2>
-      <div class="feature-list">
-        <div class="feature-card">
-          <h3>Leadership Skills</h3>
-          <p>Learn how to lead with confidence, communicate effectively, and think critically — skills that stay with you for life.</p>
+    <section class="mb-24">
+      <h2 class="text-4xl font-extrabold text-secondary-foreground text-center mb-8">Why Student Activism Matters</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-card p-8 rounded-3xl shadow-xl border-t-6 border-chart-2 hover:-translate-y-3 transition-transform duration-300">
+          <h3 class="text-2xl font-bold text-primary mb-4">Leadership Skills</h3>
+          <p class="text-foreground leading-relaxed opacity-80">Learn how to lead with confidence, communicate effectively, and think critically — skills that stay with you for life.</p>
         </div>
-        <div class="feature-card">
-          <h3>Real Influence</h3>
-          <p>From organizing your first meeting to running a full event, you’ll gain hands-on experience that prepares you for the future.</p>
+        <div class="bg-card p-8 rounded-3xl shadow-xl border-t-6 border-chart-2 hover:-translate-y-3 transition-transform duration-300">
+          <h3 class="text-2xl font-bold text-primary mb-4">Real Influence</h3>
+          <p class="text-foreground leading-relaxed opacity-80">From organizing your first meeting to running a full event, you'll gain hands-on experience that prepares you for the future.</p>
         </div>
-        <div class="feature-card">
-          <h3>Impact</h3>
-          <p>When students take initiative, things change — it drives real reform, communities grow stronger, and more people get involved in making things better.</p>
+        <div class="bg-card p-8 rounded-3xl shadow-xl border-t-6 border-chart-2 hover:-translate-y-3 transition-transform duration-300">
+          <h3 class="text-2xl font-bold text-primary mb-4">Impact</h3>
+          <p class="text-foreground leading-relaxed opacity-80">When students take initiative, things change — it drives real reform, communities grow stronger, and more people get involved in making things better.</p>
         </div>
       </div>
     </section>
 
-<section>
-  <h2>Quick Action Lab</h2>
-  <p>Take action with these mini-courses. Scroll through and explore — hover to pause.</p>
-  <div class="loop-container">
-    <div class="loop-track" id="loopTrack">
-      <div class="course-card">
-        <div class="course-content">
-          <h3>Intro to Activism & Advocacy</h3>
-          <p>Discover your activist identity through interactive lessons.</p>
+<section class="mb-24">
+  <h2 class="text-4xl font-extrabold text-secondary-foreground text-center mb-8">Quick Action Lab</h2>
+  <p class="text-center text-foreground opacity-80 text-lg leading-relaxed max-w-2xl mx-auto mb-8">Take action with these mini-courses. Scroll through and explore — hover to pause.</p>
+  <div class="overflow-hidden w-full relative">
+    <div class="flex gap-8 loop-track" id="loopTrack">
+      <div class="flex-shrink-0 w-80 bg-card flex flex-col justify-between h-full p-8 rounded-3xl shadow-xl border-t-6 border-primary hover:-translate-y-3 transition-transform duration-300">
+        <div class="flex-grow">
+          <h3 class="text-2xl font-bold text-primary mb-4">Intro to Activism & Advocacy</h3>
+          <p class="text-foreground opacity-80 leading-relaxed">Discover your activist identity through interactive lessons.</p>
         </div>
-        <a href="#" class="course-button">Start Course</a>
+        <a href="#" class="inline-block mt-8 bg-gradient-to-r from-primary to-chart-4 text-primary-foreground px-6 py-3 rounded-full font-semibold shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300">Start Course</a>
       </div>
-      <div class="course-card">
-        <div class="course-content">
-          <h3>Building a Campaign 101</h3>
-          <p>Turn your passion into action with step-by-step strategies.</p>
+      <div class="flex-shrink-0 w-80 bg-card flex flex-col justify-between h-full p-8 rounded-3xl shadow-xl border-t-6 border-primary hover:-translate-y-3 transition-transform duration-300">
+        <div class="flex-grow">
+          <h3 class="text-2xl font-bold text-primary mb-4">Building a Campaign 101</h3>
+          <p class="text-foreground opacity-80 leading-relaxed">Turn your passion into action with step-by-step strategies.</p>
         </div>
-        <a href="#" class="course-button">Start Course</a>
+        <a href="#" class="inline-block mt-8 bg-gradient-to-r from-primary to-chart-4 text-primary-foreground px-6 py-3 rounded-full font-semibold shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300">Start Course</a>
       </div>
-      <div class="course-card">
-        <div class="course-content">
-          <h3>Social Justice + Intersectionality</h3>
-          <p>Understand interconnected issues and solidarity in action.</p>
+      <div class="flex-shrink-0 w-80 bg-card flex flex-col justify-between h-full p-8 rounded-3xl shadow-xl border-t-6 border-primary hover:-translate-y-3 transition-transform duration-300">
+        <div class="flex-grow">
+          <h3 class="text-2xl font-bold text-primary mb-4">Social Justice + Intersectionality</h3>
+          <p class="text-foreground opacity-80 leading-relaxed">Understand interconnected issues and solidarity in action.</p>
         </div>
-        <a href="#" class="course-button">Start Course</a>
+        <a href="#" class="inline-block mt-8 bg-gradient-to-r from-primary to-chart-4 text-primary-foreground px-6 py-3 rounded-full font-semibold shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300">Start Course</a>
       </div>
-      <div class="course-card">
-        <div class="course-content">
-          <h3>Start a Nonprofit or Campus Group</h3>
-          <p>Build your own organization from scratch.</p>
+      <div class="flex-shrink-0 w-80 bg-card flex flex-col justify-between h-full p-8 rounded-3xl shadow-xl border-t-6 border-primary hover:-translate-y-3 transition-transform duration-300">
+        <div class="flex-grow">
+          <h3 class="text-2xl font-bold text-primary mb-4">Start a Nonprofit or Campus Group</h3>
+          <p class="text-foreground opacity-80 leading-relaxed">Build your own organization from scratch.</p>
         </div>
-        <a href="#" class="course-button">Start Course</a>
+        <a href="#" class="inline-block mt-8 bg-gradient-to-r from-primary to-chart-4 text-primary-foreground px-6 py-3 rounded-full font-semibold shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300">Start Course</a>
       </div>
     </div>
   </div>
@@ -444,90 +111,111 @@ import Layout from '../layouts/Layout.astro';
 
 
 
-     <section>
-      <h2>Learning Resources</h2>
-      <div class="feature-list">
-      <div class="feature-card">
-        <h3>Free Online Courses</h3>
-        <p>Explore mini interactive courses on student activism. You can also access platforms like Coursera and edX for free leadership and advocacy content.</p>
+     <section class="mb-24">
+      <h2 class="text-4xl font-extrabold text-secondary-foreground text-center mb-8">Learning Resources</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="bg-card p-8 rounded-3xl shadow-xl border-t-6 border-chart-2 hover:-translate-y-3 transition-transform duration-300">
+        <h3 class="text-2xl font-bold text-primary mb-4">Free Online Courses</h3>
+        <p class="text-foreground opacity-80 leading-relaxed">Explore mini interactive courses on student activism. You can also access platforms like Coursera and edX for free leadership and advocacy content.</p>
       </div>
-      <div class="feature-card">
-        <h3>Real-Life Case Studies</h3>
-        <p>Read stories of student-led events and their impact. Dive into articles, podcasts, and shared experiences from youth organizers around the world.</p>
+      <div class="bg-card p-8 rounded-3xl shadow-xl border-t-6 border-chart-2 hover:-translate-y-3 transition-transform duration-300">
+        <h3 class="text-2xl font-bold text-primary mb-4">Real-Life Case Studies</h3>
+        <p class="text-foreground opacity-80 leading-relaxed">Read stories of student-led events and their impact. Dive into articles, podcasts, and shared experiences from youth organizers around the world.</p>
       </div>
-      <div class="feature-card">
-        <h3>Videos & Documentaries</h3>
-        <p>Watch inspiring films and educational videos that highlight youth activism, social justice movements, and community change.</p>
+      <div class="bg-card p-8 rounded-3xl shadow-xl border-t-6 border-chart-2 hover:-translate-y-3 transition-transform duration-300">
+        <h3 class="text-2xl font-bold text-primary mb-4">Videos & Documentaries</h3>
+        <p class="text-foreground opacity-80 leading-relaxed">Watch inspiring films and educational videos that highlight youth activism, social justice movements, and community change.</p>
       </div>
     </div>
   </section>
 
-  <section>
-    <h2>Youth Voices: Stories from the Frontlines</h2>
-    <div class="testimonial">
-      <img src="/images/ben.jpg" alt="Benjamin Jeanty" />
-      <blockquote>
-        "As a student and the Director of Living Outside, I've been able to merge my passion for organizing events with meaningful action..."
-      </blockquote>
-      <cite>— Benjamin Jeanty, Living Outside</cite>
-    </div>
-    <div class="testimonial">
-      <img src="/images/ankita.jpg" alt="Ankita J." />
-      <blockquote>
-        “I’m the current HSDA AAPI Caucus Chair... hosted and planned events with local AANHPI leaders...”
-      </blockquote>
-      <cite>— Ankita J., HSDA</cite>
-    </div>
-    <div class="testimonial">
-      <img src="/images/seat.jpg" alt="SEAT Students" />
-      <blockquote>
-        "Earlier this month, SEAT hosted a briefing for Congressional staff to educate them about the importance of mental health..."
-      </blockquote>
-      <cite>— SEAT Students, SEAT</cite>
-    </div>
-    <div class="testimonial">
-      <img src="/images/ruzanna.jpg" alt="Ruzanna Gaboyan" />
-      <blockquote>
-        "Organizing an event at Open Door Academy with my team of students was one of the most rewarding experiences I've had..."
-      </blockquote>
-      <cite>— Ruzanna Gaboyan, Equalistic Dream for Hope</cite>
+  <section class="mb-24">
+    <h2 class="text-4xl font-extrabold text-secondary-foreground text-center mb-12">Youth Voices: Stories from the Frontlines</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="bg-card p-8 rounded-3xl shadow-xl border-l-6 border-chart-4 text-center">
+        <img class="w-full max-w-xs mx-auto rounded-xl mb-6" src="/images/ben.jpg" alt="Benjamin Jeanty" />
+        <blockquote class="text-lg italic text-foreground opacity-80 mb-4">
+          "As a student and the Director of Living Outside, I've been able to merge my passion for organizing events with meaningful action..."
+        </blockquote>
+        <cite class="font-semibold text-secondary-foreground text-sm">— Benjamin Jeanty, Living Outside</cite>
+      </div>
+      <div class="bg-card p-8 rounded-3xl shadow-xl border-l-6 border-chart-4 text-center">
+        <img class="w-full max-w-xs mx-auto rounded-xl mb-6" src="/images/ankita.jpg" alt="Ankita J." />
+        <blockquote class="text-lg italic text-foreground opacity-80 mb-4">
+          "I'm the current HSDA AAPI Caucus Chair... hosted and planned events with local AANHPI leaders..."
+        </blockquote>
+        <cite class="font-semibold text-secondary-foreground text-sm">— Ankita J., HSDA</cite>
+      </div>
+      <div class="bg-card p-8 rounded-3xl shadow-xl border-l-6 border-chart-4 text-center">
+        <img class="w-full max-w-xs mx-auto rounded-xl mb-6" src="/images/seat.jpg" alt="SEAT Students" />
+        <blockquote class="text-lg italic text-foreground opacity-80 mb-4">
+          "Earlier this month, SEAT hosted a briefing for Congressional staff to educate them about the importance of mental health..."
+        </blockquote>
+        <cite class="font-semibold text-secondary-foreground text-sm">— SEAT Students, SEAT</cite>
+      </div>
+      <div class="bg-card p-8 rounded-3xl shadow-xl border-l-6 border-chart-4 text-center">
+        <img class="w-full max-w-xs mx-auto rounded-xl mb-6" src="/images/ruzanna.jpg" alt="Ruzanna Gaboyan" />
+        <blockquote class="text-lg italic text-foreground opacity-80 mb-4">
+          "Organizing an event at Open Door Academy with my team of students was one of the most rewarding experiences I've had..."
+        </blockquote>
+        <cite class="font-semibold text-secondary-foreground text-sm">— Ruzanna Gaboyan, Equalistic Dream for Hope</cite>
+      </div>
     </div>
   </section>
 
-  <section>
-    <h2>Submit Your Story</h2>
-    <p>We want to hear from you. Share your journey, your impact, and your voice. Your story could inspire the next wave of changemakers.</p>
-    <form action="mailto:youthunite89@gmail.com" method="POST" enctype="text/plain">
-      <label>
-        First Name
-        <input type="text" name="First Name" required />
+  <section class="mb-24">
+    <h2 class="text-4xl font-extrabold text-secondary-foreground text-center mb-8">Submit Your Story</h2>
+    <p class="text-center text-foreground opacity-80 text-lg leading-relaxed max-w-2xl mx-auto mb-8">We want to hear from you. Share your journey, your impact, and your voice. Your story could inspire the next wave of changemakers.</p>
+    <form action="mailto:youthunite89@gmail.com" method="POST" enctype="text/plain" class="bg-card p-8 rounded-3xl shadow-xl max-w-2xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <label class="block">
+          <span class="text-sm font-semibold text-secondary-foreground mb-2 block">First Name</span>
+          <input type="text" name="First Name" required class="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent" />
+        </label>
+        <label class="block">
+          <span class="text-sm font-semibold text-secondary-foreground mb-2 block">Last Name</span>
+          <input type="text" name="Last Name" required class="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent" />
+        </label>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <label class="block">
+          <span class="text-sm font-semibold text-secondary-foreground mb-2 block">Organization (Optional)</span>
+          <input type="text" name="Organization" class="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent" />
+        </label>
+        <label class="block">
+          <span class="text-sm font-semibold text-secondary-foreground mb-2 block">Email</span>
+          <input type="email" name="Email" required class="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent" />
+        </label>
+      </div>
+      <label class="block mb-6">
+        <span class="text-sm font-semibold text-secondary-foreground mb-2 block">Your Story</span>
+        <textarea name="Your Story" rows="6" required class="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"></textarea>
       </label>
-      <label>
-        Last Name
-        <input type="text" name="Last Name" required />
-      </label>
-      <label>
-        Organization (Optional)
-        <input type="text" name="Organization" />
-      </label>
-      <label>
-        Email
-        <input type="email" name="Email" required />
-      </label>
-      <label>
-        Your Story
-        <textarea name="Your Story" rows="6" required></textarea>
-      </label>
-      <label>
-        Country/State (Optional)
-        <input type="text" name="Location" />
-      </label>
-      <label>
-        Pictures (Optional)
-        <input type="file" name="Pictures" accept="image/*" />
-      </label>
-      <button type="submit">Send</button>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <label class="block">
+          <span class="text-sm font-semibold text-secondary-foreground mb-2 block">Country/State (Optional)</span>
+          <input type="text" name="Location" class="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent" />
+        </label>
+        <label class="block">
+          <span class="text-sm font-semibold text-secondary-foreground mb-2 block">Pictures (Optional)</span>
+          <input type="file" name="Pictures" accept="image/*" class="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent" />
+        </label>
+      </div>
+      <button type="submit" class="w-full bg-gradient-to-r from-primary to-chart-4 text-primary-foreground px-8 py-4 rounded-full font-semibold shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300">Send</button>
     </form>
   </section>
 </main>
 </Layout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const track = document.getElementById('loopTrack');
+    if (track) {
+      const cards = Array.from(track.children);
+      cards.forEach(card => {
+        const clone = card.cloneNode(true);
+        track.appendChild(clone);
+      });
+    }
+  });
+</script>
