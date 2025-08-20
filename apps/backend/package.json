@@ -6,7 +6,8 @@
     "dev": "bun run --watch src/index.ts",
     "db:push": "drizzle-kit push",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "start": "bun db:migrate && bun run src/index.ts"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.3.7",
