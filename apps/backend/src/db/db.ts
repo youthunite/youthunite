@@ -10,7 +10,7 @@ import { PgliteDatabase } from "drizzle-orm/pglite";
 let db: NodePgDatabase<typeof schema> | PgliteDatabase<typeof schema>;
 if (process.env.NODE_ENV === "production") {
   const drizzle = await import("drizzle-orm/node-postgres").then((mod) => mod.drizzle);
-  db = drizzle(process.env.DATABASE_URL!, { schema });
+  db = drizzle(process.env.DB_URL!, { schema });
 } else {
   const drizzle = await import("drizzle-orm/pglite").then((mod) => mod.drizzle);
   db = drizzle('pgdata', { schema });
