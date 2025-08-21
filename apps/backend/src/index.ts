@@ -12,11 +12,12 @@ export const resend = new Resend(process.env.RESEND!);
 export const fillout = new Fillout(process.env.FILLOUT!);
 const app = new Elysia()
   .use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:4321', 'http://localhost', 'http://localhost:3000', 'http://localhost:8080'], 
+    origin: ['http://localhost:5173', 'http://localhost:4321', 'http://localhost', 'http://localhost:3000', 'http://localhost:8080', 'https://youthunite.online', 'https://youthunite.us'], 
     methods: ['GET', 'POST', 'PUT', 'UPDATE', 'DELETE'], // Allowed methods
   }))
   .use(ip())
-  .get("/", () => "Hey gangstas! This is the youthunite API. :3")
+  // eternally sorry for removing :3!!
+  .get("/", () => "Hey gangstas! This is the youthunite API.")
   .group('/auth', (app) =>
     app.use(AuthRouter)
   )
