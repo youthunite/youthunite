@@ -32,5 +32,6 @@
     "bun-types": "latest",
     "tsx": "^4.19.3"
   },
-  "module": "src/index.js"
+  "module": "src/index.js",
+  "packageManager": "bun@1.2.5"
 }
