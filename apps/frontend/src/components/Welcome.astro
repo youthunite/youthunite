@@ -1,47 +1,9 @@
 ---
-import teens from "../assets/teens.jpg";
+import { Button } from '$lib/components/ui/button';
 ---
 
 <style>
-	* {
-		margin: 0;
-		padding: 0;
-		box-sizing: border-box;
-	}
-
 	@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap');
-
-	body.dark-mode {
-		background-color: #121212;
-		color: #e0e0e0;
-	}
-
-	body.dark-mode .mission,
-	body.dark-mode .cta-section,
-	body.dark-mode .footer {
-		background-color: #1c1c1c;
-		color: #ddd;
-	}
-
-	body.dark-mode .mission-card {
-		background-color: #262626;
-		color: #ccc;
-	}
-
-	body.dark-mode .btn-primary,
-	body.dark-mode .btn-secondary {
-		background-color: #333;
-		border-color: #444;
-		color: #fff;
-	}
-	body.dark-mode .mission-card h3,
-	body.dark-mode .mission-card p {
-		color: #ffffff;
-	}
-	body.dark-mode .mission h2,
-	body.dark-mode .mission p {
-		color: #ffffff;
-	}
 
 	.intro-overlay {
 		position: fixed;
@@ -473,8 +435,8 @@ import teens from "../assets/teens.jpg";
 				eiusmod tempor incididunt ut labore et dolore magna aliqua.
 			</p>
 			<div class="hero-buttons">
-				<a href="#get-involved" class="btn-primary">Get Involved</a>
-				<a href="#learn-more" class="btn-secondary">Learn More</a>
+				<a href="/login"><Button size="lg">Join Us</Button></a>
+				<a href="#mission"><Button size="lg" variant="secondary">Learn More</Button></a>
 			</div>
 		</div>
 		<div class="hero-visual">
@@ -530,7 +492,7 @@ import teens from "../assets/teens.jpg";
 			Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
 			officia deserunt mollit anim id est laborum.
 		</p>
-		<a href="#join" class="btn-primary">Join Us Today</a>
+    <a href="/register"><Button size="lg" class="w-full max-w-96 h-14 text-lg font-bold sm:w-96">Join us</Button></a>
 	</div>
 </section>
 
@@ -566,11 +528,6 @@ import teens from "../assets/teens.jpg";
 					Ut enim ad minim veniam, quis nostrud exercitation ullamco
 					laboris nisi ut aliquip ex ea commodo consequat.
 				</p>
-				<a
-					href="#join"
-					class="cta-button"
-					style="display: inline-block; margin-top: 1rem;">Join Us</a
-				>
 			</div>
 		</div>
 		<div class="footer-bottom">
