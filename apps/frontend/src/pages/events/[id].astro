@@ -1,4 +1,5 @@
 ---
+import { Button } from '$lib/components/ui/button';
 import Layout from '../../layouts/Layout.astro';
 import { fetchEventById } from '../../lib/server/fetchEvents';
 
@@ -107,7 +108,7 @@ function formatDuration(startTime: string, endTime: string): string {
           <div class="action-card">
             <h3>Join This Event</h3>
             <p>Register to participate in this exciting event</p>
-            <button class="register-btn">Register Now</button>
+            <Button>Register Now</Button>
             <p class="register-note">Registration is free and takes less than a minute</p>
           </div>
         </div>

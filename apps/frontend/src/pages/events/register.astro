@@ -1,4 +1,5 @@
 ---
+import { Button } from "$lib/components/ui/button";
 import Layout from "../../layouts/Layout.astro";
 import { registerEvent } from "../../lib/server/registerEvent";
 import type { CreateEventData } from "../../lib/types/event";
@@ -103,8 +104,8 @@ if (Astro.request.method === 'POST') {
         </div>
 
         <div class="form-actions">
-          <a href="/events" class="btn btn-secondary">Cancel</a>
-          <button type="submit" class="btn btn-primary">Create Event</button>
+          <a href="/events"><Button variant="secondary">Cancel</Button></a>
+          <Button type="submit">Create Event</Button>
         </div>
       </form>
     </div>

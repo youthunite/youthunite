@@ -372,7 +372,7 @@ const router = new Elysia()
             'https://youthunite.example.com/dashboard';
 
             const { data: rData, error: rError } = await resend.emails.send({
-            from: `YouthUnite <notifications@${process.env.RESEND_DOMAIN}>`,
+            from: `YouthUnite <noreply@${process.env.RESEND_DOMAIN}>`,
             to: event[0].organizer.email,
             subject: `New Registration for ${event[0].title}`,
             html: `<!DOCTYPE html>

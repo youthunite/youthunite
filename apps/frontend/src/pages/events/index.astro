@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import EventCard from '$lib/components/event-card.svelte';
 import { fetchEvents } from '../../lib/server/fetchEvents';
+import { Button } from '$lib/components/ui/button';
 
 const eventsResult = await fetchEvents();
 const events = eventsResult.success ? eventsResult.events || [] : [];
@@ -25,7 +26,7 @@ const transformedEvents = events.map(event => ({
     <div class="header-section">
       <h1>Upcoming Events</h1>
       <p class="subtitle">Discover and join exciting youth events in your community</p>
-      <a href="/events/register" class="create-event-btn">Create Event</a>
+      <a href="/events/register"><Button>Create Event</Button></a>
       <hr style="margin-top: 2rem;">
     </div>
 
@@ -40,14 +41,14 @@ const transformedEvents = events.map(event => ({
         <div class="no-events">
           <h2>No Events Yet</h2>
           <p>Be the first to create an event in your community!</p>
-          <a href="/events/register" class="btn btn-primary">Create First Event</a>
+          <a href="/events/register"><Button>Create First Event</Button></a>
         </div>
       )
     ) : (
       <div class="error-message">
         <h2>Unable to Load Events</h2>
         <p>{eventsResult.error}</p>
-        <button onclick="window.location.reload()" class="btn btn-secondary">Retry</button>
+        <Button onclick="window.location.reload()" variant="secondary">Retry</Button>
       </div>
     )}
   </div>

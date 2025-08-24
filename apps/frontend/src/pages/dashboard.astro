@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import EventCard from '$lib/components/event-card.svelte';
 import { getServerUser, getTokenFromCookie } from '../lib/server/auth';
 import { fetchMyEvents } from '../lib/server/fetchEvents';
+import { Button } from '$lib/components/ui/button';
 
 const cookieHeader = Astro.request.headers.get('cookie');
 const token = getTokenFromCookie(cookieHeader);
@@ -45,8 +46,8 @@ const transformedEvents = myEvents.map(event => ({
       </div>
       
       <div class="quick-actions">
-        <a href="/events/register" class="btn btn-primary">Create Event</a>
-        <a href="/events" class="btn btn-secondary">Browse Events</a>
+        <a href="/events/register"><Button>Create Event</Button></a>
+        <a href="/events"><Button variant="secondary">Browse Events</Button></a>
       </div>
     </div>
 
@@ -69,14 +70,14 @@ const transformedEvents = myEvents.map(event => ({
               <div class="no-events-content">
                 <h3>No Events Yet</h3>
                 <p>You haven't created any events yet. Start engaging with your community by creating your first event!</p>
-                <a href="/events/register" class="btn btn-primary">Create Your First Event</a>
+                <a href="/events/register"><Button>Create Your First Event</Button></a>
               </div>
             </div>
           )
         ) : (
           <div class="error-message">
             <p>Unable to load your events: {eventsResult.error}</p>
-            <button onclick="window.location.reload()" class="btn btn-secondary">Retry</button>
+            <Button onclick="window.location.reload()" variant="secondary">Retry</Button>
           </div>
         )}
       </section>
