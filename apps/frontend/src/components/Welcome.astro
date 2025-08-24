@@ -185,6 +185,9 @@ import { Button } from '$lib/components/ui/button';
 	document.addEventListener('DOMContentLoaded', function() {
 		const introOverlay = document.getElementById('introOverlay');
 		const hasSeenIntro = sessionStorage.getItem('youthunite_intro_shown');
+    if (!introOverlay || !hasSeenIntro) {
+      throw new Error('Elements no showy')
+    }
 		
 		if (hasSeenIntro) {
 			introOverlay.style.display = 'none';
@@ -194,7 +197,11 @@ import { Button } from '$lib/components/ui/button';
 	});
 
 	function initIntroAnimation() {
-		const canvas = document.getElementById('introCanvas');
+		const canvas = document.getElementById('introCanvas') as HTMLCanvasElement | null;
+    if (!canvas) {
+      throw new Error('Canvas no showy')
+    }
+
 		const ctx = canvas.getContext('2d');
 		const logo = document.getElementById('introLogo');
 		const introOverlay = document.getElementById('introOverlay');
@@ -209,17 +216,17 @@ import { Button } from '$lib/components/ui/button';
 			'EDUCATION', 'NETWORK', 'GROW', 'SKILLS', 'TEAMWORK'
 		];
 
-		let words = [];
-		let startTime = null;
-		const spreadDuration = 1000;  
+		let words: Word[] = [];
+		let startTime: number | null = null;
+		const spreadDuration = 1000;
 		const holdDuration = 1000;    
 		const totalDuration = spreadDuration + holdDuration;
 
 		const colors = ['#ff6600', '#002147', '#3399ff'];
-
+    
 		function resize() {
-			canvas.width = window.innerWidth;
-			canvas.height = window.innerHeight;
+			canvas!.width = window.innerWidth;
+			canvas!.height = window.innerHeight;
 		}
 		window.addEventListener('resize', resize);
 		resize();
@@ -228,8 +235,8 @@ import { Button } from '$lib/components/ui/button';
 			words = KEYWORDS.map(word => {
 				return {
 					text: word,
-					x: canvas.width / 2,
-					y: canvas.height / 2,
+					x: canvas!.width / 2,
+					y: canvas!.height / 2,
 					dx: (Math.random() - 0.5) * 5,
 					dy: (Math.random() - 0.5) * 5,
 					opacity: 1,
@@ -239,18 +246,21 @@ import { Button } from '$lib/components/ui/button';
 			});
 		}
 
-		function easeOut(t) {
+		function easeOut(t: number) {
 			return 1 - Math.pow(1 - t, 3);
 		}
 
-		function animate(timestamp) {
+		function animate(timestamp: number) {
+      if (!ctx || !logo || !introOverlay) {
+        throw new Error('random if check here which will probably never throw (foreshadowing)')
+      }
 			if (!startTime) startTime = timestamp;
 			const elapsed = timestamp - startTime;
 
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			ctx.clearRect(0, 0, canvas!.width, canvas!.height);
 
 			ctx.fillStyle = '#fff';
-			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			ctx.fillRect(0, 0, canvas!.width, canvas!.height);
 
 			if (elapsed < spreadDuration) {
 				const t = elapsed / spreadDuration;
@@ -299,4 +309,15 @@ import { Button } from '$lib/components/ui/button';
 		initWords();
 		requestAnimationFrame(animate);
 	}
+
+  interface Word {
+    text: string;
+    x: number;
+    y: number;
+    dx: number;
+    dy: number;
+    opacity: number;
+    size: number;
+    color: string;
+  }
 </script>
