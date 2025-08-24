@@ -21,5 +21,39 @@ const serverUser = await getServerUser(token);
 		<Navbar serverUser={serverUser} currentPath={Astro.url.pathname} client:load />
     <Toaster client:only="svelte" />
 		<slot />
+    <footer class="text-white py-12" style="background: var(--blue-dark);">
+    	<div class="max-w-6xl mx-auto px-8">
+    		<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+    			<div>
+    				<h3 class="text-xl font-semibold mb-4" style="color: var(--orange-primary);">Navigate</h3>
+    				<a href="#home" class="block text-white/80 mb-2 transition-colors" style="color: rgba(255, 255, 255, 0.8);" onmouseover="this.style.color='var(--orange-primary)'" onmouseout="this.style.color='rgba(255, 255, 255, 0.8)'">Home</a>
+    				<a href="#events" class="block text-white/80 mb-2 transition-colors" style="color: rgba(255, 255, 255, 0.8);" onmouseover="this.style.color='var(--orange-primary)'" onmouseout="this.style.color='rgba(255, 255, 255, 0.8)'">Event Hub</a>
+    				<a href="#submit" class="block text-white/80 mb-2 transition-colors" style="color: rgba(255, 255, 255, 0.8);" onmouseover="this.style.color='var(--orange-primary)'" onmouseout="this.style.color='rgba(255, 255, 255, 0.8)'">Submit an Event</a>
+    				<a href="#learn" class="block text-white/80 mb-2 transition-colors" style="color: rgba(255, 255, 255, 0.8);" onmouseover="this.style.color='var(--orange-primary)'" onmouseout="this.style.color='rgba(255, 255, 255, 0.8)'">Learn</a>
+    				<a href="#contact" class="block text-white/80 mb-2 transition-colors" style="color: rgba(255, 255, 255, 0.8);" onmouseover="this.style.color='var(--orange-primary)'" onmouseout="this.style.color='rgba(255, 255, 255, 0.8)'">Contact</a>
+    			</div>
+    			<div>
+    				<h3 class="text-xl font-semibold mb-4" style="color: var(--orange-primary);">Get in Touch</h3>
+    				<a href="tel:440-665-8301" class="block text-white/80 mb-2 transition-colors" style="color: rgba(255, 255, 255, 0.8);" onmouseover="this.style.color='var(--orange-primary)'" onmouseout="this.style.color='rgba(255, 255, 255, 0.8)'">(+1) 440-665-8301</a>
+    				<a href="mailto:team@youthunite.online" class="block text-white/80 mb-2 transition-colors" style="color: rgba(255, 255, 255, 0.8);" onmouseover="this.style.color='var(--orange-primary)'" onmouseout="this.style.color='rgba(255, 255, 255, 0.8)'">team@youthunite.online</a>
+    			</div>
+    			<div>
+    				<h3 class="text-xl font-semibold mb-4" style="color: var(--orange-primary);">About YouthUNITE</h3>
+    				<p class="text-white/80 mb-2" style="color: rgba(255, 255, 255, 0.8);">
+    					YouthUNITE is a platform dedicated to empowering youth to organize events for the youth easily.
+    				</p>
+    				<p class="text-white/80 mt-4" style="color: rgba(255, 255, 255, 0.8);">
+    					At YouthUNITE, we believe in the power of youth to create positive change in their communities.
+    				</p>
+    			</div>
+    		</div>
+    		<div class="border-t border-white/10 pt-4 text-center text-white/60" style="color: rgba(255, 255, 255, 0.6);">
+    			<p>
+    				© 2025 YouthUnite. All rights reserved. Built BY youth FOR
+    				youth
+    			</p>
+    		</div>
+    	</div>
+    </footer>
 	</body>
 </html>
