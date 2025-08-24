@@ -78,7 +78,7 @@
               <a href="/profile" class="flex w-full items-center"><User class="mr-2 h-4 w-4" /> Profile</a>
             </DropdownMenu.Item>
             <DropdownMenu.Separator />
-            <DropdownMenu.Item on:click={handleLogout}>
+            <DropdownMenu.Item onclick={handleLogout}>
               <LogOut class="mr-2 h-4 w-4" /> Log out
             </DropdownMenu.Item>
           </DropdownMenu.Content>
