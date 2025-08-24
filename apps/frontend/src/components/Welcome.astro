@@ -5,79 +5,29 @@ import { Button } from '$lib/components/ui/button';
 <style>
 	@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap');
 
-	.intro-overlay {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100vw;
-		height: 100vh;
-		background: #fff;
-		z-index: 9999;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		transition: opacity 0.5s ease-out;
+	@keyframes float {
+		0% {
+			transform: translateY(0px) rotate(0deg);
+		}
+		100% {
+			transform: translateY(-100px) rotate(360deg);
+		}
 	}
 
-	.intro-overlay.hidden {
-		opacity: 0;
-		pointer-events: none;
+	@keyframes pulse {
+		0%, 100% {
+			transform: scale(1);
+		}
+		50% {
+			transform: scale(1.05);
+		}
 	}
 
-	.intro-canvas {
-		display: block;
-		background: transparent;
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100vw;
-		height: 100vh;
-	}
-
-	.intro-logo {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform-origin: 50% 50%;
-		opacity: 1;
-		user-select: none;
-		pointer-events: none;
-		width: 280px;
-		height: auto;
-		transform: translate(-50%, -50%) scale(0);
-		transition: none;
-	}
-
-	:root {
-		--orange-primary: #ff6b35;
-		--orange-light: #ff8a5b;
-		--blue-dark: #1b365d;
-		--blue-light: #4a90e2;
-		--blue-sky: #87ceeb;
-		--white: #ffffff;
-		--light-grey: #f8f9fa;
-		--dark-grey: #2c3e50;
-		--text-dark: #1a1a1a;
-	}
-
-	body {
-		font-family: "Inter", sans-serif;
-		line-height: 1.6;
-		color: var(--text-dark);
-		overflow-x: hidden;
-	}
-
-	.hero {
-		min-height: 100vh;
-		background: linear-gradient(
-			135deg,
-			var(--blue-sky) 0%,
-			var(--blue-light) 100%
-		);
-		display: flex;
-		align-items: center;
-		position: relative;
-		overflow: hidden;
+	@keyframes fadeInUp {
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
 	}
 
 	.hero::before {
@@ -91,307 +41,9 @@ import { Button } from '$lib/components/ui/button';
 		animation: float 20s infinite linear;
 	}
 
-	@keyframes float {
-		0% {
-			transform: translateY(0px) rotate(0deg);
-		}
-		100% {
-			transform: translateY(-100px) rotate(360deg);
-		}
-	}
-
-	.hero-container {
-		max-width: 1200px;
-		margin: 0 auto;
-		padding: 0 2rem;
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 4rem;
-		align-items: center;
-		position: relative;
-		z-index: 2;
-	}
-
-	.hero-content h1 {
-		font-size: 3.5rem;
-		font-weight: 800;
-		margin-bottom: 1.5rem;
-		color: white;
-		line-height: 1.2;
-	}
-
-	.hero-content .highlight {
-		color: var(--orange-primary);
-		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-	}
-
-	.hero-content p {
-		font-size: 1.2rem;
-		margin-bottom: 2rem;
-		color: rgba(255, 255, 255, 0.9);
-		font-weight: 400;
-	}
-
-	.hero-buttons {
-		display: flex;
-		gap: 1rem;
-		flex-wrap: wrap;
-	}
-
-	.btn-primary {
-		background: linear-gradient(
-			135deg,
-			var(--orange-primary),
-			var(--orange-light)
-		);
-		color: white;
-		padding: 1rem 2rem;
-		border-radius: 50px;
-		text-decoration: none;
-		font-weight: 600;
-		transition: all 0.3s ease;
-		box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
-	}
-
-	.btn-primary:hover {
-		transform: translateY(-3px);
-		box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
-	}
-
-	.btn-secondary {
-		background: rgba(255, 255, 255, 0.2);
-		color: white;
-		padding: 1rem 2rem;
-		border-radius: 50px;
-		text-decoration: none;
-		font-weight: 600;
-		transition: all 0.3s ease;
-		border: 2px solid rgba(255, 255, 255, 0.3);
-		backdrop-filter: blur(10px);
-	}
-
-	.btn-secondary:hover {
-		background: rgba(255, 255, 255, 0.3);
-		transform: translateY(-3px);
-	}
-
-	.hero-visual {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		position: relative;
-	}
-
-	.hero-circle {
-		width: 400px;
-		height: 400px;
-		background: rgba(255, 255, 255, 0.1);
-		border-radius: 50%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		position: relative;
-		backdrop-filter: blur(10px);
-		border: 2px solid rgba(255, 255, 255, 0.2);
-		overflow: hidden;
-	}
-
-	.hero-circle img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		border-radius: 50%;
-		animation: pulse 2s infinite;
-	}
-
-	@keyframes pulse {
-		0%,
-		100% {
-			transform: scale(1);
-		}
-		50% {
-			transform: scale(1.05);
-		}
-	}
-
-	.mission {
-		padding: 6rem 0;
-		background: var(--light-grey);
-	}
-
-	.mission-container {
-		max-width: 1200px;
-		margin: 0 auto;
-		padding: 0 2rem;
-		text-align: center;
-	}
-
-	.mission h2 {
-		font-size: 2.5rem;
-		font-weight: 700;
-		margin-bottom: 1rem;
-		color: var(--blue-dark);
-	}
-
-	.mission p {
-		font-size: 1.2rem;
-		margin-bottom: 4rem;
-		color: var(--dark-grey);
-		max-width: 600px;
-		margin-left: auto;
-		margin-right: auto;
-	}
-
-	.mission-cards {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-		gap: 2rem;
-		margin-top: 3rem;
-	}
-
-	.mission-card {
-		background: white;
-		padding: 2.5rem;
-		border-radius: 20px;
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-		transition: all 0.3s ease;
-		position: relative;
-		overflow: hidden;
-	}
-
-	.mission-card::before {
-		content: "";
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		height: 4px;
-		background: linear-gradient(
-			135deg,
-			var(--orange-primary),
-			var(--blue-light)
-		);
-	}
-
-	.mission-card:hover {
-		transform: translateY(-10px);
-		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-	}
-
-	.mission-card .icon {
-		font-size: 3rem;
-		margin-bottom: 1rem;
-	}
-
-	.mission-card h3 {
-		font-size: 1.5rem;
-		font-weight: 600;
-		margin-bottom: 1rem;
-		color: var(--blue-dark);
-	}
-
-	.mission-card p {
-		color: var(--dark-grey);
-		margin-bottom: 0;
-	}
-
-	.cta-section {
-		padding: 6rem 0;
-		background: linear-gradient(
-			135deg,
-			var(--blue-dark),
-			var(--blue-light)
-		);
-		color: white;
-		text-align: center;
-	}
-
-	.cta-container {
-		max-width: 800px;
-		margin: 0 auto;
-		padding: 0 2rem;
-	}
-
-	.cta-section h2 {
-		font-size: 2.5rem;
-		font-weight: 700;
-		margin-bottom: 1rem;
-	}
-
-	.cta-section p {
-		font-size: 1.2rem;
-		margin-bottom: 2rem;
-		opacity: 0.9;
-	}
-
-	.footer {
-		background: var(--blue-dark);
-		color: white;
-		padding: 3rem 0 1rem;
-	}
-
-	.footer-container {
-		max-width: 1200px;
-		margin: 0 auto;
-		padding: 0 2rem;
-	}
-
-	.footer-content {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-		gap: 2rem;
-		margin-bottom: 2rem;
-	}
-
-	.footer-section h3 {
-		font-size: 1.2rem;
-		font-weight: 600;
-		margin-bottom: 1rem;
-		color: var(--orange-primary);
-	}
-
-	.footer-section p,
-	.footer-section a {
-		color: rgba(255, 255, 255, 0.8);
-		text-decoration: none;
-		margin-bottom: 0.5rem;
-		display: block;
-	}
-
-	.footer-section a:hover {
-		color: var(--orange-primary);
-	}
-
-	.footer-bottom {
-		border-top: 1px solid rgba(255, 255, 255, 0.1);
-		padding-top: 1rem;
-		text-align: center;
-		color: rgba(255, 255, 255, 0.6);
-	}
-
-	@media (max-width: 768px) {
-		.hero-container {
-			grid-template-columns: 1fr;
-			text-align: center;
-			gap: 2rem;
-		}
-
-		.hero-content h1 {
-			font-size: 2.5rem;
-		}
-
-		.hero-circle {
-			width: 300px;
-			height: 300px;
-		}
-
-		.hero-buttons {
-			justify-content: center;
-		}
-
-		.mission-cards {
-			grid-template-columns: 1fr;
-		}
+	.intro-overlay.hidden {
+		opacity: 0;
+		pointer-events: none;
 	}
 
 	.fade-in {
@@ -400,83 +52,76 @@ import { Button } from '$lib/components/ui/button';
 		animation: fadeInUp 0.8s ease forwards;
 	}
 
-	@keyframes fadeInUp {
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-
-	.mission-card:nth-child(1) {
+	.fade-in:nth-child(1) {
 		animation-delay: 0.1s;
 	}
-	.mission-card:nth-child(2) {
+	.fade-in:nth-child(2) {
 		animation-delay: 0.2s;
 	}
-	.mission-card:nth-child(3) {
+	.fade-in:nth-child(3) {
 		animation-delay: 0.3s;
 	}
 </style>
 
-<div id="introOverlay" class="intro-overlay">
-	<canvas id="introCanvas" class="intro-canvas"></canvas>
-	<img id="introLogo" class="intro-logo" src="/logo.png" alt="YouthUnite" />
+<div id="introOverlay" class="fixed top-0 left-0 w-screen h-screen bg-white z-[9999] flex items-center justify-center transition-opacity duration-500 ease-out">
+	<canvas id="introCanvas" class="block bg-transparent absolute top-0 left-0 w-screen h-screen"></canvas>
+	<img id="introLogo" class="absolute top-1/2 left-1/2 origin-center opacity-100 select-none pointer-events-none w-[280px] h-auto translate-x-[-50%] translate-y-[-50%] scale-0 transition-none" src="/logo.png" alt="YouthUnite" />
 </div>
 
-<section class="hero" id="home">
+<section class="hero min-h-screen flex items-center relative overflow-hidden" id="home" style="background: linear-gradient(135deg, var(--blue-sky) 0%, var(--blue-light) 100%);">
 <br>
-	<div class="hero-container">
-		<div class="hero-content">
-			<h1>
-				Empowering <span class="highlight">Youth</span> to Lead Change
+	<div class="max-w-6xl mx-auto px-8 grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-16 items-center relative z-20 text-center md:text-left">
+		<div>
+			<h1 class="text-4xl md:text-6xl font-extrabold mb-6 text-white leading-tight">
+				Empowering <span class="drop-shadow-md" style="color: var(--orange-primary);">Youth</span> to Lead Change
 			</h1>
-			<p>
+			<p class="text-xl mb-8 text-white/90 font-normal">
 				Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
 				eiusmod tempor incididunt ut labore et dolore magna aliqua.
 			</p>
-			<div class="hero-buttons">
+			<div class="flex gap-4 flex-wrap justify-center md:justify-start">
 				<a href="/login"><Button size="lg">Join Us</Button></a>
 				<a href="#mission"><Button size="lg" variant="secondary">Learn More</Button></a>
 			</div>
 		</div>
-		<div class="hero-visual">
-			<div class="hero-circle">
-				<img src="/teens.png" />
+		<div class="flex justify-center items-center relative">
+			<div class="w-80 h-80 md:w-96 md:h-96 bg-white/10 rounded-full flex items-center justify-center relative backdrop-blur border-2 border-white/20 overflow-hidden">
+				<img src="/teens.png" class="w-full h-full object-cover rounded-full animate-pulse" style="animation: pulse 2s infinite;" />
 			</div>
 		</div>
 	</div>
 </section>
 
-<section class="mission" id="mission">
-	<div class="mission-container">
-		<h2>Our Mission</h2>
-		<p>
+<section class="py-24" id="mission" style="background: var(--light-grey);">
+	<div class="max-w-6xl mx-auto px-8 text-center">
+		<h2 class="text-4xl font-bold mb-4" style="color: var(--blue-dark);">Our Mission</h2>
+		<p class="text-xl mb-16 max-w-2xl mx-auto" style="color: var(--dark-grey);">
 			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
 			eiusmod tempor incididunt ut labore et dolore magna aliqua.
 		</p>
 
-		<div class="mission-cards">
-			<div class="mission-card fade-in">
-				<div class="icon">🤝</div>
-				<h3>Connect</h3>
-				<p>
+		<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+      <div class="fade-in bg-white p-10 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-3">
+				<div class="text-5xl mb-4">🤝</div>
+				<h3 class="text-2xl font-semibold mb-4" style="color: var(--blue-dark);">Connect</h3>
+				<p style="color: var(--dark-grey);">
 					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
 					do eiusmod tempor incididunt ut labore et dolore magna
 					aliqua.
 				</p>
 			</div>
-			<div class="mission-card fade-in">
-				<div class="icon">📚</div>
-				<h3>Learn</h3>
-				<p>
+			<div class="fade-in bg-white p-10 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-3">
+				<div class="text-5xl mb-4">📚</div>
+				<h3 class="text-2xl font-semibold mb-4" style="color: var(--blue-dark);">Learn</h3>
+				<p style="color: var(--dark-grey);">
 					Ut enim ad minim veniam, quis nostrud exercitation ullamco
 					laboris nisi ut aliquip ex ea commodo consequat.
 				</p>
 			</div>
-			<div class="mission-card fade-in">
-				<div class="icon">⚡</div>
-				<h3>Act</h3>
-				<p>
+			<div class="fade-in bg-white p-10 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-3">
+				<div class="text-5xl mb-4">⚡</div>
+				<h3 class="text-2xl font-semibold mb-4" style="color: var(--blue-dark);">Act</h3>
+				<p style="color: var(--dark-grey);">
 					Duis aute irure dolor in reprehenderit in voluptate velit
 					esse cillum dolore eu fugiat nulla pariatur.
 				</p>
@@ -485,10 +130,10 @@ import { Button } from '$lib/components/ui/button';
 	</div>
 </section>
 
-<section class="cta-section">
-	<div class="cta-container">
-		<h2>Ready to Make a Difference?</h2>
-		<p>
+<section class="py-24 text-white text-center" style="background: linear-gradient(135deg, var(--blue-dark), var(--blue-light));">
+	<div class="max-w-4xl mx-auto px-8">
+		<h2 class="text-4xl font-bold mb-4">Ready to Make a Difference?</h2>
+		<p class="text-xl mb-8 opacity-90">
 			Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
 			officia deserunt mollit anim id est laborum.
 		</p>
@@ -496,41 +141,37 @@ import { Button } from '$lib/components/ui/button';
 	</div>
 </section>
 
-<footer class="footer">
-	<div class="footer-container">
-		<div class="footer-content">
-			<div class="footer-section">
-				<h3>Navigate</h3>
-				<a href="#home">Home</a>
-				<a href="#events">Event Hub</a>
-				<a href="#submit">Submit an Event</a>
-				<a href="#learn">Learn</a>
-				<a href="#contact">Contact</a>
+<footer class="text-white py-12" style="background: var(--blue-dark);">
+	<div class="max-w-6xl mx-auto px-8">
+		<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+			<div>
+				<h3 class="text-xl font-semibold mb-4" style="color: var(--orange-primary);">Navigate</h3>
+				<a href="#home" class="block text-white/80 mb-2 transition-colors" style="color: rgba(255, 255, 255, 0.8);" onmouseover="this.style.color='var(--orange-primary)'" onmouseout="this.style.color='rgba(255, 255, 255, 0.8)'">Home</a>
+				<a href="#events" class="block text-white/80 mb-2 transition-colors" style="color: rgba(255, 255, 255, 0.8);" onmouseover="this.style.color='var(--orange-primary)'" onmouseout="this.style.color='rgba(255, 255, 255, 0.8)'">Event Hub</a>
+				<a href="#submit" class="block text-white/80 mb-2 transition-colors" style="color: rgba(255, 255, 255, 0.8);" onmouseover="this.style.color='var(--orange-primary)'" onmouseout="this.style.color='rgba(255, 255, 255, 0.8)'">Submit an Event</a>
+				<a href="#learn" class="block text-white/80 mb-2 transition-colors" style="color: rgba(255, 255, 255, 0.8);" onmouseover="this.style.color='var(--orange-primary)'" onmouseout="this.style.color='rgba(255, 255, 255, 0.8)'">Learn</a>
+				<a href="#contact" class="block text-white/80 mb-2 transition-colors" style="color: rgba(255, 255, 255, 0.8);" onmouseover="this.style.color='var(--orange-primary)'" onmouseout="this.style.color='rgba(255, 255, 255, 0.8)'">Contact</a>
 			</div>
-			<div class="footer-section">
-				<h3>Get in Touch</h3>
-				<a href="mailto:youthunite89@gmail.com"
-					>youthunite89@gmail.com</a
-				>
-				<a href="tel:440-665-8301">440-665-8301</a>
-				<a href="mailto:teamyouthunite@gmail.com"
-					>teamyouthunite@gmail.com</a
-				>
+			<div>
+				<h3 class="text-xl font-semibold mb-4" style="color: var(--orange-primary);">Get in Touch</h3>
+				<a href="mailto:youthunite89@gmail.com" class="block text-white/80 mb-2 transition-colors" style="color: rgba(255, 255, 255, 0.8);" onmouseover="this.style.color='var(--orange-primary)'" onmouseout="this.style.color='rgba(255, 255, 255, 0.8)'">youthunite89@gmail.com</a>
+				<a href="tel:440-665-8301" class="block text-white/80 mb-2 transition-colors" style="color: rgba(255, 255, 255, 0.8);" onmouseover="this.style.color='var(--orange-primary)'" onmouseout="this.style.color='rgba(255, 255, 255, 0.8)'">440-665-8301</a>
+				<a href="mailto:teamyouthunite@gmail.com" class="block text-white/80 mb-2 transition-colors" style="color: rgba(255, 255, 255, 0.8);" onmouseover="this.style.color='var(--orange-primary)'" onmouseout="this.style.color='rgba(255, 255, 255, 0.8)'">teamyouthunite@gmail.com</a>
 			</div>
-			<div class="footer-section">
-				<h3>About YouthUNITE</h3>
-				<p>
+			<div>
+				<h3 class="text-xl font-semibold mb-4" style="color: var(--orange-primary);">About YouthUNITE</h3>
+				<p class="text-white/80 mb-2" style="color: rgba(255, 255, 255, 0.8);">
 					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
 					do eiusmod tempor incididunt ut labore et dolore magna
 					aliqua.
 				</p>
-				<p style="margin-top: 1rem;">
+				<p class="text-white/80 mt-4" style="color: rgba(255, 255, 255, 0.8);">
 					Ut enim ad minim veniam, quis nostrud exercitation ullamco
 					laboris nisi ut aliquip ex ea commodo consequat.
 				</p>
 			</div>
 		</div>
-		<div class="footer-bottom">
+		<div class="border-t border-white/10 pt-4 text-center text-white/60" style="color: rgba(255, 255, 255, 0.6);">
 			<p>
 				© 2025 YouthUnite. All rights reserved. Built BY youth FOR
 				youth
