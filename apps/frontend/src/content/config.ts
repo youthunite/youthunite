@@ -6,8 +6,7 @@ const coursesCollection = defineCollection({
     title: z.string(),
     description: z.string(),
     instructor: z.string(),
-    duration: z.string(),
-    difficulty: z.enum(['beginner', 'intermediate', 'advanced']),
+    instructorTitle: z.string(),
     category: z.string(),
     tags: z.array(z.string()),
     published: z.boolean().default(true),
@@ -23,7 +22,6 @@ const sectionsCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     order: z.number(),
-    duration: z.string(),
     description: z.string(),
     published: z.boolean().default(true),
   }),

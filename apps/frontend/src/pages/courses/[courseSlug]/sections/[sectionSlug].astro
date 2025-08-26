@@ -1,24 +1,20 @@
 ---
 import Layout from '../../../../layouts/Layout.astro';
 import { getCollection, getEntry } from 'astro:content';
-import { Badge } from '$lib/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 
 const { courseSlug, sectionSlug } = Astro.params;
 
-// Remove .mdx extension if present
 const cleanSectionSlug = sectionSlug?.replace('.mdx', '') || '';
 
-// Get the section by full path: courseSlug/sectionSlug
 const section = await getEntry('sections', `${courseSlug}/${cleanSectionSlug}`);
 
 if (!section) {
-  throw new Error(`Section not found for slug: ${courseSlug}/${cleanSectionSlug}`);
+  return Astro.redirect(`/courses/${courseSlug}`);
 }
 
 const { Content } = await section.render();
 
-// Get the course this section belongs to
 const course = await getEntry('courses', courseSlug!);
 
 const allSections = await getCollection('sections', ({ id, data }) => {
@@ -53,11 +49,6 @@ const nextSection = currentIndex < sortedSections.length - 1 ? sortedSections[cu
               Section {section.data.order} of {sortedSections.length}
             </span>
           </div>
-          <div class="flex items-center gap-2">
-            <Badge variant="outline" class="text-xs">
-              {section.data.duration}
-            </Badge>
-          </div>
         </div>
       </div>
     </div>
@@ -71,8 +62,6 @@ const nextSection = currentIndex < sortedSections.length - 1 ? sortedSections[cu
               <CardHeader class="pb-6">
                 <div class="flex items-center gap-2 text-sm text-gray-500 mb-2">
                   <span>Section {section.data.order}</span>
-                  <span>•</span>
-                  <span>{section.data.duration}</span>
                 </div>
                 <CardTitle class="text-3xl font-bold text-gray-800">
                   {section.data.title}
@@ -153,9 +142,6 @@ const nextSection = currentIndex < sortedSections.length - 1 ? sortedSections[cu
                   >
                     <div class="font-medium mb-1">
                       {index + 1}. {sectionItem.data.title}
-                    </div>
-                    <div class="text-xs text-gray-500">
-                      {sectionItem.data.duration}
                     </div>
                   </a>
                 ))}
