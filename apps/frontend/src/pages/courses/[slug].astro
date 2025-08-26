@@ -1,0 +1,161 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, getEntry } from 'astro:content';
+import { Badge } from '$lib/components/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
+
+const { slug } = Astro.params;
+const course = await getEntry('courses', slug!);
+
+if (!course) {
+  throw new Error(`Course not found for slug: ${slug}`);
+}
+
+const { Content } = await course.render();
+
+const allSections = await getCollection('sections', ({ id, data }) => {
+  const courseSlugFromPath = id.split('/')[0];
+  return courseSlugFromPath === course.slug && data.published;
+});
+const sortedSections = allSections.sort((a, b) => a.data.order - b.data.order);
+---
+
+<Layout title={course.data.title}>
+  <main class="min-h-screen bg-gray-50">
+    <!-- Course Header -->
+    <div class="bg-primary text-white py-16">
+      <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+          <div class="flex flex-wrap gap-2 mb-4">
+            <Badge variant="secondary" class="bg-white/20 text-white border-white/30">
+              {course.data.category}
+            </Badge>
+            <Badge variant="secondary" class="bg-white/20 text-white border-white/30">
+              {course.data.difficulty}
+            </Badge>
+            {course.data.featured && (
+              <Badge variant="secondary" class="bg-yellow-500 text-yellow-900 border-yellow-400">
+                Featured
+              </Badge>
+            )}
+          </div>
+          <h1 class="text-4xl md:text-5xl font-bold mb-4">
+            {course.data.title}
+          </h1>
+          <p class="text-xl text-white/80 mb-6">
+            {course.data.description}
+          </p>
+          <div class="flex flex-wrap gap-6 text-white/80">
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Instructor: {course.data.instructor}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Duration: {course.data.duration}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-12">
+      <div class="max-w-4xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- Course Content -->
+          <div class="lg:col-span-2">
+            <Card class="mb-8">
+              <CardHeader>
+                <CardTitle class="text-2xl">Course Overview</CardTitle>
+              </CardHeader>
+              <CardContent class="prose prose-lg max-w-none">
+                <Content />
+              </CardContent>
+            </Card>
+
+            <!-- Course Tags -->
+            {course.data.tags && course.data.tags.length > 0 && (
+              <Card class="mb-8">
+                <CardHeader>
+                  <CardTitle>Topics Covered</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div class="flex flex-wrap gap-2">
+                    {course.data.tags.map((tag) => (
+                      <Badge variant="outline" class="text-sm">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            <!-- Prerequisites -->
+            {course.data.prerequisites && course.data.prerequisites.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Prerequisites</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul class="space-y-2">
+                    {course.data.prerequisites.map((prereq) => (
+                      <li class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>{prereq}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          <!-- Course Sections Sidebar -->
+          <div class="lg:col-span-1">
+            <Card class="sticky top-8">
+              <CardHeader>
+                <CardTitle class="text-xl">Course Sections</CardTitle>
+                <CardDescription>
+                  {sortedSections.length} section{sortedSections.length !== 1 ? 's' : ''}
+                </CardDescription>
+              </CardHeader>
+              <CardContent class="space-y-3">
+                {sortedSections.map((section, index) => (
+                  <a 
+                    href={`/courses/${course.slug}/sections/${section.id.split('/')[1].replace('.mdx', '')}`}
+                    class="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <div class="flex items-start justify-between mb-2">
+                      <span class="text-sm font-medium text-primary">
+                        {index + 1}. {section.data.title}
+                      </span>
+                      <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                        {section.data.duration}
+                      </span>
+                    </div>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                      {section.data.description}
+                    </p>
+                  </a>
+                ))}
+                
+                {sortedSections.length === 0 && (
+                  <p class="text-gray-500 text-center py-4">
+                    No sections available yet.
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>

@@ -1,0 +1,169 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import { getCollection, getEntry } from 'astro:content';
+import { Badge } from '$lib/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+
+const { courseSlug, sectionSlug } = Astro.params;
+
+// Remove .mdx extension if present
+const cleanSectionSlug = sectionSlug?.replace('.mdx', '') || '';
+
+// Get the section by full path: courseSlug/sectionSlug
+const section = await getEntry('sections', `${courseSlug}/${cleanSectionSlug}`);
+
+if (!section) {
+  throw new Error(`Section not found for slug: ${courseSlug}/${cleanSectionSlug}`);
+}
+
+const { Content } = await section.render();
+
+// Get the course this section belongs to
+const course = await getEntry('courses', courseSlug!);
+
+const allSections = await getCollection('sections', ({ id, data }) => {
+  const courseSlugFromPath = id.split('/')[0];
+  return courseSlugFromPath === courseSlug && data.published;
+});
+const sortedSections = allSections.sort((a, b) => a.data.order - b.data.order);
+
+const currentIndex = sortedSections.findIndex(s => s.id === section.id);
+const previousSection = currentIndex > 0 ? sortedSections[currentIndex - 1] : null;
+const nextSection = currentIndex < sortedSections.length - 1 ? sortedSections[currentIndex + 1] : null;
+---
+
+<Layout title={`${section.data.title} - ${course?.data.title}`}>
+  <main class="min-h-screen bg-gray-50">
+    <!-- Navigation Header -->
+    <div class="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <div class="container mx-auto px-4 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <a 
+              href={`/courses/${course?.slug}`}
+              class="text-primary hover:text-primary/80 font-medium text-sm flex items-center gap-2"
+            >
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              Back to {course?.data.title}
+            </a>
+            <span class="text-gray-300">|</span>
+            <span class="text-sm text-gray-600">
+              Section {section.data.order} of {sortedSections.length}
+            </span>
+          </div>
+          <div class="flex items-center gap-2">
+            <Badge variant="outline" class="text-xs">
+              {section.data.duration}
+            </Badge>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8">
+      <div class="max-w-4xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          <!-- Section Content -->
+          <div class="lg:col-span-3">
+            <Card class="mb-8">
+              <CardHeader class="pb-6">
+                <div class="flex items-center gap-2 text-sm text-gray-500 mb-2">
+                  <span>Section {section.data.order}</span>
+                  <span>•</span>
+                  <span>{section.data.duration}</span>
+                </div>
+                <CardTitle class="text-3xl font-bold text-gray-800">
+                  {section.data.title}
+                </CardTitle>
+                <p class="text-lg text-gray-600 mt-2">
+                  {section.data.description}
+                </p>
+              </CardHeader>
+              <CardContent class="prose prose-lg max-w-none">
+                <Content />
+              </CardContent>
+            </Card>
+
+            <!-- Navigation -->
+            <div class="flex justify-between items-center">
+              {previousSection ? (
+                <a 
+                  href={`/courses/${courseSlug}/sections/${previousSection.id.split('/')[1].replace('.mdx', '')}`}
+                  class="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors duration-200"
+                >
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  </svg>
+                  <div class="text-left">
+                    <div class="text-xs text-gray-500">Previous</div>
+                    <div class="text-sm font-medium">{previousSection.data.title}</div>
+                  </div>
+                </a>
+              ) : (
+                <div></div>
+              )}
+
+              {nextSection ? (
+                <a 
+                  href={`/courses/${courseSlug}/sections/${nextSection.id.split('/')[1].replace('.mdx', '')}`}
+                  class="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors duration-200"
+                >
+                  <div class="text-right">
+                    <div class="text-xs text-white/70">Next</div>
+                    <div class="text-sm font-medium">{nextSection.data.title}</div>
+                  </div>
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                  </svg>
+                </a>
+              ) : (
+                <a 
+                  href={`/courses/${courseSlug}`}
+                  class="flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent/90 text-white rounded-lg transition-colors duration-200"
+                >
+                  <div class="text-right">
+                    <div class="text-xs text-white/70">Course Complete</div>
+                    <div class="text-sm font-medium">Back to Course</div>
+                  </div>
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  </svg>
+                </a>
+              )}
+            </div>
+          </div>
+
+          <!-- Sidebar -->
+          <div class="lg:col-span-1">
+            <Card class="sticky top-24">
+              <CardHeader>
+                <CardTitle class="text-lg">Course Progress</CardTitle>
+              </CardHeader>
+              <CardContent class="space-y-2">
+                {sortedSections.map((sectionItem, index) => (
+                  <a 
+                    href={`/courses/${courseSlug}/sections/${sectionItem.id.split('/')[1].replace('.mdx', '')}`}
+                    class={`block p-3 rounded-lg text-sm transition-colors duration-200 ${
+                      sectionItem.id === section.id 
+                        ? 'bg-primary/10 border-2 border-primary text-primary' 
+                        : 'border border-gray-200 hover:bg-gray-50 text-gray-700'
+                    }`}
+                  >
+                    <div class="font-medium mb-1">
+                      {index + 1}. {sectionItem.data.title}
+                    </div>
+                    <div class="text-xs text-gray-500">
+                      {sectionItem.data.duration}
+                    </div>
+                  </a>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>

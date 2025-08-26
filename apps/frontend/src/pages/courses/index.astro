@@ -1,0 +1,92 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { Badge } from '$lib/components/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
+
+const courses = await getCollection('courses', ({ data }) => data.published);
+const sortedCourses = courses.sort((a, b) => (a.data.order || 999) - (b.data.order || 999));
+---
+
+<Layout title="Courses">
+  <main class="min-h-screen bg-gradient-to-br from-secondary to-muted py-12">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">
+          Learn Something New Today
+        </h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          Discover our comprehensive courses designed to help you develop new skills and advance your career.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {sortedCourses.map((course) => (
+          <Card class="hover:shadow-lg transition-shadow duration-300 bg-white">
+            <CardHeader class="pb-4">
+              {course.data.image && (
+                <div class="w-full h-48 bg-gray-200 rounded-lg mb-4 overflow-hidden">
+                  <img 
+                    src={course.data.image} 
+                    alt={course.data.title}
+                    class="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              <div class="flex justify-between items-start mb-2">
+                <Badge variant={course.data.difficulty === 'beginner' ? 'default' : 
+                                course.data.difficulty === 'intermediate' ? 'secondary' : 'destructive'}
+                       class="text-xs">
+                  {course.data.difficulty}
+                </Badge>
+                {course.data.featured && (
+                  <Badge variant="outline" class="text-xs">
+                    Featured
+                  </Badge>
+                )}
+              </div>
+              <CardTitle class="text-xl font-semibold text-gray-800 leading-tight">
+                {course.data.title}
+              </CardTitle>
+              <CardDescription class="text-gray-600 mt-2">
+                {course.data.description}
+              </CardDescription>
+            </CardHeader>
+            <CardContent class="pt-0">
+              <div class="space-y-3">
+                <div class="flex justify-between text-sm text-gray-500">
+                  <span>Instructor: {course.data.instructor}</span>
+                  <span>{course.data.duration}</span>
+                </div>
+                <div class="flex flex-wrap gap-1">
+                  {course.data.tags.slice(0, 3).map((tag) => (
+                    <Badge variant="outline" class="text-xs">
+                      {tag}
+                    </Badge>
+                  ))}
+                  {course.data.tags.length > 3 && (
+                    <Badge variant="outline" class="text-xs">
+                      +{course.data.tags.length - 3} more
+                    </Badge>
+                  )}
+                </div>
+                <a 
+                  href={`/courses/${course.slug}`}
+                  class="block w-full bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg text-center transition-colors duration-200"
+                >
+                  View Course
+                </a>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {sortedCourses.length === 0 && (
+        <div class="text-center py-12">
+          <p class="text-gray-500 text-lg">No courses available at the moment.</p>
+        </div>
+      )}
+    </div>
+  </main>
+</Layout>
