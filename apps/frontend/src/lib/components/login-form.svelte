@@ -20,7 +20,16 @@
       .then(data => {
         if (data.success) {
           document.cookie = `jwt_token=${data.jwt_token}; Max-Age=86400; Secure; Path=/; SameSite=Lax`;
-          window.location.href = '/dashboard';
+          
+          // redirect param checking
+          const urlParams = new URLSearchParams(window.location.search);
+          const redirectPath = urlParams.get('redirect');
+          
+          if (redirectPath) {
+            window.location.href = redirectPath;
+          } else {
+            window.location.href = '/dashboard';
+          }
         } else {
           toast.error('Login failed. Please check your credentials.');
           (form.querySelector('input[type="password"]') as HTMLInputElement).value = '';
@@ -83,8 +92,9 @@
           </Button>
         </form>
         <div class="mt-4 text-center text-sm">
-          Don’t have an account?
-          <a href="/register" class="underline text-[#e46a2d]">Sign up here</a>
+          Don't have an account?
+          <!-- I LOVE TERNARY OPERATORS AAA -->
+          <a href="/register{typeof window !== 'undefined' && window.location.search ? window.location.search : ''}" class="underline text-[#e46a2d]">Sign up here</a>
         </div>
         <p class="mt-6 text-center text-xs text-gray-500">
           Need help? Contact us at <a href="mailto:team.youthunite@gmail.com" class="underline">team.youthunite@gmail.com</a>

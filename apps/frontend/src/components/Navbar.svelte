@@ -11,6 +11,7 @@
     { href: '/', label: 'Home' },
     { href: '/events', label: 'Event Hub' },
     { href: '/events/register', label: 'Submit an Event' },
+    { href: '/courses', label: 'Courses' },
     { href: '/learn', label: 'Learn' },
     { href: '/contact', label: 'Contact us' },
   ];
