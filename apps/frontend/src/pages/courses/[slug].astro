@@ -8,7 +8,7 @@ const { slug } = Astro.params;
 const course = await getEntry('courses', slug!);
 
 if (!course) {
-  return console.log(`Course not found for slug: ${slug}`);
+  return Astro.redirect('/courses');
 }
 
 const { Content } = await course.render();
