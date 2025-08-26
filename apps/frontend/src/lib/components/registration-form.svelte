@@ -24,7 +24,16 @@
         if (data.success) {
           // cookie string from https://lucia-auth.com/sessions/basic
           document.cookie = `jwt_token=${data.jwt_token}; Age=86400; Secure; Path=/; SameSite=Lax`;
-          window.location.href = '/dashboard';
+          
+          // redirect param checking
+          const urlParams = new URLSearchParams(window.location.search);
+          const redirectPath = urlParams.get('redirect');
+          
+          if (redirectPath) {
+            window.location.href = redirectPath;
+          } else {
+            window.location.href = '/dashboard';
+          }
         } else {
           toast.error('Registration failed. Please check your credentials.');
         }
@@ -91,7 +100,7 @@
         </form>
         <div class="mt-4 text-center text-sm">
           Already have an account?
-          <a href="/login" class="underline"> Log in! </a>
+          <a href="/login{typeof window !== 'undefined' && window.location.search ? window.location.search : ''}" class="underline"> Log in! </a>
         </div>
       </Card.Content>
     </Card.Root>
