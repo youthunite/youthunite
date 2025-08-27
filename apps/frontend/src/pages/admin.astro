@@ -67,10 +67,12 @@ try {
                       <input type="hidden" name="id" value={u.id} />
                       <button type="submit" class="btn btn-secondary ml-2">Delete</button>
                     </form>
-                    <form method="post" action="/api/admin/add-admin" onsubmit={`return confirm('Make ${u.name} an admin?');`}>
-                      <input type="hidden" name="id" value={u.id} />
+                    {u.tier && u.tier.toLowerCase() !== 'admin' ? (
+                      <form method="post" action="/api/admin/add-admin" onsubmit={`return confirm('Make ${u.name} an admin?');`}>
+                        <input type="hidden" name="id" value={u.id} />
                         <button type="submit" class="btn btn-secondary ml-2" style="background-color: red; color: white;">Make admin</button>
-                    </form>
+                      </form>
+                    ) : null}
                   </td>
                 </tr>
               ))}
