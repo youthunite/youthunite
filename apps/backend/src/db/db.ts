@@ -29,9 +29,18 @@ export async function registerUser(
   ipAddress: string
 ) {
   password = await bcrypt.hash(password, 10);
+
+  const existingUsers = await db.select().from(schema.usersTable);
+  const isFirstUser = existingUsers.length === 0;
+
+  const insertValues: any = { email, password, name };
+  if (isFirstUser) {
+    insertValues.tier = "admin";
+  }
+
   const answer = await db
     .insert(schema.usersTable)
-    .values({ email, password, name })
+    .values(insertValues)
     .returning();
   return (
     await createSession(

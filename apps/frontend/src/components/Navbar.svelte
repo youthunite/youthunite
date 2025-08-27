@@ -57,6 +57,9 @@
       {#if isLoading}
         <div class="w-8 h-8 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
       {:else if isAuthenticated && currentUser}
+        {#if currentUser.tier && currentUser.tier.toLowerCase() === 'admin'}
+          <a href="/admin"><Button variant="outline" class="hidden sm:inline-flex h-9 px-3 mr-2">Admin</Button></a>
+        {/if}
         <DropdownMenu.Root>
           <DropdownMenu.Trigger>
             <Button variant="ghost" class="h-9 px-3 gap-2">

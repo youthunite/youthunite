@@ -1,0 +1,113 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getServerUser, getTokenFromCookie } from '$lib/server/auth';
+
+const cookieHeader = Astro.request.headers.get('cookie');
+const token = getTokenFromCookie(cookieHeader);
+
+if (!token) {
+  return Astro.redirect('/login?redirect=/admin');
+}
+
+const user = await getServerUser(token);
+if (!user) {
+  return Astro.redirect('/login?redirect=/admin');
+}
+
+if (user.tier.toLowerCase() !== 'admin') {
+  return Astro.redirect('/dashboard');
+}
+
+let users = [];
+let events = [];
+try {
+  const [uRes, eRes] = await Promise.all([
+    fetch(`${import.meta.env.PUBLIC_API_URL}/admin/users`, { headers: { Authorization: `Bearer ${token}` } }),
+    fetch(`${import.meta.env.PUBLIC_API_URL}/admin/events`, { headers: { Authorization: `Bearer ${token}` } })
+  ]);
+
+  const uData = await uRes.json();
+  const eData = await eRes.json();
+
+  users = uData.success ? (uData.users || []) : [];
+  events = eData.success ? (eData.events || []) : [];
+} catch (err) {
+  console.error('Admin fetch error', err);
+}
+---
+
+<Layout title="Admin">
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-4">Admin Panel</h1>
+    <p class="mb-6">Welcome, {user.name}. Use this panel to get a quick overview and perform light admin actions.</p>
+
+    <section class="mb-8">
+      <h2 class="text-lg font-semibold mb-2">Users</h2>
+      {users.length === 0 ? (
+        <p>No users found or failed to load.</p>
+      ) : (
+        <div class="overflow-x-auto bg-white rounded shadow">
+          <table class="w-full text-left">
+            <thead>
+              <tr>
+                <th class="px-4 py-2">Name</th>
+                <th class="px-4 py-2">Email</th>
+                <th class="px-4 py-2">Tier</th>
+                <th class="px-4 py-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((u: any) => (
+                <tr class="border-t">
+                  <td class="px-4 py-2">{u.name}</td>
+                  <td class="px-4 py-2">{u.email}</td>
+                  <td class="px-4 py-2">{u.tier}</td>
+                  <td class="px-4 py-2 flex flex-row">
+                    <form method="post" action="/api/admin/delete-user" onsubmit="return confirm('Delete user?');">
+                      <input type="hidden" name="id" value={u.id} />
+                      <button type="submit" class="btn btn-secondary ml-2">Delete</button>
+                    </form>
+                    <form method="post" action="/api/admin/add-admin" onsubmit={`return confirm('Make ${u.name} an admin?');`}>
+                      <input type="hidden" name="id" value={u.id} />
+                        <button type="submit" class="btn btn-secondary ml-2" style="background-color: red; color: white;">Make admin</button>
+                    </form>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+
+    <section>
+      <h2 class="text-lg font-semibold mb-2">Events</h2>
+      {events.length === 0 ? (
+        <p>No events found or failed to load.</p>
+      ) : (
+        <div class="space-y-4">
+          {events.map((ev: any) => (
+                <div class="p-4 bg-white rounded shadow flex justify-between items-center">
+              <div>
+                <div class="font-semibold">{ev.title}</div>
+                <div class="text-sm text-gray-600">{ev.start_time} — {ev.location}</div>
+              </div>
+              <div>
+                <form method="post" action="/api/admin/delete-event" onsubmit="return confirm('Delete event?');">
+                  <input type="hidden" name="id" value={ev.id} />
+                  <button type="submit" class="btn btn-secondary">Delete</button>
+                </form>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  </div>
+</Layout>
+
+<style>
+.container { max-width: 1100px; }
+.btn { padding: 0.5rem 0.75rem; border-radius: 6px; }
+.btn-secondary { background: #efefef; border: 1px solid #ddd; }
+</style>

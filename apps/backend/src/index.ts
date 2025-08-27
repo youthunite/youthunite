@@ -5,6 +5,7 @@ import { ip } from "elysia-ip";
 import AuthRouter from "./auth/auth";
 import EventsRouter from "./events/events";
 import ContactRouter from "./contact/contact";
+import AdminRouter from './admin/admin';
 import { Resend } from "resend";
 import { Fillout } from "@fillout/api";
 
@@ -26,6 +27,9 @@ const app = new Elysia()
   )
   .group('/contact', (app) =>
     app.use(ContactRouter)
+  )
+  .group('/admin', (app) =>
+    app.use(AdminRouter)
   )
   .listen(3000);
 
