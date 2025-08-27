@@ -47,9 +47,8 @@
   const id = $props.id();
 </script>
 
-<div class="flex h-screen w-full">
-
-  <div class="w-1/2 bg-[#e8f4f5] flex flex-col justify-center px-16">
+<div class="flex w-full flex-col md:flex-row min-h-screen">
+  <div class="hidden md:flex w-1/2 bg-[#e8f4f5] flex-col justify-center px-16">
     <h1 class="text-3xl font-bold">
       Welcome to <span class="text-[#e46a2d]">Youth</span><span class="text-[#1b355e]">UNITE</span>
     </h1>
@@ -75,35 +74,34 @@
     </div>
   </div>
 
-
-<div class="w-full md:w-1/2 flex items-center justify-center bg-white px-4">
-  <Card.Root class="w-full max-w-md shadow-lg rounded-lg">
-    <Card.Header>
-      <Card.Title class="text-2xl font-semibold">Welcome Back</Card.Title>
-      <Card.Description>Continue your impact journey</Card.Description>
-    </Card.Header>
-    <Card.Content>
-      <form class="grid gap-4" onsubmit={submit}>
-        <div class="grid gap-2">
-          <Label for="email-{id}">Email address</Label>
-          <Input id="email-{id}" type="email" placeholder="m@example.com" required />
+  <div class="w-full md:w-1/2 flex items-center justify-center bg-white px-4 min-h-screen">
+    <Card.Root class="w-full max-w-md shadow-lg rounded-lg">
+      <Card.Header>
+        <Card.Title class="text-2xl font-semibold">Welcome Back</Card.Title>
+        <Card.Description>Continue your impact journey</Card.Description>
+      </Card.Header>
+      <Card.Content>
+        <form class="grid gap-4" onsubmit={submit}>
+          <div class="grid gap-2">
+            <Label for="email-{id}">Email address</Label>
+            <Input id="email-{id}" type="email" placeholder="m@example.com" required />
+          </div>
+          <div class="grid gap-2">
+            <Label for="password-{id}">Password</Label>
+            <Input id="password-{id}" type="password" placeholder="Enter your password" required />
+          </div>
+          <Button type="submit" class="w-full">
+            Sign In
+          </Button>
+        </form>
+        <div class="mt-4 text-center text-sm">
+          Don't have an account?
+          <a href="/register{typeof window !== 'undefined' && window.location.search ? window.location.search : ''}" class="underline text-[#e46a2d]">Sign up here</a>
         </div>
-        <div class="grid gap-2">
-          <Label for="password-{id}">Password</Label>
-          <Input id="password-{id}" type="password" placeholder="Enter your password" required />
-        </div>
-        <Button type="submit" class="w-full">
-          Sign In
-        </Button>
-      </form>
-      <div class="mt-4 text-center text-sm">
-        Don't have an account?
-        <a href="/register{typeof window !== 'undefined' && window.location.search ? window.location.search : ''}" class="underline text-[#e46a2d]">Sign up here</a>
-      </div>
-      <p class="mt-6 text-center text-xs text-gray-500">
-        Need help? Contact us at <a href="mailto:team.youthunite@gmail.com" class="underline">team.youthunite@gmail.com</a>
-      </p>
-    </Card.Content>
-  </Card.Root>
-</div>
+        <p class="mt-6 text-center text-xs text-gray-500">
+          Need help? Contact us at <a href="mailto:team.youthunite@gmail.com" class="underline">team.youthunite@gmail.com</a>
+        </p>
+      </Card.Content>
+    </Card.Root>
+  </div>
 </div>
