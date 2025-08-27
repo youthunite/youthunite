@@ -43,6 +43,7 @@
 
   const id = $props.id();
 </script>
+
 <div class="flex h-screen w-full flex-col md:flex-row">
   <div class="hidden md:flex w-1/2 bg-[#e8f4f5] flex-col justify-center px-16">
     <h1 class="text-3xl font-bold">
@@ -70,7 +71,7 @@
     </div>
   </div>
 
-  <div class="w-full md:w-1/2 flex items-center justify-center bg-white px-4">
+  <div class="w-full md:w-1/2 bg-white px-4 flex items-center justify-center min-h-screen">
     <Card.Root class="w-full max-w-md shadow-lg rounded-lg">
       <Card.Header>
         <Card.Title class="text-2xl font-semibold">Welcome Back</Card.Title>
