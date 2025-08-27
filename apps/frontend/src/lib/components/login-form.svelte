@@ -43,9 +43,8 @@
 
   const id = $props.id();
 </script>
-
-<div class="flex h-screen w-full">
-  <div class="w-1/2 bg-[#e8f4f5] flex flex-col justify-center px-16">
+<div class="flex h-screen w-full flex-col md:flex-row">
+  <div class="hidden md:flex w-1/2 bg-[#e8f4f5] flex-col justify-center px-16">
     <h1 class="text-3xl font-bold">
       Welcome to <span class="text-[#e46a2d]">Youth</span><span class="text-[#1b355e]">UNITE</span>
     </h1>
@@ -71,7 +70,7 @@
     </div>
   </div>
 
-  <div class="w-1/2 flex items-center justify-center bg-white px-4">
+  <div class="w-full md:w-1/2 flex items-center justify-center bg-white px-4">
     <Card.Root class="w-full max-w-md shadow-lg rounded-lg">
       <Card.Header>
         <Card.Title class="text-2xl font-semibold">Welcome Back</Card.Title>
@@ -93,7 +92,6 @@
         </form>
         <div class="mt-4 text-center text-sm">
           Don't have an account?
-          <!-- I LOVE TERNARY OPERATORS AAA -->
           <a href="/register{typeof window !== 'undefined' && window.location.search ? window.location.search : ''}" class="underline text-[#e46a2d]">Sign up here</a>
         </div>
         <p class="mt-6 text-center text-xs text-gray-500">

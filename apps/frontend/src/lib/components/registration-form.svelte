@@ -76,33 +76,34 @@
   </div>
 
 
-  <div class="w-1/2 flex items-center justify-center px-4">
-    <Card.Root class="mx-auto w-full max-w-sm">
-      <Card.Header>
-        <Card.Title class="text-2xl">Sign Up</Card.Title>
-        <Card.Description>Enter your email below to create a new account</Card.Description>
-      </Card.Header>
-      <Card.Content>
-        <form class="grid gap-4" onsubmit={submit}>
-          <div class="grid gap-2">
-            <Label for="username-{id}">Username</Label>
-            <Input id="username-{id}" type="text" placeholder="johndoe" required />
-          </div>
-          <div class="grid gap-2">
-            <Label for="email-{id}">Email</Label>
-            <Input id="email-{id}" type="email" placeholder="m@example.com" required />
-          </div>
-          <div class="grid gap-2">
-            <Label for="password-{id}">Password</Label>
-            <Input id="password-{id}" type="password" placeholder="Enter your password" required />
-          </div>
-          <Button type="submit" class="w-full">Sign Up</Button>
-        </form>
-        <div class="mt-4 text-center text-sm">
-          Already have an account?
-          <a href="/login{typeof window !== 'undefined' && window.location.search ? window.location.search : ''}" class="underline"> Log in! </a>
+<div class="w-full md:w-1/2 flex items-center justify-center bg-white px-4">
+  <Card.Root class="w-full max-w-md shadow-lg rounded-lg">
+    <Card.Header>
+      <Card.Title class="text-2xl font-semibold">Welcome Back</Card.Title>
+      <Card.Description>Continue your impact journey</Card.Description>
+    </Card.Header>
+    <Card.Content>
+      <form class="grid gap-4" onsubmit={submit}>
+        <div class="grid gap-2">
+          <Label for="email-{id}">Email address</Label>
+          <Input id="email-{id}" type="email" placeholder="m@example.com" required />
         </div>
-      </Card.Content>
-    </Card.Root>
-  </div>
+        <div class="grid gap-2">
+          <Label for="password-{id}">Password</Label>
+          <Input id="password-{id}" type="password" placeholder="Enter your password" required />
+        </div>
+        <Button type="submit" class="w-full">
+          Sign In
+        </Button>
+      </form>
+      <div class="mt-4 text-center text-sm">
+        Don't have an account?
+        <a href="/register{typeof window !== 'undefined' && window.location.search ? window.location.search : ''}" class="underline text-[#e46a2d]">Sign up here</a>
+      </div>
+      <p class="mt-6 text-center text-xs text-gray-500">
+        Need help? Contact us at <a href="mailto:team.youthunite@gmail.com" class="underline">team.youthunite@gmail.com</a>
+      </p>
+    </Card.Content>
+  </Card.Root>
+</div>
 </div>
