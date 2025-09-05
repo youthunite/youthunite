@@ -62,83 +62,71 @@ import { Button } from '$lib/components/ui/button';
 		animation-delay: 0.3s;
 	}
 </style>
-
-<div id="introOverlay" class="fixed top-0 left-0 w-screen h-screen bg-white z-[9999] flex items-center justify-center transition-opacity duration-500 ease-out">
-	<canvas id="introCanvas" class="block bg-transparent absolute top-0 left-0 w-screen h-screen"></canvas>
-	<img id="introLogo" class="absolute top-1/2 left-1/2 origin-center opacity-100 select-none pointer-events-none w-[280px] h-auto translate-x-[-50%] translate-y-[-50%] scale-0 transition-none" src="/logo.png" alt="YouthUnite" />
-</div>
-
 <section class="hero min-h-screen flex items-center relative overflow-hidden" id="home" style="background: linear-gradient(135deg, var(--blue-sky) 0%, var(--blue-light) 100%);">
 <br>
-	<div class="max-w-6xl mx-auto px-8 grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-16 items-center relative z-20 text-center md:text-left">
-		<div>
-			<h1 class="text-4xl md:text-6xl font-extrabold mb-6 text-white leading-tight">
-				Empowering <span class="drop-shadow-md" style="color: var(--orange-primary);">Youth</span> to Lead Change
-			</h1>
-			<p class="text-xl mb-8 text-white/90 font-normal">
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-				eiusmod tempor incididunt ut labore et dolore magna aliqua.
-			</p>
-			<div class="flex gap-4 flex-wrap justify-center md:justify-start">
-				<a href="/login"><Button size="lg">Join Us</Button></a>
-				<a href="#mission"><Button size="lg" variant="secondary">Learn More</Button></a>
-			</div>
-		</div>
-		<div class="flex justify-center items-center relative">
-			<div class="w-80 h-80 md:w-96 md:h-96 bg-white/10 rounded-full flex items-center justify-center relative backdrop-blur border-2 border-white/20 overflow-hidden">
-				<img src="/teens.png" class="w-full h-full object-cover rounded-full animate-pulse" style="animation: pulse 2s infinite;" />
-			</div>
-		</div>
-	</div>
+    <div class="max-w-6xl mx-auto px-8 grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-16 items-center relative z-20 text-center md:text-left">
+        <div>
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 text-white leading-tight">
+                Empowering <span class="drop-shadow-md" style="color: var(--orange-primary);">Youth</span> to Lead Change
+            </h1>
+            <p class="text-xl mb-8 text-white/90 font-normal">
+                Connecting and empowering young activists to create lasting impact in their communities and beyond.
+            </p>
+            <div class="flex gap-4 flex-wrap justify-center md:justify-start">
+                <a href="/event-hub"><Button size="lg">Get Involved</Button></a>
+                <a href="/learn"><Button size="lg" variant="secondary">Learn More</Button></a>
+            </div>
+        </div>
+        <div class="flex justify-center items-center relative">
+            <div class="w-80 h-80 md:w-96 md:h-96 bg-white/10 rounded-full flex items-center justify-center relative backdrop-blur border-2 border-white/20 overflow-hidden">
+                <img src="/teens.png" class="w-full h-full object-cover rounded-full animate-pulse" style="animation: pulse 2s infinite;" />
+            </div>
+        </div>
+    </div>
 </section>
 
 <section class="py-24" id="mission" style="background: var(--light-grey);">
-	<div class="max-w-6xl mx-auto px-8 text-center">
-		<h2 class="text-4xl font-bold mb-4" style="color: var(--blue-dark);">Our Mission</h2>
-		<p class="text-xl mb-16 max-w-2xl mx-auto" style="color: var(--dark-grey);">
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-			eiusmod tempor incididunt ut labore et dolore magna aliqua.
-		</p>
+    <div class="max-w-6xl mx-auto px-8 text-center">
+        <h2 class="text-4xl font-bold mb-4" style="color: var(--blue-dark);">Our Mission</h2>
+        <p class="text-xl mb-16 max-w-2xl mx-auto" style="color: var(--dark-grey);">
+            EMPOWERING YOUNG VOICES
+        </p>
 
-		<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
       <div class="fade-in bg-white p-10 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-3">
-				<div class="text-5xl mb-4">🤝</div>
-				<h3 class="text-2xl font-semibold mb-4" style="color: var(--blue-dark);">Connect</h3>
-				<p style="color: var(--dark-grey);">
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-					do eiusmod tempor incididunt ut labore et dolore magna
-					aliqua.
-				</p>
-			</div>
-			<div class="fade-in bg-white p-10 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-3">
-				<div class="text-5xl mb-4">📚</div>
-				<h3 class="text-2xl font-semibold mb-4" style="color: var(--blue-dark);">Learn</h3>
-				<p style="color: var(--dark-grey);">
-					Ut enim ad minim veniam, quis nostrud exercitation ullamco
-					laboris nisi ut aliquip ex ea commodo consequat.
-				</p>
-			</div>
-			<div class="fade-in bg-white p-10 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-3">
-				<div class="text-5xl mb-4">⚡</div>
-				<h3 class="text-2xl font-semibold mb-4" style="color: var(--blue-dark);">Act</h3>
-				<p style="color: var(--dark-grey);">
-					Duis aute irure dolor in reprehenderit in voluptate velit
-					esse cillum dolore eu fugiat nulla pariatur.
-				</p>
-			</div>
-		</div>
-	</div>
+                <div class="text-5xl mb-4">🤝</div>
+                <h3 class="text-2xl font-semibold mb-4" style="color: var(--blue-dark);">Connect</h3>
+                <p style="color: var(--dark-grey);">
+                    Join a network of passionate young activists worldwide. Find your community and amplify your voice.
+                </p>
+            </div>
+            <div class="fade-in bg-white p-10 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-3">
+                <div class="text-5xl mb-4">📚</div>
+                <h3 class="text-2xl font-semibold mb-4" style="color: var(--blue-dark);">Learn</h3>
+                <p style="color: var(--dark-grey);">
+                    Access tools, resources, and training to build your advocacy skills and maximize your impact.
+                </p>
+            </div>
+            <div class="fade-in bg-white p-10 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-3">
+                <div class="text-5xl mb-4">⚡</div>
+                <h3 class="text-2xl font-semibold mb-4" style="color: var(--blue-dark);">Act</h3>
+                <p style="color: var(--dark-grey);">
+                    Turn your passion into action. Launch campaigns, organize events, and create meaningful change.
+                </p>
+            </div>
+        </div>
+    </div>
 </section>
 
 <section class="py-24 text-white text-center" style="background: linear-gradient(135deg, var(--blue-dark), var(--blue-light));">
-	<div class="max-w-4xl mx-auto px-8">
-		<h2 class="text-4xl font-bold mb-4">Ready to Make a Difference?</h2>
-		<p class="text-xl mb-8 opacity-90">
-			Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-			officia deserunt mollit anim id est laborum.
-		</p>
-    <a href="/register"><Button size="lg" class="w-full max-w-96 h-14 text-lg font-bold sm:w-96">Join us</Button></a>
-	</div>
+    <div class="max-w-4xl mx-auto px-8">
+        <h2 class="text-4xl font-bold mb-4">Ready to Make a Difference?</h2>
+        <p class="text-xl mb-8 opacity-90">
+            Join thousands of young activists who are already creating change in their communities.
+        </p>
+    <a href="/submit-event"><Button size="lg" class="w-full max-w-96 h-14 text-lg font-bold sm:w-96">Join the Movement</Button></a>
+    <a href="/login"><Button size="lg" variant="secondary" class="w-full max-w-96 h-14 text-lg font-bold sm:w-96 mt-4">Get Started Today</Button></a>
+    </div>
 </section>
 
 <script>
