@@ -87,6 +87,9 @@
             <Label for="password-{id}">Password</Label>
             <Input id="password-{id}" type="password" placeholder="Enter your password" required />
           </div>
+          <div class="text-right">
+            <a href="/forgot-password" class="text-sm text-[#e46a2d] hover:underline" tabindex="-1">Forgot password?</a>
+          </div>
           <Button type="submit" class="w-full">
             Sign In
           </Button>

@@ -133,6 +133,46 @@ class AuthStore {
       .find(row => row.startsWith('jwt_token='))
       ?.split('=')[1];
   }
+
+  async requestPasswordReset(email: string) {
+    try {
+      const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return { success: false, error: 'Network error' };
+    }
+  }
+
+  async resetPassword(token: string, password: string) {
+    try {
+      const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/auth/reset-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, password })
+      });
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return { success: false, error: 'Network error' };
+    }
+  }
+
+  async validateResetToken(token: string) {
+    try {
+      const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/auth/validate-reset-token/${token}`);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return { success: false, error: 'Network error' };
+    }
+  }
 }
 
 export const authStore = new AuthStore();

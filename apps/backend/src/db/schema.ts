@@ -42,11 +42,21 @@ export const eventRegistrationsTable = pgTable("event_registrations", {
   created_at: timestamp('created_at').notNull().defaultNow(),
 });
 
+export const passwordResetTokensTable = pgTable("password_reset_tokens", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  user_id: integer().notNull().references(() => usersTable.id),
+  token: varchar({ length: 255 }).notNull().unique(),
+  expires_at: timestamp('expires_at').notNull(),
+  created_at: timestamp('created_at').notNull().defaultNow(),
+  used_at: timestamp('used_at'),
+});
+
 const schema = {
   usersTable,
   eventsTable,
   authTokensTable,
   eventRegistrationsTable,
+  passwordResetTokensTable,
 };
 
 export default schema;

@@ -77,11 +77,15 @@
   <div class="w-full md:w-1/2 flex items-center justify-center bg-white px-4 min-h-screen">
     <Card.Root class="w-full max-w-md shadow-lg rounded-lg">
       <Card.Header>
-        <Card.Title class="text-2xl font-semibold">Welcome Back</Card.Title>
-        <Card.Description>Continue your impact journey</Card.Description>
+        <Card.Title class="text-2xl font-semibold">Sign Up</Card.Title>
+        <Card.Description>Enter your details below to create a new account!</Card.Description>
       </Card.Header>
       <Card.Content>
         <form class="grid gap-4" onsubmit={submit}>
+          <div class="grid gap-2">
+          <Label for="username-{id}">Username</Label>
+            <Input id="username-{id}" type="text" placeholder="johndoe" required />
+          </div>
           <div class="grid gap-2">
             <Label for="email-{id}">Email address</Label>
             <Input id="email-{id}" type="email" placeholder="m@example.com" required />
@@ -91,12 +95,12 @@
             <Input id="password-{id}" type="password" placeholder="Enter your password" required />
           </div>
           <Button type="submit" class="w-full">
-            Sign In
+            Sign Up
           </Button>
         </form>
         <div class="mt-4 text-center text-sm">
           Don't have an account?
-          <a href="/register{typeof window !== 'undefined' && window.location.search ? window.location.search : ''}" class="underline text-[#e46a2d]">Sign up here</a>
+          <a href="/login{typeof window !== 'undefined' && window.location.search ? window.location.search : ''}" class="underline text-primary">Log in here</a>
         </div>
         <p class="mt-6 text-center text-xs text-gray-500">
           Need help? Contact us at <a href="mailto:team.youthunite@gmail.com" class="underline">team.youthunite@gmail.com</a>

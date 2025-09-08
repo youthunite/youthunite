@@ -130,5 +130,89 @@ export async function deleteSession(sessionToken: string) {
   return token;
 }
 
+export async function createPasswordResetToken(email: string) {
+  const user = await db
+    .select()
+    .from(schema.usersTable)
+    .where(eq(schema.usersTable.email, email))
+    .limit(1);
+
+  if (user.length === 0) {
+    return null;
+  }
+
+  const resetToken = uuidv4();
+  const expiresAt = new Date(Date.now() + 3600000); // 1 hour from now
+
+  await db
+    .delete(schema.passwordResetTokensTable)
+    .where(eq(schema.passwordResetTokensTable.user_id, user[0].id));
+
+  const result = await db
+    .insert(schema.passwordResetTokensTable)
+    .values({
+      user_id: user[0].id,
+      token: resetToken,
+      expires_at: expiresAt,
+    })
+    .returning();
+
+  return { token: result[0].token, user: user[0] };
+}
+
+export async function validatePasswordResetToken(token: string) {
+  const resetToken = await db
+    .select()
+    .from(schema.passwordResetTokensTable)
+    .where(eq(schema.passwordResetTokensTable.token, token))
+    .limit(1);
+
+  if (resetToken.length === 0) {
+    return null;
+  }
+
+  const tokenData = resetToken[0];
+
+  if (tokenData.used_at) {
+    return null;
+  }
+
+  if (tokenData.expires_at < new Date()) {
+    await db
+      .delete(schema.passwordResetTokensTable)
+      .where(eq(schema.passwordResetTokensTable.token, token));
+    return null;
+  }
+
+  return tokenData;
+}
+
+export async function resetUserPassword(token: string, newPassword: string) {
+  const tokenData = await validatePasswordResetToken(token);
+  if (!tokenData) {
+    return false;
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  await db.transaction(async (tx) => {
+    await tx
+      .update(schema.usersTable)
+      .set({ password: hashedPassword })
+      .where(eq(schema.usersTable.id, tokenData.user_id));
+
+    await tx
+      .update(schema.passwordResetTokensTable)
+      .set({ used_at: new Date() })
+      .where(eq(schema.passwordResetTokensTable.token, token));
+
+    await tx
+      .delete(schema.authTokensTable)
+      .where(eq(schema.authTokensTable.user_id, tokenData.user_id));
+  });
+
+  return true;
+}
+
 
 export default db;
