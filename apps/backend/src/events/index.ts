@@ -267,7 +267,7 @@ events.post(
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
-          secret: c.env?.TURNSTILE_SECRET_KEY || process.env.TURNSTILE_SECRET_KEY!,
+          secret: c.env.TURNSTILE_SECRET_KEY,
           response: body.turnstileToken,
         }),
       });
