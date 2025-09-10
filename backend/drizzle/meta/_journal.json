@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1754305860662,
+      "tag": "0000_yummy_rafael_vega",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1754839090050,
+      "tag": "0001_skinny_professor_monster",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1754849300012,
+      "tag": "0002_regular_purifiers",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1754860537304,
+      "tag": "0003_fuzzy_pestilence",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1757432993169,
+      "tag": "0004_lively_doctor_faustus",
+      "breakpoints": true
+    }
+  ]
+}

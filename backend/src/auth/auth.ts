@@ -24,7 +24,6 @@ interface User {
 const oneMonth = 30 * 86400000; // Self explanatory
 
 const router = new Elysia()
-	.get("/", ({ ip }: { ip?: string }) => ip) // TODO: Remove this, this is just for testing --Poyo
 	.post(
 		"/login",
 		async ({
@@ -34,8 +33,8 @@ const router = new Elysia()
 			body: { password: string; email: string };
 			ip: string;
 		}) => {
-			// const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(() => resolve(), ms));
-			// const errorSleep = sleep(2000);
+			const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(() => resolve(), ms));
+			const errorSleep = sleep(2000);
 			try {
 				const userId = await verifyUser(body.email, body.password);
 				if (userId) {
@@ -48,7 +47,7 @@ const router = new Elysia()
 					const actualJwt = jwtToken.jwt_token;
 					return { success: true, jwt_token: actualJwt };
 				} else {
-					// await errorSleep;
+					await errorSleep;
 					return { success: false };
 				}
 			} catch (e) {

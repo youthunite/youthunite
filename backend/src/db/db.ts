@@ -4,9 +4,17 @@ import * as schema from "./schema";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
-import { drizzle } from 'drizzle-orm/neon-http'
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { PgliteDatabase } from "drizzle-orm/pglite";
 
-const db = drizzle(process.env.DB_URL!, { schema });
+let db: NodePgDatabase<typeof schema> | PgliteDatabase<typeof schema>;
+if (process.env.NODE_ENV === "production") {
+  const drizzle = await import("drizzle-orm/node-postgres").then((mod) => mod.drizzle);
+  db = drizzle(process.env.DB_URL!, { schema });
+} else {
+  const drizzle = await import("drizzle-orm/pglite").then((mod) => mod.drizzle);
+  db = drizzle('pgdata', { schema });
+}
 
 const oneMonth = 30 * 86400000; // Self explanatory
 
