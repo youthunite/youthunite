@@ -6,7 +6,7 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   const token = cookies.get('jwt_token')?.value;
   try {
     const API_BASE = import.meta.env.PUBLIC_API_URL || 'http://localhost:8787';
-    const res = await fetch(`${API_BASE}/admin/add-admin`, {
+    const res = await fetch(`${API_BASE}/admin/delete-story`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify({ id: Number(id) })
@@ -15,7 +15,7 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
     if (data.success) {
       return redirect('/admin');
     } else {
-      return redirect('/admin?error=Failed to make user admin');
+      return redirect('/admin?error=Failed to delete story');
     }
   } catch (e) {
     console.error(e);

@@ -1,6 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { getServerUser, getTokenFromCookie } from '$lib/server/auth';
+import { Button } from '$lib/components/ui/button/index.js';
+import AdminStoryButtons from '$lib/components/admin-story-buttons.svelte';
+import AdminEventButtons from '$lib/components/admin-event-buttons.svelte';
 
 const cookieHeader = Astro.request.headers.get('cookie');
 const token = getTokenFromCookie(cookieHeader);
@@ -20,17 +23,29 @@ if (user.tier.toLowerCase() !== 'admin') {
 
 let users = [];
 let events = [];
+let pendingEvents = [];
+let pendingStories = [];
+let allStories = [];
 try {
-  const [uRes, eRes] = await Promise.all([
+  const [uRes, eRes, peRes, psRes, asRes] = await Promise.all([
     fetch(`${import.meta.env.PUBLIC_API_URL}/admin/users`, { headers: { Authorization: `Bearer ${token}` } }),
-    fetch(`${import.meta.env.PUBLIC_API_URL}/admin/events`, { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${import.meta.env.PUBLIC_API_URL}/admin/events`, { headers: { Authorization: `Bearer ${token}` } }),
+    fetch(`${import.meta.env.PUBLIC_API_URL}/admin/pending-events`, { headers: { Authorization: `Bearer ${token}` } }),
+    fetch(`${import.meta.env.PUBLIC_API_URL}/admin/pending-stories`, { headers: { Authorization: `Bearer ${token}` } }),
+    fetch(`${import.meta.env.PUBLIC_API_URL}/admin/all-stories`, { headers: { Authorization: `Bearer ${token}` } })
   ]);
 
   const uData = await uRes.json();
   const eData = await eRes.json();
+  const peData = await peRes.json();
+  const psData = await psRes.json();
+  const asData = await asRes.json();
 
   users = uData.success ? (uData.users || []) : [];
   events = eData.success ? (eData.events || []) : [];
+  pendingEvents = peData.success ? (peData.events || []) : [];
+  pendingStories = psData.success ? (psData.stories || []) : [];
+  allStories = asData.success ? (asData.stories || []) : [];
 } catch (err) {
   console.error('Admin fetch error', err);
 }
@@ -65,12 +80,12 @@ try {
                   <td class="px-4 py-2 flex flex-row">
                     <form method="post" action="/api/admin/delete-user" onsubmit="return confirm('Delete user?');">
                       <input type="hidden" name="id" value={u.id} />
-                      <button type="submit" class="btn btn-secondary ml-2">Delete</button>
+                      <Button type="submit" variant="destructive" size="sm" class="ml-2">Delete</Button>
                     </form>
                     {u.tier && u.tier.toLowerCase() !== 'admin' ? (
                       <form method="post" action="/api/admin/add-admin" onsubmit={`return confirm('Make ${u.name} an admin?');`}>
                         <input type="hidden" name="id" value={u.id} />
-                        <button type="submit" class="btn btn-secondary ml-2" style="background-color: red; color: white;">Make admin</button>
+                        <Button type="submit" variant="destructive" size="sm" class="ml-2">Make admin</Button>
                       </form>
                     ) : null}
                   </td>
@@ -82,8 +97,69 @@ try {
       )}
     </section>
 
+    <section class="mb-8">
+      <h2 class="text-lg font-semibold mb-2">Pending Events ({pendingEvents.length})</h2>
+      {pendingEvents.length === 0 ? (
+        <p class="text-green-600">No pending events - all caught up! 🎉</p>
+      ) : (
+        <div class="space-y-4">
+          {pendingEvents.map((ev: any) => (
+            <div class="p-4 bg-yellow-50 border border-yellow-200 rounded shadow">
+              <div class="flex justify-between items-start">
+                <div class="flex-1">
+                  <div class="font-semibold text-lg">{ev.title}</div>
+                  <div class="text-sm text-gray-600 mb-2">
+                    📅 {new Date(ev.start_time).toLocaleDateString()} - {new Date(ev.end_time).toLocaleDateString()}
+                  </div>
+                  <div class="text-sm text-gray-600 mb-2">📍 {ev.location}</div>
+                  <div class="text-sm text-gray-600 mb-2">👤 Organizer: {ev.organizer?.name} ({ev.organizer?.email})</div>
+                  <div class="text-sm mb-3">{ev.description}</div>
+                  <div class="text-xs text-gray-500">Submitted: {new Date(ev.created_at).toLocaleDateString()}</div>
+                </div>
+                <div class="flex space-x-2">
+                  <AdminEventButtons eventId={ev.id} client:load />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-lg font-semibold mb-2">Pending Stories ({pendingStories.length})</h2>
+      {pendingStories.length === 0 ? (
+        <p class="text-green-600">No pending stories - all caught up! 🎉</p>
+      ) : (
+        <div class="space-y-4">
+          {pendingStories.map((story: any) => (
+            <div class="p-4 bg-blue-50 border border-blue-200 rounded shadow">
+              <div class="flex justify-between items-start">
+                <div class="flex-1">
+                  <div class="font-semibold text-lg">{story.title}</div>
+                  <div class="text-sm text-gray-600 mb-2">✍️ By: {story.author_name} {story.author_age ? `(${story.author_age})` : ''}</div>
+                  <div class="text-sm text-gray-600 mb-2">📧 {story.author_email}</div>
+                  {story.category && (
+                    <div class="text-sm text-gray-600 mb-2">🏷️ Category: {story.category}</div>
+                  )}
+                  {story.tags && story.tags.length > 0 && (
+                    <div class="text-sm text-gray-600 mb-2">🏷️ Tags: {story.tags.join(', ')}</div>
+                  )}
+                  <div class="text-sm mb-3 max-h-32 overflow-y-auto bg-gray-50 p-2 rounded">{story.content}</div>
+                  <div class="text-xs text-gray-500">Submitted: {new Date(story.created_at).toLocaleDateString()}</div>
+                </div>
+                <div class="flex flex-col space-y-2">
+                  <AdminStoryButtons storyId={story.id} client:load />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+
     <section>
-      <h2 class="text-lg font-semibold mb-2">Events</h2>
+      <h2 class="text-lg font-semibold mb-2">All Events</h2>
       {events.length === 0 ? (
         <p>No events found or failed to load.</p>
       ) : (
@@ -97,7 +173,44 @@ try {
               <div>
                 <form method="post" action="/api/admin/delete-event" onsubmit="return confirm('Delete event?');">
                   <input type="hidden" name="id" value={ev.id} />
-                  <button type="submit" class="btn btn-secondary">Delete</button>
+                  <Button type="submit" variant="destructive" size="sm">Delete</Button>
+                </form>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+
+    <section>
+      <h2 class="text-lg font-semibold mb-2">All Stories</h2>
+      {allStories.length === 0 ? (
+        <p>No stories found or failed to load.</p>
+      ) : (
+        <div class="space-y-4">
+          {allStories.map((story: any) => (
+            <div class="p-4 bg-white rounded shadow flex justify-between items-start">
+              <div class="flex-1">
+                <div class="font-semibold text-lg">{story.title}</div>
+                <div class="text-sm text-gray-600 mb-1">✍️ By: {story.author_name} {story.author_age ? `(${story.author_age})` : ''}</div>
+                <div class="text-sm text-gray-600 mb-1">📧 {story.author_email}</div>
+                {story.category && (
+                  <div class="text-sm text-gray-600 mb-1">🏷️ Category: {story.category}</div>
+                )}
+                {story.tags && story.tags.length > 0 && (
+                  <div class="text-sm text-gray-600 mb-1">🏷️ Tags: {story.tags.join(', ')}</div>
+                )}
+                <div class="text-sm mb-2 max-h-20 overflow-y-auto bg-gray-50 p-2 rounded">{story.content}</div>
+                <div class="flex space-x-4 text-xs text-gray-500">
+                  <span>Status: <span class={story.verification_status === 'approved' ? 'text-green-600' : story.verification_status === 'rejected' ? 'text-red-600' : 'text-yellow-600'}>{story.verification_status}</span></span>
+                  {story.is_published ? <span class="text-green-600">Published</span> : <span class="text-gray-500">Not Published</span>}
+                  <span>Created: {new Date(story.created_at).toLocaleDateString()}</span>
+                </div>
+              </div>
+              <div>
+                <form method="post" action="/api/admin/delete-story" onsubmit="return confirm('Delete story?');">
+                  <input type="hidden" name="id" value={story.id} />
+                  <Button type="submit" variant="destructive" size="sm">Delete</Button>
                 </form>
               </div>
             </div>

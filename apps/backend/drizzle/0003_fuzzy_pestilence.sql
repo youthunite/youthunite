@@ -1,1 +1,0 @@
-ALTER TABLE "event_registrations" ALTER COLUMN "user_id" DROP NOT NULL;

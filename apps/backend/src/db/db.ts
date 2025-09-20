@@ -1,28 +1,23 @@
-import "dotenv/config";
 import { eq } from "drizzle-orm";
 import * as schema from "./schema";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
-import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { PgliteDatabase } from "drizzle-orm/pglite";
+import { drizzle } from 'drizzle-orm/d1'
+import type { D1Database } from '@cloudflare/workers-types'
 
-let db: NodePgDatabase<typeof schema> | PgliteDatabase<typeof schema>;
-if (process.env.NODE_ENV === "production") {
-  const drizzle = await import("drizzle-orm/node-postgres").then((mod) => mod.drizzle);
-  db = drizzle(process.env.DB_URL!, { schema });
-} else {
-  const drizzle = await import("drizzle-orm/pglite").then((mod) => mod.drizzle);
-  db = drizzle('pgdata', { schema });
+export function getDb(database: D1Database) {
+  return drizzle(database, { schema });
 }
 
 const oneMonth = 30 * 86400000; // Self explanatory
 
-export function readDb() {
+export function readDb(db: ReturnType<typeof getDb>) {
   return db.select().from(schema.usersTable);
 }
 
 export async function registerUser(
+  db: ReturnType<typeof getDb>,
   email: string,
   password: string,
   name: string,
@@ -44,14 +39,15 @@ export async function registerUser(
     .returning();
   return (
     await createSession(
+      db,
       answer[0].id,
-      new Date(Date.now() + oneMonth),
+      Date.now() + oneMonth,
       ipAddress
     )
   ).jwt_token;
 }
 
-export async function verifyUser(email: string, password: string) {
+export async function verifyUser(db: ReturnType<typeof getDb>, email: string, password: string) {
   const user = await db
     .select()
     .from(schema.usersTable)
@@ -65,8 +61,9 @@ export async function verifyUser(email: string, password: string) {
 }
 
 export async function createSession(
+  db: ReturnType<typeof getDb>,
   userId: number,
-  expiresAt: Date,
+  expiresAt: number,
   ipAddress: string
 ) {
   const sessionToken = uuidv4();
@@ -75,7 +72,7 @@ export async function createSession(
     .from(schema.authTokensTable)
     .where(eq(schema.authTokensTable.session_token, sessionToken));
   if (existingToken.length > 0) {
-    return createSession(userId, expiresAt, ipAddress);
+    return createSession(db, userId, expiresAt, ipAddress);
   }
   const jwtToken = jwt.sign({ sid: sessionToken }, process.env.JWT_SECRET!, {
     expiresIn: "30d",
@@ -90,7 +87,7 @@ export async function createSession(
   return { jwt_token: jwtToken };
 }
 
-export async function validateSession(sessionToken: string) {
+export async function validateSession(db: ReturnType<typeof getDb>, sessionToken: string) {
   try {
     const token = await db.query.authTokensTable.findMany({
       where: eq(schema.authTokensTable.session_token, sessionToken),
@@ -101,7 +98,7 @@ export async function validateSession(sessionToken: string) {
     }
 
     // Check if token has expired
-    if (token[0].expires_at < new Date()) {
+    if (token[0].expires_at < Date.now()) {
       await db
         .delete(schema.authTokensTable)
         .where(eq(schema.authTokensTable.session_token, sessionToken));
@@ -115,7 +112,7 @@ export async function validateSession(sessionToken: string) {
   }
 }
 
-export function getUserDataBySession(session: string) {
+export function getUserDataBySession(db: ReturnType<typeof getDb>, session: string) {
   return db
   .select()
   .from(schema.authTokensTable)
@@ -123,14 +120,14 @@ export function getUserDataBySession(session: string) {
   .then(console.log).then(console.log);
 }
 
-export async function deleteSession(sessionToken: string) {
+export async function deleteSession(db: ReturnType<typeof getDb>, sessionToken: string) {
   const token = await db
     .delete(schema.authTokensTable)
     .where(eq(schema.authTokensTable.session_token, sessionToken));
   return token;
 }
 
-export async function createPasswordResetToken(email: string) {
+export async function createPasswordResetToken(db: ReturnType<typeof getDb>, email: string) {
   const user = await db
     .select()
     .from(schema.usersTable)
@@ -142,7 +139,7 @@ export async function createPasswordResetToken(email: string) {
   }
 
   const resetToken = uuidv4();
-  const expiresAt = new Date(Date.now() + 3600000); // 1 hour from now
+  const expiresAt = Date.now() + 3600000; // 1 hour from now
 
   await db
     .delete(schema.passwordResetTokensTable)
@@ -160,7 +157,7 @@ export async function createPasswordResetToken(email: string) {
   return { token: result[0].token, user: user[0] };
 }
 
-export async function validatePasswordResetToken(token: string) {
+export async function validatePasswordResetToken(db: ReturnType<typeof getDb>, token: string) {
   const resetToken = await db
     .select()
     .from(schema.passwordResetTokensTable)
@@ -177,7 +174,7 @@ export async function validatePasswordResetToken(token: string) {
     return null;
   }
 
-  if (tokenData.expires_at < new Date()) {
+  if (tokenData.expires_at < Date.now()) {
     await db
       .delete(schema.passwordResetTokensTable)
       .where(eq(schema.passwordResetTokensTable.token, token));
@@ -187,8 +184,8 @@ export async function validatePasswordResetToken(token: string) {
   return tokenData;
 }
 
-export async function resetUserPassword(token: string, newPassword: string) {
-  const tokenData = await validatePasswordResetToken(token);
+export async function resetUserPassword(db: ReturnType<typeof getDb>, token: string, newPassword: string) {
+  const tokenData = await validatePasswordResetToken(db, token);
   if (!tokenData) {
     return false;
   }
@@ -203,7 +200,7 @@ export async function resetUserPassword(token: string, newPassword: string) {
 
     await tx
       .update(schema.passwordResetTokensTable)
-      .set({ used_at: new Date() })
+      .set({ used_at: Date.now() })
       .where(eq(schema.passwordResetTokensTable.token, token));
 
     await tx
@@ -215,4 +212,5 @@ export async function resetUserPassword(token: string, newPassword: string) {
 }
 
 
-export default db;
+// Export the getDb function as default
+export default getDb;

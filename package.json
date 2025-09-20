@@ -13,5 +13,9 @@
     "db:migrate": "cd apps/backend && bun drizzle-kit migrate && cd ../..",
     "db:push": "bun db:generate && bun db:migrate",
     "ui:add": "cd apps/frontend && bun x shadcn-svelte@latest add && cd ../.. # idk why bun run filter no worky"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.1",
+    "drizzle-orm": "^0.44.5"
   }
 }
