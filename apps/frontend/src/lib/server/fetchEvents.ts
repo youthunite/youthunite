@@ -9,7 +9,7 @@ interface FetchEventsResult {
 
 export async function fetchEvents(): Promise<FetchEventsResult> {
   try {
-    const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/events/`);
+    const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/events`);
     const result = await response.json();
 
     if (result.success) {

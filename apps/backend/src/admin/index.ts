@@ -2,19 +2,25 @@ import { Hono } from "hono";
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
 import jwt from 'jsonwebtoken';
-import db, { validateSession } from "../db/db";
+import getDb, { validateSession } from "../db/db";
 import { eq } from "drizzle-orm";
 import * as schema from '../db/schema';
+import type { D1Database } from '@cloudflare/workers-types';
 
-const admin = new Hono();
+type Bindings = {
+  DB: D1Database;
+};
+
+const admin = new Hono<{ Bindings: Bindings }>();
 
 admin.get('/users', async (c) => {
   try {
+    const db = getDb(c.env.DB);
     const auth = c.req.header('Authorization');
     if (!auth?.startsWith('Bearer ')) return c.json({ success: false, error: 'Unauthorized' });
     const token = auth.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { sid: string };
-    const session = await validateSession(decoded.sid);
+    const session = await validateSession(db, decoded.sid);
     if (!session) return c.json({ success: false, error: 'Invalid session' });
 
     const user = await db.query.usersTable.findFirst({ where: eq(schema.usersTable.id, session.user_id) });
@@ -30,11 +36,12 @@ admin.get('/users', async (c) => {
 
 admin.get('/events', async (c) => {
   try {
+    const db = getDb(c.env.DB);
     const auth = c.req.header('Authorization');
     if (!auth?.startsWith('Bearer ')) return c.json({ success: false, error: 'Unauthorized' });
     const token = auth.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { sid: string };
-    const session = await validateSession(decoded.sid);
+    const session = await validateSession(db, decoded.sid);
     if (!session) return c.json({ success: false, error: 'Invalid session' });
 
     const user = await db.query.usersTable.findFirst({ where: eq(schema.usersTable.id, session.user_id) });
@@ -55,13 +62,14 @@ admin.post(
   })),
   async (c) => {
     const body = c.req.valid('json');
-    
+
     try {
+      const db = getDb(c.env.DB);
       const auth = c.req.header('Authorization');
       if (!auth?.startsWith('Bearer ')) return c.json({ success: false, error: 'Unauthorized' });
       const token = auth.substring(7);
       const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { sid: string };
-      const session = await validateSession(decoded.sid);
+      const session = await validateSession(db, decoded.sid);
       if (!session) return c.json({ success: false, error: 'Invalid session' });
 
       const requester = await db.query.usersTable.findFirst({ where: eq(schema.usersTable.id, session.user_id) });
@@ -84,13 +92,14 @@ admin.post(
   })),
   async (c) => {
     const body = c.req.valid('json');
-    
+
     try {
+      const db = getDb(c.env.DB);
       const auth = c.req.header('Authorization');
       if (!auth?.startsWith('Bearer ')) return c.json({ success: false, error: 'Unauthorized' });
       const token = auth.substring(7);
       const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { sid: string };
-      const session = await validateSession(decoded.sid);
+      const session = await validateSession(db, decoded.sid);
       if (!session) return c.json({ success: false, error: 'Invalid session' });
 
       const requester = await db.query.usersTable.findFirst({ where: eq(schema.usersTable.id, session.user_id) });
@@ -113,13 +122,14 @@ admin.post(
   })),
   async (c) => {
     const body = c.req.valid('json');
-    
+
     try {
+      const db = getDb(c.env.DB);
       const auth = c.req.header('Authorization');
       if (!auth?.startsWith('Bearer ')) return c.json({ success: false, error: 'Unauthorized' });
       const token = auth.substring(7);
       const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { sid: string };
-      const session = await validateSession(decoded.sid);
+      const session = await validateSession(db, decoded.sid);
       if (!session) return c.json({ success: false, error: 'Invalid session' });
 
       const requester = await db.query.usersTable.findFirst({ where: eq(schema.usersTable.id, session.user_id) });

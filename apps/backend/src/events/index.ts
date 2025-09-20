@@ -2,33 +2,41 @@ import { Hono } from "hono";
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
 import jwt from "jsonwebtoken";
-import db, { validateSession } from "../db/db";
+import getDb, { validateSession } from "../db/db";
 import * as schema from '../db/schema';
 import { eq, and } from "drizzle-orm";
+import type { D1Database } from '@cloudflare/workers-types';
+
+type Bindings = {
+  DB: D1Database;
+};
 
 interface AuthenticatedUser {
   id: number;
   session_token: string;
   user_id: number;
-  expires_at: Date;
+  expires_at: number;
   ip_address: string | null;
-  created_at: Date;
+  created_at: number;
 }
 
-const authenticateUser = async (authHeader: string | undefined): Promise<AuthenticatedUser | null> => {
+const authenticateUser = async (
+  db: ReturnType<typeof getDb>,
+  authHeader: string | undefined
+): Promise<AuthenticatedUser | null> => {
   try {
     if (!authHeader?.startsWith('Bearer ')) {
       return null;
     }
-    
+
     const jwt_token = authHeader.substring(7);
     const decoded = (await jwt.verify(
       jwt_token,
       process.env.JWT_SECRET!
     )) as { sid: string };
-    
+
     if (decoded) {
-      const session = await validateSession(decoded.sid);
+      const session = await validateSession(db, decoded.sid);
       if (session) {
         return session as AuthenticatedUser;
       }
@@ -40,7 +48,7 @@ const authenticateUser = async (authHeader: string | undefined): Promise<Authent
   }
 };
 
-const events = new Hono();
+const events = new Hono<{ Bindings: Bindings }>();
 
 events.post(
   "/create",
@@ -54,20 +62,21 @@ events.post(
   async (c) => {
     const body = c.req.valid('json');
     const authHeader = c.req.header('authorization');
-    
+
     try {
-      const user = await authenticateUser(authHeader);
+      const db = getDb(c.env.DB);
+      const user = await authenticateUser(db, authHeader);
       if (!user) {
-        return c.json({ 
-          success: false, 
-          error: 'Authentication required. Please provide a valid Bearer token.' 
+        return c.json({
+          success: false,
+          error: 'Authentication required. Please provide a valid Bearer token.'
         });
       }
 
-      const startTime = new Date(body.start_time);
-      const endTime = new Date(body.end_time);
-      
-      if (isNaN(startTime.getTime()) || isNaN(endTime.getTime())) {
+      const startTime = Date.parse(body.start_time);
+      const endTime = Date.parse(body.end_time);
+
+      if (isNaN(startTime) || isNaN(endTime)) {
         return c.json({
           success: false,
           error: 'Invalid date format. Please use ISO 8601 format (e.g., 2025-08-06T14:00:00Z)'
@@ -81,7 +90,7 @@ events.post(
         });
       }
 
-      if (startTime < new Date()) {
+      if (startTime < Date.now()) {
         return c.json({
           success: false,
           error: 'Event start time cannot be in the past'
@@ -117,6 +126,7 @@ events.post(
 
 events.get("/", async (c) => {
   try {
+    const db = getDb(c.env.DB);
     const events = await db
       .select({
         id: schema.eventsTable.id,
@@ -153,12 +163,13 @@ events.get("/", async (c) => {
 
 events.get("/my-events", async (c) => {
   try {
+    const db = getDb(c.env.DB);
     const authHeader = c.req.header('authorization');
-    const user = await authenticateUser(authHeader);
+    const user = await authenticateUser(db, authHeader);
     if (!user) {
-      return c.json({ 
-        success: false, 
-        error: 'Authentication required. Please provide a valid Bearer token.' 
+      return c.json({
+        success: false,
+        error: 'Authentication required. Please provide a valid Bearer token.'
       });
     }
 
@@ -192,8 +203,9 @@ events.get("/my-events", async (c) => {
 
 events.get("/:id", async (c) => {
   const id = c.req.param('id');
-  
+
   try {
+    const db = getDb(c.env.DB);
     const eventId = parseInt(id);
     if (isNaN(eventId)) {
       return c.json({
@@ -258,8 +270,9 @@ events.post(
   async (c) => {
     const body = c.req.valid('json');
     const id = c.req.param('id');
-    
+
     try {
+      const db = getDb(c.env.DB);
       // Verify Cloudflare Turnstile token
       const turnstileResponse = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
         method: 'POST',
@@ -273,7 +286,7 @@ events.post(
       });
 
       const turnstileResult = await turnstileResponse.json();
-      
+
       if (!turnstileResult.success) {
         return c.json({
           success: false,
@@ -368,13 +381,14 @@ events.post(
 events.get("/:id/registrations", async (c) => {
   const id = c.req.param('id');
   const authHeader = c.req.header('authorization');
-  
+
   try {
-    const user = await authenticateUser(authHeader);
+    const db = getDb(c.env.DB);
+    const user = await authenticateUser(db, authHeader);
     if (!user) {
-      return c.json({ 
-        success: false, 
-        error: 'Authentication required. Please provide a valid Bearer token.' 
+      return c.json({
+        success: false,
+        error: 'Authentication required. Please provide a valid Bearer token.'
       });
     }
 

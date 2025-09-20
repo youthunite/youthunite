@@ -1,10 +1,13 @@
 import { Hono } from "hono";
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
+import type { D1Database } from '@cloudflare/workers-types';
 
-const FORM_ID = '4S8bFyDi76us';
+type Bindings = {
+  DB: D1Database;
+};
 
-const contact = new Hono();
+const contact = new Hono<{ Bindings: Bindings }>();
 
 contact.post(
   '/',
