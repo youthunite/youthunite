@@ -76,36 +76,9 @@ import Layout from '../layouts/Layout.astro';
 <section class="mb-24">
   <h2 class="text-4xl font-extrabold text-secondary-foreground text-center mb-8">Quick Action Lab</h2>
   <p class="text-center text-foreground opacity-80 text-lg leading-relaxed max-w-2xl mx-auto mb-8">Take action with these mini-courses. Scroll through and explore — hover to pause.</p>
-  <div class="overflow-hidden w-full relative">
+  <div class="overflow-hidden w-full relative loop-container">
     <div class="flex gap-8 loop-track" id="loopTrack">
-      <div class="flex-shrink-0 w-80 bg-card flex flex-col justify-between h-full p-8 rounded-3xl shadow-xl border-t-6 border-primary hover:-translate-y-3 transition-transform duration-300">
-        <div class="flex-grow">
-          <h3 class="text-2xl font-bold text-primary mb-4">Intro to Activism & Advocacy</h3>
-          <p class="text-foreground opacity-80 leading-relaxed">Discover your activist identity through interactive lessons.</p>
-        </div>
-        <a href="#" class="inline-block mt-8 bg-gradient-to-r from-primary to-chart-4 text-primary-foreground px-6 py-3 rounded-full font-semibold shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300">Start Course</a>
-      </div>
-      <div class="flex-shrink-0 w-80 bg-card flex flex-col justify-between h-full p-8 rounded-3xl shadow-xl border-t-6 border-primary hover:-translate-y-3 transition-transform duration-300">
-        <div class="flex-grow">
-          <h3 class="text-2xl font-bold text-primary mb-4">Building a Campaign 101</h3>
-          <p class="text-foreground opacity-80 leading-relaxed">Turn your passion into action with step-by-step strategies.</p>
-        </div>
-        <a href="#" class="inline-block mt-8 bg-gradient-to-r from-primary to-chart-4 text-primary-foreground px-6 py-3 rounded-full font-semibold shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300">Start Course</a>
-      </div>
-      <div class="flex-shrink-0 w-80 bg-card flex flex-col justify-between h-full p-8 rounded-3xl shadow-xl border-t-6 border-primary hover:-translate-y-3 transition-transform duration-300">
-        <div class="flex-grow">
-          <h3 class="text-2xl font-bold text-primary mb-4">Social Justice + Intersectionality</h3>
-          <p class="text-foreground opacity-80 leading-relaxed">Understand interconnected issues and solidarity in action.</p>
-        </div>
-        <a href="#" class="inline-block mt-8 bg-gradient-to-r from-primary to-chart-4 text-primary-foreground px-6 py-3 rounded-full font-semibold shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300">Start Course</a>
-      </div>
-      <div class="flex-shrink-0 w-80 bg-card flex flex-col justify-between h-full p-8 rounded-3xl shadow-xl border-t-6 border-primary hover:-translate-y-3 transition-transform duration-300">
-        <div class="flex-grow">
-          <h3 class="text-2xl font-bold text-primary mb-4">Start a Nonprofit or Campus Group</h3>
-          <p class="text-foreground opacity-80 leading-relaxed">Build your own organization from scratch.</p>
-        </div>
-        <a href="#" class="inline-block mt-8 bg-gradient-to-r from-primary to-chart-4 text-primary-foreground px-6 py-3 rounded-full font-semibold shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300">Start Course</a>
-      </div>
+      <!-- Courses will be loaded here -->
     </div>
   </div>
 </section>
@@ -164,45 +137,68 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </section>
 
+  <!-- Stories from Community Section -->
+  <section class="mb-24" id="community-stories">
+    <h2 class="text-4xl font-extrabold text-secondary-foreground text-center mb-8">Stories from Our Community</h2>
+    <p class="text-center text-foreground opacity-80 text-lg leading-relaxed max-w-2xl mx-auto mb-12">Read inspiring stories shared by young activists from around the world.</p>
+    <div id="stories-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Stories will be loaded here -->
+    </div>
+  </section>
+
   <section class="mb-24">
     <h2 class="text-4xl font-extrabold text-secondary-foreground text-center mb-8">Submit Your Story</h2>
     <p class="text-center text-foreground opacity-80 text-lg leading-relaxed max-w-2xl mx-auto mb-8">We want to hear from you. Share your journey, your impact, and your voice. Your story could inspire the next wave of changemakers.</p>
-    <form action="mailto:youthunite89@gmail.com" method="POST" enctype="text/plain" class="bg-card p-8 rounded-3xl shadow-xl max-w-2xl mx-auto">
+
+    <form id="story-form" class="bg-card p-8 rounded-3xl shadow-xl max-w-2xl mx-auto">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <label class="block">
-          <span class="text-sm font-semibold text-secondary-foreground mb-2 block">First Name</span>
-          <input type="text" name="First Name" required class="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent" />
+          <span class="text-sm font-semibold text-secondary-foreground mb-2 block">Author Name</span>
+          <input type="text" id="authorName" required class="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent" />
         </label>
         <label class="block">
-          <span class="text-sm font-semibold text-secondary-foreground mb-2 block">Last Name</span>
-          <input type="text" name="Last Name" required class="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent" />
+          <span class="text-sm font-semibold text-secondary-foreground mb-2 block">Age (Optional)</span>
+          <input type="number" id="authorAge" min="13" max="99" class="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent" />
         </label>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <label class="block">
-          <span class="text-sm font-semibold text-secondary-foreground mb-2 block">Organization (Optional)</span>
-          <input type="text" name="Organization" class="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent" />
+          <span class="text-sm font-semibold text-secondary-foreground mb-2 block">Email</span>
+          <input type="email" id="authorEmail" required class="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent" />
         </label>
         <label class="block">
-          <span class="text-sm font-semibold text-secondary-foreground mb-2 block">Email</span>
-          <input type="email" name="Email" required class="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent" />
+          <span class="text-sm font-semibold text-secondary-foreground mb-2 block">Category (Optional)</span>
+          <select id="category" class="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent">
+            <option value="">Select a category</option>
+            <option value="Activism">Activism</option>
+            <option value="Organizing">Organizing</option>
+            <option value="Leadership">Leadership</option>
+            <option value="Community">Community</option>
+            <option value="Social Justice">Social Justice</option>
+            <option value="Environment">Environment</option>
+            <option value="Education">Education</option>
+            <option value="Other">Other</option>
+          </select>
         </label>
       </div>
       <label class="block mb-6">
-        <span class="text-sm font-semibold text-secondary-foreground mb-2 block">Your Story</span>
-        <textarea name="Your Story" rows="6" required class="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"></textarea>
+        <span class="text-sm font-semibold text-secondary-foreground mb-2 block">Story Title</span>
+        <input type="text" id="title" required class="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Give your story a compelling title" />
       </label>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <label class="block">
-          <span class="text-sm font-semibold text-secondary-foreground mb-2 block">Country/State (Optional)</span>
-          <input type="text" name="Location" class="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent" />
-        </label>
-        <label class="block">
-          <span class="text-sm font-semibold text-secondary-foreground mb-2 block">Pictures (Optional)</span>
-          <input type="file" name="Pictures" accept="image/*" class="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent" />
-        </label>
+      <label class="block mb-6">
+        <span class="text-sm font-semibold text-secondary-foreground mb-2 block">Your Story</span>
+        <textarea id="content" rows="8" required class="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Share your journey, experiences, and impact..."></textarea>
+      </label>
+      <label class="block mb-6">
+        <span class="text-sm font-semibold text-secondary-foreground mb-2 block">Tags (Optional)</span>
+        <input type="text" id="tags" class="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Separate tags with commas (e.g., youth activism, organizing, leadership)" />
+      </label>
+      <div class="mb-6">
+        <span class="text-sm font-semibold text-secondary-foreground mb-2 block">Verification</span>
+        <div id="turnstile-container"></div>
       </div>
-      <Button type="submit" class="w-full" size="lg">Send</Button>
+      <div id="form-message" class="mb-4 hidden"></div>
+      <Button type="submit" id="submit-btn" class="w-full" size="lg" disabled>Submit Story</Button>
     </form>
   </section>
 </main>
@@ -210,6 +206,7 @@ import Layout from '../layouts/Layout.astro';
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
+    // Loop track functionality
     const track = document.getElementById('loopTrack');
     if (track) {
       const cards = Array.from(track.children);
@@ -218,5 +215,199 @@ import Layout from '../layouts/Layout.astro';
         track.appendChild(clone);
       });
     }
+
+    // Load Turnstile script
+    const turnstileScript = document.createElement('script');
+    turnstileScript.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+    turnstileScript.async = true;
+    document.head.appendChild(turnstileScript);
+
+    let turnstileToken = '';
+    let turnstileWidgetId = null;
+
+    // Initialize Turnstile when script loads
+    turnstileScript.onload = function() {
+      if (window.turnstile) {
+        turnstileWidgetId = window.turnstile.render('#turnstile-container', {
+          sitekey: import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAAAikXJiOhJ_Etvjl',
+          callback: function(token) {
+            turnstileToken = token;
+            document.getElementById('submit-btn').disabled = false;
+          },
+          'error-callback': function() {
+            turnstileToken = '';
+            document.getElementById('submit-btn').disabled = true;
+            showMessage('Verification failed. Please try again.', 'error');
+          },
+          'expired-callback': function() {
+            turnstileToken = '';
+            document.getElementById('submit-btn').disabled = true;
+            showMessage('Verification expired. Please try again.', 'error');
+          }
+        });
+      }
+    };
+
+    // Course array
+    const courses = [
+      {
+        name: "Campus Involvement 101",
+        description: "Quick guide to making the most of college beyond the classroom",
+        enabled: true
+      },
+      {
+        name: "Leadership in Action",
+        description: "Essential skills for leading teams and projects effectively",
+        enabled: false
+      },
+      {
+        name: "Launch your event",
+        description: "Step-by-step guide to planning and executing successful events",
+        enabled: false
+      }
+    ];
+
+    // Load and display courses
+    async function loadCourses() {
+      try {
+        const track = document.getElementById('loopTrack');
+        if (track) {
+          track.innerHTML = courses.map(course => `
+            <div class="course-card min-w-80 bg-card p-6 rounded-3xl shadow-xl border-t-6 border-chart-3 hover:-translate-y-3 transition-transform duration-300">
+              <h3 class="text-xl font-bold text-primary mb-3">${escapeHtml(course.name)}</h3>
+              <p class="text-foreground opacity-80 leading-relaxed mb-4">${escapeHtml(course.description)}</p>
+              <div class="mt-4">
+                ${course.enabled ?
+                  `<a href="/courses" class="inline-block bg-primary text-primary-foreground px-4 py-2 rounded-xl font-semibold hover:bg-primary/90 transition-colors">Go to course</a>` :
+                  `<span class="inline-block bg-muted text-muted-foreground px-4 py-2 rounded-xl font-semibold">Coming soon</span>`
+                }
+              </div>
+            </div>
+          `).join('');
+
+          // Clone cards for infinite loop effect
+          const cards = Array.from(track.children);
+          cards.forEach(card => {
+            const clone = card.cloneNode(true);
+            track.appendChild(clone);
+          });
+        }
+      } catch (error) {
+        console.error('Error loading courses:', error);
+      }
+    }
+
+    // Load and display stories
+    async function loadStories() {
+      try {
+        const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://api.youthunite.online';
+        const response = await fetch(`${apiUrl}/stories`);
+        const data = await response.json();
+
+        if (data.success && data.stories.length > 0) {
+          const container = document.getElementById('stories-container');
+          container.innerHTML = data.stories.map(story => `
+            <div class="bg-card p-6 rounded-3xl shadow-xl border-l-4 border-primary hover:-translate-y-2 transition-transform duration-300">
+              <h3 class="text-xl font-bold text-secondary-foreground mb-3">${escapeHtml(story.title)}</h3>
+              <p class="text-foreground opacity-80 leading-relaxed mb-4 line-clamp-4">${escapeHtml(story.content.substring(0, 200))}${story.content.length > 200 ? '...' : ''}</p>
+              <div class="flex items-center justify-between">
+                <cite class="font-semibold text-primary text-sm">— ${escapeHtml(story.author_name)}</cite>
+                ${story.category ? `<span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">${escapeHtml(story.category)}</span>` : ''}
+              </div>
+              ${story.tags && story.tags.length > 0 ? `
+                <div class="mt-3 flex flex-wrap gap-1">
+                  ${story.tags.map(tag => `<span class="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">${escapeHtml(tag)}</span>`).join('')}
+                </div>
+              ` : ''}
+            </div>
+          `).join('');
+        } else {
+          const container = document.getElementById('stories-container');
+          container.innerHTML = '<p class="text-center text-foreground opacity-60 col-span-full">No stories have been published yet. Be the first to share your story!</p>';
+        }
+      } catch (error) {
+        console.error('Error loading stories:', error);
+        const container = document.getElementById('stories-container');
+        container.innerHTML = '<p class="text-center text-foreground opacity-60 col-span-full">Stories will be available soon.</p>';
+      }
+    }
+
+    // Form submission handler
+    async function handleFormSubmit(event) {
+      event.preventDefault();
+
+      if (!turnstileToken) {
+        showMessage('Please complete the verification.', 'error');
+        return;
+      }
+
+      const submitBtn = document.getElementById('submit-btn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+
+      try {
+        const formData = {
+          title: document.getElementById('title').value.trim(),
+          content: document.getElementById('content').value.trim(),
+          authorName: document.getElementById('authorName').value.trim(),
+          authorEmail: document.getElementById('authorEmail').value.trim(),
+          authorAge: document.getElementById('authorAge').value ? parseInt(document.getElementById('authorAge').value) : undefined,
+          category: document.getElementById('category').value || undefined,
+          tags: document.getElementById('tags').value ? document.getElementById('tags').value.split(',').map(tag => tag.trim()).filter(tag => tag) : undefined,
+          turnstileToken: turnstileToken
+        };
+
+        const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://api.youthunite.online';
+        const response = await fetch(`${apiUrl}/stories/submit`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          showMessage('Your story has been submitted successfully! It will be reviewed before publication.', 'success');
+          document.getElementById('story-form').reset();
+          // Reset Turnstile
+          if (window.turnstile && turnstileWidgetId !== null) {
+            window.turnstile.reset(turnstileWidgetId);
+          }
+          turnstileToken = '';
+        } else {
+          showMessage(result.error || 'Failed to submit story. Please try again.', 'error');
+        }
+      } catch (error) {
+        console.error('Error submitting story:', error);
+        showMessage('Failed to submit story. Please check your connection and try again.', 'error');
+      } finally {
+        submitBtn.disabled = !turnstileToken;
+        submitBtn.textContent = 'Submit Story';
+      }
+    }
+
+    function showMessage(message, type) {
+      const messageDiv = document.getElementById('form-message');
+      messageDiv.className = `mb-4 p-4 rounded-xl ${type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'}`;
+      messageDiv.textContent = message;
+      messageDiv.classList.remove('hidden');
+
+      setTimeout(() => {
+        messageDiv.classList.add('hidden');
+      }, 10000);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Initialize
+    loadCourses();
+    loadStories();
+    document.getElementById('story-form').addEventListener('submit', handleFormSubmit);
   });
 </script>

@@ -6,6 +6,7 @@ import getDb, { validateSession } from "../db/db";
 import * as schema from '../db/schema';
 import { eq, and } from "drizzle-orm";
 import type { D1Database } from '@cloudflare/workers-types';
+import { VERIFICATION_STATUS } from '../types/verification';
 
 type Bindings = {
   DB: D1Database;
@@ -106,13 +107,14 @@ events.post(
           start_time: startTime,
           end_time: endTime,
           organizer_id: user.user_id,
+          verification_status: VERIFICATION_STATUS.PENDING,
         })
         .returning();
 
       return c.json({
         success: true,
         event: newEvent[0],
-        message: 'Event created successfully'
+        message: 'Event submitted successfully! It will be reviewed before being published.'
       });
     } catch (e) {
       console.error('Event creation error:', e);
@@ -127,6 +129,7 @@ events.post(
 events.get("/", async (c) => {
   try {
     const db = getDb(c.env.DB);
+    // Only show approved events
     const events = await db
       .select({
         id: schema.eventsTable.id,
@@ -136,6 +139,7 @@ events.get("/", async (c) => {
         start_time: schema.eventsTable.start_time,
         end_time: schema.eventsTable.end_time,
         created_at: schema.eventsTable.created_at,
+        verification_status: schema.eventsTable.verification_status,
         organizer: {
           id: schema.usersTable.id,
           name: schema.usersTable.name,
@@ -146,6 +150,7 @@ events.get("/", async (c) => {
         schema.usersTable,
         eq(schema.eventsTable.organizer_id, schema.usersTable.id)
       )
+      .where(eq(schema.eventsTable.verification_status, VERIFICATION_STATUS.APPROVED))
       .orderBy(schema.eventsTable.start_time);
 
     return c.json({
@@ -183,6 +188,8 @@ events.get("/my-events", async (c) => {
         end_time: schema.eventsTable.end_time,
         created_at: schema.eventsTable.created_at,
         updated_at: schema.eventsTable.updated_at,
+        verification_status: schema.eventsTable.verification_status,
+        rejection_reason: schema.eventsTable.rejection_reason,
       })
       .from(schema.eventsTable)
       .where(eq(schema.eventsTable.organizer_id, user.user_id))
@@ -233,13 +240,18 @@ events.get("/:id", async (c) => {
         schema.usersTable,
         eq(schema.eventsTable.organizer_id, schema.usersTable.id)
       )
-      .where(eq(schema.eventsTable.id, eventId))
+      .where(
+        and(
+          eq(schema.eventsTable.id, eventId),
+          eq(schema.eventsTable.verification_status, VERIFICATION_STATUS.APPROVED)
+        )
+      )
       .limit(1);
 
     if (event.length === 0) {
       return c.json({
         success: false,
-        error: 'Event not found'
+        error: 'Event not found or not approved'
       });
     }
 
@@ -307,6 +319,7 @@ events.post(
           id: schema.eventsTable.id,
           title: schema.eventsTable.title,
           start_time: schema.eventsTable.start_time,
+          verification_status: schema.eventsTable.verification_status,
           organizer: {
             id: schema.usersTable.id,
             name: schema.usersTable.name,
@@ -325,6 +338,13 @@ events.post(
         return c.json({
           success: false,
           error: 'Event not found'
+        });
+      }
+
+      if (event[0].verification_status !== VERIFICATION_STATUS.APPROVED) {
+        return c.json({
+          success: false,
+          error: 'Event is not available for registration'
         });
       }
 

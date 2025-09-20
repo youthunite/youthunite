@@ -18,6 +18,10 @@ export const eventsTable = sqliteTable("events", {
   created_at: integer('created_at').notNull().$defaultFn(() => Date.now()),
   updated_at: integer('updated_at').notNull().$defaultFn(() => Date.now()),
   organizer_id: integer().references(() => usersTable.id).notNull(),
+  verification_status: text({ length: 20 }).default('pending').notNull(),
+  verified_by: integer().references(() => usersTable.id),
+  verified_at: integer('verified_at'),
+  rejection_reason: text(),
 });
 
 export const authTokensTable = sqliteTable("auth_tokens", {
@@ -51,12 +55,32 @@ export const passwordResetTokensTable = sqliteTable("password_reset_tokens", {
   used_at: integer('used_at'),
 });
 
+export const storiesTable = sqliteTable("stories", {
+  id: integer().primaryKey({ autoIncrement: true }),
+  title: text({ length: 200 }).notNull(),
+  content: text().notNull(),
+  author_name: text({ length: 100 }).notNull(),
+  author_email: text({ length: 100 }).notNull(),
+  author_age: integer(),
+  category: text({ length: 50 }),
+  tags: text(), // JSON array of tags
+  created_at: integer('created_at').notNull().$defaultFn(() => Date.now()),
+  updated_at: integer('updated_at').notNull().$defaultFn(() => Date.now()),
+  verification_status: text({ length: 20 }).default('pending').notNull(),
+  verified_by: integer().references(() => usersTable.id),
+  verified_at: integer('verified_at'),
+  rejection_reason: text(),
+  is_published: integer().default(0).notNull(), // 0 = false, 1 = true
+  published_at: integer('published_at'),
+});
+
 const schema = {
   usersTable,
   eventsTable,
   authTokensTable,
   eventRegistrationsTable,
   passwordResetTokensTable,
+  storiesTable,
 };
 
 export default schema;

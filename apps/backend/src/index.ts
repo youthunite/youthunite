@@ -5,6 +5,7 @@ import auth from './auth'
 import events from './events'
 import contact from './contact'
 import admin from './admin'
+import stories from './stories'
 import type { D1Database } from '@cloudflare/workers-types'
 
 type Bindings = {
@@ -25,5 +26,6 @@ app.route('/auth', auth)
 app.route('/events', events)
 app.route('/contact', contact)
 app.route('/admin', admin)
+app.route('/stories', stories)
 
 export default app
