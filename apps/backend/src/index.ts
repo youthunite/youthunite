@@ -8,7 +8,7 @@ import admin from './admin'
 import type { D1Database } from '@cloudflare/workers-types'
 
 type Bindings = {
-  DB: D1Database
+  DB: D1Database;
 }
 const app = new Hono<{ Bindings: Bindings }>()
 
