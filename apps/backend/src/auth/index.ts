@@ -190,7 +190,7 @@ auth.post(
 				return c.json({ success: true, message: "If an account exists, you will receive a password reset email" });
 			}
 
-			const resetUrl = `http${c.env?.NODE_ENV === 'production' ? 's://youthunite.online' : '://localhost:4321'}/reset-password?token=${result.token}`;
+			const resetUrl = `http${process.env.NODE_ENV === 'production' ? 's://youthunite.online' : '://localhost:4321'}/reset-password?token=${result.token}`;
 
 			// Note: Email sending functionality will need to be adapted for Cloudflare Workers
 			// For now, returning success without actually sending email

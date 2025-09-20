@@ -5,8 +5,12 @@ import auth from './auth'
 import events from './events'
 import contact from './contact'
 import admin from './admin'
+import type { D1Database } from '@cloudflare/workers-types'
 
-const app = new Hono()
+type Bindings = {
+  DB: D1Database
+}
+const app = new Hono<{ Bindings: Bindings }>()
 
 app.use('*', cors({
   origin: ['http://localhost:5173', 'http://localhost:4321', 'http://localhost', 'http://localhost:3000', 'http://localhost:8080', 'https://youthunite.online', 'https://youthunite.us'], 

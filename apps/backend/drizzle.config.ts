@@ -5,8 +5,11 @@ config();
 export default {
   out: './drizzle',
   schema: './src/db/schema.ts',
-  dialect: 'postgresql',
+  dialect: 'sqlite',
+  driver: 'd1-http',
   dbCredentials: {
-    url: process.env.DB_URL,
+    accountId: process.env.CF_ACCOUNT_ID!,
+    databaseId: process.env.CF_D1_DB_ID!,
+    token: process.env.CF_API_TOKEN!,
   },
 } as Config;

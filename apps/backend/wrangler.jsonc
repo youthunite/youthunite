@@ -2,10 +2,11 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "serverless-backend",
   "main": "src/index.ts",
-  "compatibility_date": "2025-09-10",
+  "compatibility_date": "2025-09-06",
   "compatibility_flags": [
-    "nodejs_compat"
-  ]
+    "nodejs_compat",
+    "nodejs_compat_populate_process_env"
+  ],
   // "vars": {
   //   "MY_VAR": "my-variable"
   // },
@@ -21,13 +22,14 @@
   //     "bucket_name": "my-bucket"
   //   }
   // ],
-  // "d1_databases": [
-  //   {
-  //     "binding": "MY_DB",
-  //     "database_name": "my-database",
-  //     "database_id": ""
-  //   }
-  // ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "db",
+      "database_id": "fc69cfdd-a454-4e16-86ff-fe5b6f8c3063",
+      "migrations_dir": "drizzle"
+    }
+  ]
   // "ai": {
   //   "binding": "AI"
   // },

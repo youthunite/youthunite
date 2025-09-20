@@ -4,9 +4,9 @@ import * as schema from "./schema";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
-import { drizzle } from 'drizzle-orm/neon-http'
+import { drizzle } from 'drizzle-orm/d1'
 
-const db = drizzle(process.env.DB_URL!, { schema });
+const db = drizzle(process.env.DB, { schema });
 
 const oneMonth = 30 * 86400000; // Self explanatory
 
