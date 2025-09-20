@@ -1,19 +1,24 @@
 import type { APIRoute } from 'astro';
 
-export const post: APIRoute = async ({ request, cookies }) => {
+export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   const form = await request.formData();
   const id = form.get('id');
-  const token = cookies.get('jwt')?.value;
+  const token = cookies.get('jwt_token')?.value;
   try {
-    const res = await fetch(`${import.meta.env.PUBLIC_API_URL}/admin/delete-event`, {
+    const API_BASE = import.meta.env.PUBLIC_API_URL || 'http://localhost:8787';
+    const res = await fetch(`${API_BASE}/admin/delete-event`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify({ id: Number(id) })
     });
     const data = await res.json();
-    return new Response(JSON.stringify(data), { status: res.status, headers: { 'Content-Type': 'application/json' } });
+    if (data.success) {
+      return redirect('/admin');
+    } else {
+      return redirect('/admin?error=Failed to delete event');
+    }
   } catch (e) {
     console.error(e);
-    return new Response(JSON.stringify({ success: false }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+    return redirect('/admin?error=Server error');
   }
 };
