@@ -37,15 +37,66 @@ if (Astro.request.method === 'POST') {
   <div class="container mx-auto px-4 py-8">
     <div class="form-container">
       <form method="POST" class="event-form">
-        <h1>Create New Event</h1>
-        <p class="subtitle">Share your event with the youth community</p>
-        
         {result && !result.success && (
           <div class="error-message">
             <p>{result.error}</p>
           </div>
         )}
+          <div class="event-info">
+          <h2>Host Your Event with Us</h2>
+          <p>Organize. Empower youth. Build community.</p>
+          <p>Submit your student-led event and we'll help you reach a wider audience, connect with peers, and make a measurable impact.</p>
 
+          <h3>Why Submit Your Event?</h3>
+          <ul>
+            <li>Featured on our platform Event Hub</li>
+            <li>Convenient registration system for potential participants</li>
+            <li>Optional partnerships and co-promotion when available</li>
+          </ul>
+
+          <h3>Eligibility Criteria</h3>
+          <p>Your event should:</p>
+          <ul>
+            <li>Be organized by students or a youth-centered organization.</li>
+            <li>Aim to empower, educate, or engage your community.</li>
+            <li>Be inclusive and welcoming to participants from diverse backgrounds.</li>
+            <li>Not promote hate speech, harassment, or discrimination of any kind.</li>
+            <li>Be free or low-cost for attendees.</li>
+            <li>Include a clear plan (location, date, agenda, and target audience).</li>
+          </ul>
+
+          <h3>Submission Guidelines</h3>
+          <p>To ensure a smooth review:</p>
+          <ul>
+            <li>Complete the form accurately and thoroughly.</li>
+            <li>Attach your event plan and any promotional materials through links (flyers, slide deck, social posts).</li>
+            <li>Provide a reliable contact person for follow-up.</li>
+            <li>Submit at least 1 month before your event date (earlier you submit, longer it will be featured).</li>
+          </ul>
+
+          <h3>What Happens Next</h3>
+          <ul>
+            <li>Within 7 days: We review your submission.</li>
+            <li>If approved: We'll email you a confirmation, request any missing details.</li>
+            <li>If edits are needed: We'll share feedback so you can update and resubmit.</li>
+          </ul>
+
+          <h3>FAQ</h3>
+          <ul>
+            <li><strong>Can my event be virtual?</strong> Yes—just include the platform and access link.</li>
+            <li><strong>What if I don't have promo materials yet?</strong> Submit anyway; you can add assets later.</li>
+            <li><strong>Is there a fee to be listed?</strong> No. Listing is free for qualifying events.</li>
+            <li><strong>How soon will I hear back?</strong> Usually within 7 days.</li>
+            <li><strong>Do you provide funding?</strong> Not at this time. We focus on visibility and connections.</li>
+            <li><strong>Can we use your logo?</strong> With approval. We'll provide brand guidelines if applicable.</li>
+          </ul>
+
+          <h3>Community Standards</h3>
+          <p>We uphold a zero-tolerance policy for harassment, hate, or discrimination. Events must maintain a safe, respectful, and inclusive environment for all participants.</p>
+
+          <h3>Need Help?</h3>
+          <p>Questions before you submit? Email us at <a href="mailto:youthunite89@gmail.com">youthunite89@gmail.com</a> and we'll get back to you promptly.</p>
+        </div>
         <div class="form-group">
           <label for="title">Event Title *</label>
           <input
