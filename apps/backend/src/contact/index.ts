@@ -2,9 +2,12 @@ import { Hono } from "hono";
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
 import type { D1Database } from '@cloudflare/workers-types';
+import { sendEmail, createContactFormEmail, createContactConfirmationEmail } from '../email';
 
 type Bindings = {
   DB: D1Database;
+  RESEND: string;
+  RESEND_DOMAIN: string;
 };
 
 const FORM_ID = '4S8bFyDi76us';
@@ -72,6 +75,28 @@ contact.post(
 
       const submissionResult = await submissionResponse.json();
       console.log('Form submitted successfully:', submissionResult);
+
+      try {
+        await sendEmail(
+          { RESEND: c.env.RESEND, RESEND_DOMAIN: c.env.RESEND_DOMAIN },
+          {
+            to: 'admin@youthunite.online',
+            subject: `New Contact Form Submission from ${body.firstName} ${body.lastName}`,
+            html: createContactFormEmail(body.firstName, body.lastName, body.email, body.question),
+          }
+        );
+
+        await sendEmail(
+          { RESEND: c.env.RESEND, RESEND_DOMAIN: c.env.RESEND_DOMAIN },
+          {
+            to: body.email,
+            subject: 'We Received Your Message - YouthUnite',
+            html: createContactConfirmationEmail(body.firstName),
+          }
+        );
+      } catch (emailError) {
+        console.error('Failed to send contact form emails:', emailError);
+      }
 
       return c.json({
         success: true,

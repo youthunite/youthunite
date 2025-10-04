@@ -6,10 +6,13 @@ import getDb, { validateSession } from "../db/db";
 import * as schema from '../db/schema';
 import { eq, and } from "drizzle-orm";
 import type { D1Database } from '@cloudflare/workers-types';
+import { sendEmail, createEventRegistrationEmail } from '../email';
 import { VERIFICATION_STATUS } from '../types/verification';
 
 type Bindings = {
   DB: D1Database;
+  RESEND: string;
+  RESEND_DOMAIN: string;
 };
 
 interface AuthenticatedUser {
@@ -318,6 +321,7 @@ events.post(
         .select({
           id: schema.eventsTable.id,
           title: schema.eventsTable.title,
+          location: schema.eventsTable.location,
           start_time: schema.eventsTable.start_time,
           verification_status: schema.eventsTable.verification_status,
           organizer: {
@@ -380,8 +384,32 @@ events.post(
         })
         .returning();
 
-      // Note: Email sending functionality will need to be adapted for Cloudflare Workers
-      console.log('Event registration created:', registration[0]);
+      const eventDate = new Date(event[0].start_time).toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+      try {
+        await sendEmail(
+          { RESEND: c.env.RESEND, RESEND_DOMAIN: c.env.RESEND_DOMAIN },
+          {
+            to: body.email,
+            subject: `Registration Confirmed: ${event[0].title}`,
+            html: createEventRegistrationEmail(
+              body.firstName,
+              event[0].title,
+              eventDate,
+              event[0].location
+            ),
+          }
+        );
+      } catch (emailError) {
+        console.error('Failed to send registration confirmation email:', emailError);
+      }
 
       return c.json({
         success: true,

@@ -15,9 +15,12 @@ import getDb, {
 import * as schema from '../db/schema';
 import { eq } from "drizzle-orm";
 import type { D1Database } from '@cloudflare/workers-types';
+import { sendEmail, createWelcomeEmail, createPasswordResetEmail } from '../email';
 
 type Bindings = {
   DB: D1Database;
+  RESEND: string;
+  RESEND_DOMAIN: string;
 };
 
 const oneMonth = 30 * 86400000;
@@ -75,6 +78,20 @@ auth.post(
 			const db = getDb(c.env.DB);
 			const { email, password, name } = body;
 			const result = await registerUser(db, email, password, name, ip);
+			
+			try {
+				await sendEmail(
+					{ RESEND: c.env.RESEND, RESEND_DOMAIN: c.env.RESEND_DOMAIN },
+					{
+						to: email,
+						subject: 'Welcome to YouthUnite!',
+						html: createWelcomeEmail(name),
+					}
+				);
+			} catch (emailError) {
+				console.error('Failed to send welcome email:', emailError);
+			}
+			
 			return c.json({ success: true, jwt_token: result });
 		} catch (e) {
 			console.error(e);
@@ -204,9 +221,18 @@ auth.post(
 
 			const resetUrl = `http${process.env.NODE_ENV === 'production' ? 's://youthunite.online' : '://localhost:4321'}/reset-password?token=${result.token}`;
 
-			// Note: Email sending functionality will need to be adapted for Cloudflare Workers
-			// For now, returning success without actually sending email
-			console.log('Password reset URL:', resetUrl);
+			try {
+				await sendEmail(
+					{ RESEND: c.env.RESEND, RESEND_DOMAIN: c.env.RESEND_DOMAIN },
+					{
+						to: result.user.email,
+						subject: 'Reset Your Password - YouthUnite',
+						html: createPasswordResetEmail(resetUrl),
+					}
+				);
+			} catch (emailError) {
+				console.error('Failed to send password reset email:', emailError);
+			}
 			
 			return c.json({ success: true, message: "If an account exists, you will receive a password reset email" });
 		} catch (e) {
