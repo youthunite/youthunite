@@ -1,12 +1,17 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "serverless-backend",
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "youthunite-backend",
   "main": "src/index.ts",
+  "keep_vars": true,
   "compatibility_date": "2025-09-06",
   "compatibility_flags": [
     "nodejs_compat",
     "nodejs_compat_populate_process_env"
   ],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 100
+  },
   // "vars": {
   //   "MY_VAR": "my-variable"
   // },
