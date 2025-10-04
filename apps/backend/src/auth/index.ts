@@ -21,6 +21,7 @@ type Bindings = {
   DB: D1Database;
   RESEND: string;
   RESEND_DOMAIN: string;
+  NODE_ENV: string;
 };
 
 const oneMonth = 30 * 86400000;
@@ -219,7 +220,7 @@ auth.post(
 				return c.json({ success: true, message: "If an account exists, you will receive a password reset email" });
 			}
 
-			const resetUrl = `http${process.env.NODE_ENV === 'production' ? 's://youthunite.online' : '://localhost:4321'}/reset-password?token=${result.token}`;
+			const resetUrl = `http${c.env.NODE_ENV === 'production' ? 's://youthunite.online' : '://localhost:4321'}/reset-password?token=${result.token}`;
 
 			try {
 				await sendEmail(
