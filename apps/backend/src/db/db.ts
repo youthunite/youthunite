@@ -192,21 +192,19 @@ export async function resetUserPassword(db: ReturnType<typeof getDb>, token: str
 
   const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-  await db.transaction(async (tx) => {
-    await tx
-      .update(schema.usersTable)
-      .set({ password: hashedPassword })
-      .where(eq(schema.usersTable.id, tokenData.user_id));
+  await db
+    .update(schema.usersTable)
+    .set({ password: hashedPassword })
+    .where(eq(schema.usersTable.id, tokenData.user_id));
 
-    await tx
-      .update(schema.passwordResetTokensTable)
-      .set({ used_at: Date.now() })
-      .where(eq(schema.passwordResetTokensTable.token, token));
+  await db
+    .update(schema.passwordResetTokensTable)
+    .set({ used_at: Date.now() })
+    .where(eq(schema.passwordResetTokensTable.token, token));
 
-    await tx
-      .delete(schema.authTokensTable)
-      .where(eq(schema.authTokensTable.user_id, tokenData.user_id));
-  });
+  await db
+    .delete(schema.authTokensTable)
+    .where(eq(schema.authTokensTable.user_id, tokenData.user_id));
 
   return true;
 }
