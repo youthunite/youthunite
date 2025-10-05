@@ -36,7 +36,7 @@ if (Astro.request.method === 'POST') {
 <Layout>
   <div class="max-w-4xl mx-auto px-4 py-8">
     <div class="bg-card rounded-xl shadow-lg overflow-hidden">
-      <form method="POST" class="p-8">
+      <form id="event-form" method="POST" class="p-8">
         {result && !result.success && (
           <div class="bg-destructive/10 border border-destructive/30 rounded-lg p-4 mb-6">
             <p class="text-destructive text-sm m-0">{result.error}</p>
@@ -159,9 +159,15 @@ if (Astro.request.method === 'POST') {
           </div>
         </div>
 
+        <div class="mb-6">
+          <span class="text-sm font-medium text-card-foreground block mb-2">Verification</span>
+          <div id="turnstile-container" class="mb-2"></div>
+          <input type="hidden" name="turnstileToken" id="turnstileToken" />
+        </div>
+
         <div class="flex gap-4 justify-end">
           <a href="/events"><Button variant="secondary">Cancel</Button></a>
-          <Button type="submit">Create Event</Button>
+          <Button id="create-event-btn" type="submit" disabled>Create Event</Button>
         </div>
       </form>
     </div>
@@ -169,22 +175,97 @@ if (Astro.request.method === 'POST') {
 </Layout>
 
 <script>
-  const now = new Date();
-  const nextHour = new Date(now.getTime() + 60 * 60 * 1000);
-  nextHour.setMinutes(0, 0, 0);
-  const twoHoursLater = new Date(nextHour.getTime() + 2 * 60 * 60 * 1000);
+  // Set default times for start and end inputs
+  (function setDefaultTimes(){
+    try {
+      const now = new Date();
+      const nextHour = new Date(now.getTime() + 60 * 60 * 1000);
+      nextHour.setMinutes(0, 0, 0);
+      const twoHoursLater = new Date(nextHour.getTime() + 2 * 60 * 60 * 1000);
 
-  const startTimeInput = document.getElementById('start_time') as HTMLInputElement;
-  const endTimeInput = document.getElementById('end_time') as HTMLInputElement;
+      const startTimeInput = document.getElementById('start_time');
+      const endTimeInput = document.getElementById('end_time');
 
-  if (startTimeInput && endTimeInput) {
-    startTimeInput.value = nextHour.toISOString().slice(0, 16);
-    endTimeInput.value = twoHoursLater.toISOString().slice(0, 16);
+      if (startTimeInput && endTimeInput) {
+        (startTimeInput as HTMLInputElement).value = nextHour.toISOString().slice(0, 16);
+        (endTimeInput as HTMLInputElement).value = twoHoursLater.toISOString().slice(0, 16);
 
-    startTimeInput.addEventListener('change', () => {
-      const startTime = new Date(startTimeInput.value);
-      const endTime = new Date(startTime.getTime() + 2 * 60 * 60 * 1000);
-      endTimeInput.value = endTime.toISOString().slice(0, 16);
-    });
-  }
+        startTimeInput.addEventListener('change', () => {
+          const startTime = new Date((startTimeInput as HTMLInputElement).value);
+          const endTime = new Date(startTime.getTime() + 2 * 60 * 60 * 1000);
+          (endTimeInput as HTMLInputElement).value = endTime.toISOString().slice(0, 16);
+        });
+      }
+    } catch (e) {
+      console.warn('Failed to set default times', e);
+    }
+  })();
+
+  // Initialize Turnstile after DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
+    const container = document.getElementById('turnstile-container');
+    const submitBtn = document.getElementById('create-event-btn');
+    const tokenInput = document.getElementById('turnstileToken');
+
+    if (!container) {
+      console.warn('Turnstile container not found on this page.');
+      return;
+    }
+
+    if (!siteKey) {
+      console.warn('PUBLIC_TURNSTILE_SITE_KEY is not set. Turnstile will not be rendered.');
+      return;
+    }
+
+    // Load the Turnstile script
+    if (!window.turnstile) {
+      const script = document.createElement('script');
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+      script.async = true;
+      document.head.appendChild(script);
+
+      script.onload = () => {
+        renderTurnstile();
+      };
+
+      script.onerror = () => {
+        console.error('Failed to load Turnstile script');
+      };
+    } else {
+      renderTurnstile();
+    }
+
+    function renderTurnstile() {
+      try {
+        if (!window.turnstile) {
+          console.error('window.turnstile is not available after script load');
+          return;
+        }
+
+        const widgetId = window.turnstile.render('#turnstile-container', {
+          sitekey: siteKey,
+          callback: (token) => {
+            if (tokenInput) (tokenInput as HTMLInputElement).value = token;
+            if (submitBtn) (submitBtn as HTMLButtonElement).disabled = false;
+          },
+          'error-callback': () => {
+            if (tokenInput) (tokenInput as HTMLInputElement).value = '';
+            if (submitBtn) (submitBtn as HTMLButtonElement).disabled = true;
+            console.warn('Turnstile: verification error');
+          },
+          'expired-callback': () => {
+            if (tokenInput) (tokenInput as HTMLInputElement).value = '';
+            if (submitBtn) (submitBtn as HTMLButtonElement).disabled = true;
+            console.info('Turnstile token expired');
+          }
+        });
+
+        // Ensure button remains disabled until verification
+        if (submitBtn) (submitBtn as HTMLButtonElement).disabled = true;
+      } catch (err) {
+        console.error('Error rendering Turnstile widget', err);
+      }
+    }
+  });
 </script>
