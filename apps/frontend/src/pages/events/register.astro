@@ -34,29 +34,29 @@ if (Astro.request.method === 'POST') {
 ---
 
 <Layout>
-  <div class="container mx-auto px-4 py-8">
-    <div class="form-container">
-      <form method="POST" class="event-form">
+  <div class="max-w-4xl mx-auto px-4 py-8">
+    <div class="bg-card rounded-xl shadow-lg overflow-hidden">
+      <form method="POST" class="p-8">
         {result && !result.success && (
-          <div class="error-message">
-            <p>{result.error}</p>
+          <div class="bg-destructive/10 border border-destructive/30 rounded-lg p-4 mb-6">
+            <p class="text-destructive text-sm m-0">{result.error}</p>
           </div>
         )}
-          <div class="event-info">
-          <h2>Host Your Event with Us</h2>
-          <p>Organize. Empower youth. Build community.</p>
-          <p>Submit your student-led event and we'll help you reach a wider audience, connect with peers, and make a measurable impact.</p>
+          <div class="bg-secondary-foreground text-primary-foreground p-8 -m-8 mb-8 rounded-t-xl">
+          <h2 class="text-3xl font-bold mb-3">Host Your Event with Us</h2>
+          <p class="text-lg mb-2 opacity-95">Organize. Empower youth. Build community.</p>
+          <p class="mb-6 leading-relaxed opacity-90">Submit your student-led event and we'll help you reach a wider audience, connect with peers, and make a measurable impact.</p>
 
-          <h3>Why Submit Your Event?</h3>
-          <ul>
+          <h3 class="text-xl font-semibold mt-8 mb-3 pb-2 border-b-2 border-primary-foreground/30">Why Submit Your Event?</h3>
+          <ul class="space-y-2 ml-6 list-disc">
             <li>Featured on our platform Event Hub</li>
             <li>Convenient registration system for potential participants</li>
             <li>Optional partnerships and co-promotion when available</li>
           </ul>
 
-          <h3>Eligibility Criteria</h3>
-          <p>Your event should:</p>
-          <ul>
+          <h3 class="text-xl font-semibold mt-8 mb-3 pb-2 border-b-2 border-primary-foreground/30">Eligibility Criteria</h3>
+          <p class="mb-3">Your event should:</p>
+          <ul class="space-y-2 ml-6 list-disc">
             <li>Be organized by students or a youth-centered organization.</li>
             <li>Aim to empower, educate, or engage your community.</li>
             <li>Be inclusive and welcoming to participants from diverse backgrounds.</li>
@@ -65,96 +65,101 @@ if (Astro.request.method === 'POST') {
             <li>Include a clear plan (location, date, agenda, and target audience).</li>
           </ul>
 
-          <h3>Submission Guidelines</h3>
-          <p>To ensure a smooth review:</p>
-          <ul>
+          <h3 class="text-xl font-semibold mt-8 mb-3 pb-2 border-b-2 border-primary-foreground/30">Submission Guidelines</h3>
+          <p class="mb-3">To ensure a smooth review:</p>
+          <ul class="space-y-2 ml-6 list-disc">
             <li>Complete the form accurately and thoroughly.</li>
             <li>Attach your event plan and any promotional materials through links (flyers, slide deck, social posts).</li>
             <li>Provide a reliable contact person for follow-up.</li>
             <li>Submit at least 1 month before your event date (earlier you submit, longer it will be featured).</li>
           </ul>
 
-          <h3>What Happens Next</h3>
-          <ul>
+          <h3 class="text-xl font-semibold mt-8 mb-3 pb-2 border-b-2 border-primary-foreground/30">What Happens Next</h3>
+          <ul class="space-y-2 ml-6 list-disc">
             <li>Within 7 days: We review your submission.</li>
             <li>If approved: We'll email you a confirmation, request any missing details.</li>
             <li>If edits are needed: We'll share feedback so you can update and resubmit.</li>
           </ul>
 
-          <h3>FAQ</h3>
-          <ul>
-            <li><strong>Can my event be virtual?</strong> Yes—just include the platform and access link.</li>
-            <li><strong>What if I don't have promo materials yet?</strong> Submit anyway; you can add assets later.</li>
-            <li><strong>Is there a fee to be listed?</strong> No. Listing is free for qualifying events.</li>
-            <li><strong>How soon will I hear back?</strong> Usually within 7 days.</li>
-            <li><strong>Do you provide funding?</strong> Not at this time. We focus on visibility and connections.</li>
-            <li><strong>Can we use your logo?</strong> With approval. We'll provide brand guidelines if applicable.</li>
+          <h3 class="text-xl font-semibold mt-8 mb-3 pb-2 border-b-2 border-primary-foreground/30">FAQ</h3>
+          <ul class="space-y-2 ml-6 list-disc">
+            <li><strong class="font-semibold">Can my event be virtual?</strong> Yes—just include the platform and access link.</li>
+            <li><strong class="font-semibold">What if I don't have promo materials yet?</strong> Submit anyway; you can add assets later.</li>
+            <li><strong class="font-semibold">Is there a fee to be listed?</strong> No. Listing is free for qualifying events.</li>
+            <li><strong class="font-semibold">How soon will I hear back?</strong> Usually within 7 days.</li>
+            <li><strong class="font-semibold">Do you provide funding?</strong> Not at this time. We focus on visibility and connections.</li>
+            <li><strong class="font-semibold">Can we use your logo?</strong> With approval. We'll provide brand guidelines if applicable.</li>
           </ul>
 
-          <h3>Community Standards</h3>
-          <p>We uphold a zero-tolerance policy for harassment, hate, or discrimination. Events must maintain a safe, respectful, and inclusive environment for all participants.</p>
+          <h3 class="text-xl font-semibold mt-8 mb-3 pb-2 border-b-2 border-primary-foreground/30">Community Standards</h3>
+          <p class="opacity-90">We uphold a zero-tolerance policy for harassment, hate, or discrimination. Events must maintain a safe, respectful, and inclusive environment for all participants.</p>
 
-          <h3>Need Help?</h3>
-          <p>Questions before you submit? Email us at <a href="mailto:youthunite89@gmail.com">youthunite89@gmail.com</a> and we'll get back to you promptly.</p>
+          <h3 class="text-xl font-semibold mt-8 mb-3 pb-2 border-b-2 border-primary-foreground/30">Need Help?</h3>
+          <p class="opacity-90">Questions before you submit? Email us at <a href="mailto:youthunite89@gmail.com" class="text-[var(--orange-light)] underline font-medium hover:text-primary transition-colors">youthunite89@gmail.com</a> and we'll get back to you promptly.</p>
         </div>
-        <div class="form-group">
-          <label for="title">Event Title *</label>
+        <div class="mb-6">
+          <label for="title" class="block font-medium text-card-foreground mb-2">Event Title *</label>
           <input
             type="text"
             id="title"
             name="title"
             placeholder="Enter event title"
             maxlength="100"
+            class="w-full px-4 py-3 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
             required
           />
         </div>
 
-        <div class="form-group">
-          <label for="description">Description *</label>
+        <div class="mb-6">
+          <label for="description" class="block font-medium text-card-foreground mb-2">Description *</label>
           <textarea
             id="description"
             name="description"
             placeholder="Describe your event..."
             rows="4"
+            class="w-full px-4 py-3 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all resize-vertical min-h-[100px]"
             required
           ></textarea>
         </div>
 
-        <div class="form-group">
-          <label for="location">Location *</label>
+        <div class="mb-6">
+          <label for="location" class="block font-medium text-card-foreground mb-2">Location *</label>
           <input
             type="text"
             id="location"
             name="location"
             placeholder="Event location"
             maxlength="255"
+            class="w-full px-4 py-3 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
             required
           />
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="start_time">Start Time *</label>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+          <div>
+            <label for="start_time" class="block font-medium text-card-foreground mb-2">Start Time *</label>
             <input
               type="datetime-local"
               id="start_time"
               name="start_time"
+              class="w-full px-4 py-3 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
               required
             />
           </div>
 
-          <div class="form-group">
-            <label for="end_time">End Time *</label>
+          <div>
+            <label for="end_time" class="block font-medium text-card-foreground mb-2">End Time *</label>
             <input
               type="datetime-local"
               id="end_time"
               name="end_time"
+              class="w-full px-4 py-3 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
               required
             />
           </div>
         </div>
 
-        <div class="form-actions">
+        <div class="flex gap-4 justify-end">
           <a href="/events"><Button variant="secondary">Cancel</Button></a>
           <Button type="submit">Create Event</Button>
         </div>
@@ -162,150 +167,6 @@ if (Astro.request.method === 'POST') {
     </div>
   </div>
 </Layout>
-
-<style>
-  .container {
-    max-width: 800px;
-  }
-
-  .form-container {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-  }
-
-  .event-form {
-    padding: 2rem;
-  }
-
-  h1 {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #1f2937;
-    margin-bottom: 0.5rem;
-  }
-
-  .subtitle {
-    color: #6b7280;
-    margin-bottom: 2rem;
-    font-size: 1.125rem;
-  }
-
-  .error-message {
-    background: #fef2f2;
-    border: 1px solid #fecaca;
-    border-radius: 6px;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .error-message p {
-    color: #dc2626;
-    margin: 0;
-    font-size: 0.875rem;
-  }
-
-  .form-group {
-    margin-bottom: 1.5rem;
-  }
-
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-
-  label {
-    display: block;
-    font-weight: 500;
-    color: #374151;
-    margin-bottom: 0.5rem;
-  }
-
-  input,
-  textarea {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-size: 1rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-
-  input:focus,
-  textarea:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  }
-
-  textarea {
-    resize: vertical;
-    min-height: 100px;
-  }
-
-  .form-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
-    margin-top: 2rem;
-  }
-
-  .btn {
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 500;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: inline-block;
-    text-align: center;
-  }
-
-  .btn-primary {
-    background: #3b82f6;
-    color: white;
-  }
-
-  .btn-primary:hover {
-    background: #2563eb;
-  }
-
-  .btn-secondary {
-    background: #f3f4f6;
-    color: #374151;
-    border: 1px solid #d1d5db;
-  }
-
-  .btn-secondary:hover {
-    background: #e5e7eb;
-  }
-
-  @media (max-width: 640px) {
-    .container {
-      margin: 1rem;
-      max-width: none;
-    }
-
-    .event-form {
-      padding: 1rem;
-    }
-
-    .form-row {
-      grid-template-columns: 1fr;
-    }
-
-    .form-actions {
-      flex-direction: column;
-    }
-
-    .btn {
-      width: 100%;
-    }
-  }
-</style>
 
 <script>
   const now = new Date();
