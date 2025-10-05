@@ -19,10 +19,21 @@ const transformedEvents = events.map(event => ({
   needs: ['Volunteers'],
   email: 'contact@youthunite.com'
 }));
+
+const url = new URL(Astro.request.url);
+const created = url.searchParams.get('created');
 ---
 
 <Layout>
   <div class="container mx-auto px-4 py-8">
+    {created === 'true' && (
+      <div class="bg-accent/10 border border-accent/30 rounded-lg p-4 mb-6 text-center">
+        <p class="font-medium">
+          🎉 Event created successfully! Your event is now awaiting verification and will appear once approved.
+        </p>
+      </div>
+    )}
+    
     <div class="header-section">
       <h1>Upcoming Events</h1>
       <p class="subtitle">Discover and join exciting youth events in your community</p>
@@ -182,3 +193,10 @@ const transformedEvents = events.map(event => ({
     }
   }
 </style> 
+<script>
+  if (window.location.search.includes('created=true')) {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('created');
+    window.history.replaceState({}, '', url.toString());
+  }
+</script>
