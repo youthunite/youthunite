@@ -10,6 +10,7 @@ import { VERIFICATION_STATUS } from '../types/verification';
 
 type Bindings = {
   DB: D1Database;
+  JWT_SECRET: string;
 };
 
 const admin = new Hono<{ Bindings: Bindings }>();

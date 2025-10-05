@@ -193,7 +193,7 @@ import Layout from '../layouts/Layout.astro';
 </main>
 </Layout>
 
-<script>
+<script lang="js">
   document.addEventListener('DOMContentLoaded', function() {
     // Loop track functionality
     const track = document.getElementById('loopTrack');
@@ -218,7 +218,7 @@ import Layout from '../layouts/Layout.astro';
     turnstileScript.onload = function() {
       if (window.turnstile) {
         turnstileWidgetId = window.turnstile.render('#turnstile-container', {
-          sitekey: import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAAAikXJiOhJ_Etvjl',
+          sitekey: import.meta.env.PUBLIC_TURNSTILE_SITE_KEY,
           callback: function(token) {
             turnstileToken = token;
             document.getElementById('submit-btn').disabled = false;

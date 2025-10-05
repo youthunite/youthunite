@@ -22,6 +22,7 @@ type Bindings = {
   RESEND: string;
   RESEND_DOMAIN: string;
   NODE_ENV: string;
+  JWT_SECRET: string;
 };
 
 const oneMonth = 30 * 86400000;

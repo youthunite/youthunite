@@ -1,8 +1,10 @@
 {
-  "name": "my-astro-app",
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "youthunite-frontend",
   "main": "./dist/_worker.js/index.js",
   "compatibility_date": "2025-09-21",
   "compatibility_flags": ["nodejs_compat", "nodejs_compat_populate_process_env"],
+  "keep_vars": true,
   "assets": {
     "binding": "ASSETS",
     "directory": "./dist"

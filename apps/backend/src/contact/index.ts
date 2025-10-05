@@ -8,6 +8,7 @@ type Bindings = {
   DB: D1Database;
   RESEND: string;
   RESEND_DOMAIN: string;
+  FILLOUT: string;
 };
 
 const FORM_ID = '4S8bFyDi76us';
